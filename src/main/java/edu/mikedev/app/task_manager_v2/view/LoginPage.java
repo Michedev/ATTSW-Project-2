@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.Color;
 
 public class LoginPage extends JPanel {
 	private JTextField txtUsername;
@@ -12,9 +13,9 @@ public class LoginPage extends JPanel {
 				
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0, 0};
-		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 0, 0};
+		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0};
 		gridBagLayout.columnWeights = new double[]{1.0, 0.0, Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
 		
 		JLabel lblUsername = new JLabel("Username");
@@ -57,19 +58,31 @@ public class LoginPage extends JPanel {
 		add(txtPassword, gbc_txtPassword);
 		txtPassword.setColumns(10);
 		
+		JLabel lblLoginError = new JLabel("Error message");
+		lblLoginError.setOpaque(true);
+		lblLoginError.setName("lblLoginError");
+		lblLoginError.setForeground(Color.RED);
+		lblLoginError.setVisible(false);
+		GridBagConstraints gbc_lblLoginError = new GridBagConstraints();
+		gbc_lblLoginError.gridwidth = 2;
+		gbc_lblLoginError.insets = new Insets(0, 0, 5, 5);
+		gbc_lblLoginError.gridx = 0;
+		gbc_lblLoginError.gridy = 4;
+		add(lblLoginError, gbc_lblLoginError);
+		
 		JButton btnLogin = new JButton("Login");
 		btnLogin.setName("btnLogin");
 		GridBagConstraints gbc_btnLogin = new GridBagConstraints();
 		gbc_btnLogin.insets = new Insets(0, 0, 0, 5);
 		gbc_btnLogin.gridx = 0;
-		gbc_btnLogin.gridy = 4;
+		gbc_btnLogin.gridy = 5;
 		add(btnLogin, gbc_btnLogin);
 		
 		JButton btnRegister = new JButton("Register");
 		btnRegister.setName("btnRegister");
 		GridBagConstraints gbc_btnRegister = new GridBagConstraints();
 		gbc_btnRegister.gridx = 1;
-		gbc_btnRegister.gridy = 4;
+		gbc_btnRegister.gridy = 5;
 		add(btnRegister, gbc_btnRegister);
 	}
 }
