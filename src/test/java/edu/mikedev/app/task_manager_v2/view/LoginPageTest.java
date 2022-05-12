@@ -24,8 +24,6 @@ public class LoginPageTest {
 
 	@Test
 	public void testBaseView() {
-		window.requireTitle("Login page");
-
 		window.label("lblUsername").requireText("Username");
 		window.textBox("txtUsername").requireEmpty();
 		window.label("lblPassword").requireText("Password");
