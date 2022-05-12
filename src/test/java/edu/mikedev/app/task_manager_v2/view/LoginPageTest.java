@@ -3,6 +3,7 @@ package edu.mikedev.app.task_manager_v2.view;
 import org.assertj.swing.core.matcher.JLabelMatcher;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,4 +35,8 @@ public class LoginPageTest {
 		window.button("btnRegister").requireText("Register");
 	}
 
+	  @After
+	  public void tearDown() {
+	    window.cleanUp();
+	  }
 }
