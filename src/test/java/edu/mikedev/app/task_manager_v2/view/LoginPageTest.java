@@ -1,5 +1,6 @@
 package edu.mikedev.app.task_manager_v2.view;
 
+import org.assertj.swing.core.matcher.JLabelMatcher;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
 import org.junit.Before;
@@ -28,6 +29,7 @@ public class LoginPageTest {
 		window.textBox("txtUsername").requireEmpty();
 		window.label("lblPassword").requireText("Password");
 		window.textBox("txtPassword").requireEmpty();
+		window.label(JLabelMatcher.withName("lblLoginError")).requireNotVisible();
 		window.button("btnLogin").requireText("Login");
 		window.button("btnRegister").requireText("Register");
 	}
