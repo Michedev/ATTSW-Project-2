@@ -1,7 +1,5 @@
 package edu.mikedev.app.task_manager_v2.view;
 
-import static org.junit.Assert.*;
-
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
 import org.junit.Before;
@@ -25,7 +23,9 @@ public class LoginPageTest {
 	}
 
 	@Test
-	public void testLoginPageComponents() {
+	public void testBaseView() {
+		window.requireTitle("Login page");
+
 		window.label("lblUsername").requireText("Username");
 		window.textBox("txtUsername").requireEmpty();
 		window.label("lblPassword").requireText("Password");
