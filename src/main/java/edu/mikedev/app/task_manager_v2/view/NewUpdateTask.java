@@ -5,6 +5,9 @@ import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
 import javax.swing.JTextField;
+
+import edu.mikedev.app.task_manager_v2.data.Task;
+
 import java.awt.Insets;
 import javax.swing.JButton;
 
@@ -99,6 +102,10 @@ public class NewUpdateTask extends JPanel {
 		gbc_btnMake.gridx = 0;
 		gbc_btnMake.gridy = 10;
 		add(btnMake, gbc_btnMake);
+	}
+	public void setUpdateMode(Task task) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
