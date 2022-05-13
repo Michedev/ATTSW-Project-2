@@ -42,6 +42,19 @@ public class NewUpdateTaskTest {
 		
 		window.button("btnMake").requireText("Add");
 	}
+
+	@Test
+	public void testUpdateMode() {
+		Task task = new Task("ToBeUpdated", "S1", "S2", "S3");
+		view.setUpdateMode(task);
+		
+		window.textBox("txtTaskTitle").requireText(task.getTitle());
+		window.textBox("txtStep1").requireText(task.getSubtask1());
+		window.textBox("txtStep2").requireText(task.getSubtask2());
+		window.textBox("txtStep3").requireText(task.getSubtask3());
+		
+		window.button("btnMake").requireText("Update");
+	}
 	
 	  @After
 	  public void tearDown() {
