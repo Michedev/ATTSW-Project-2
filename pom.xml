@@ -8,13 +8,19 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<name>task-manager-v2</name>
-	<!-- FIXME change it to the project's website -->
-	<url>http://www.example.com</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
+		<sonar.issue.issue.multicriteria>e1,e2</sonar.issue.issue.multicriteria>
+
+		<sonar.issue.ignore.multicriteria.e1.ruleKey>java:S117</sonar.issue.ignore.multicriteria.e1.ruleKey>
+		<sonar.issue.ignore.multicriteria.e1.resourceKey>${project.basedir}/src/main/java/edu/mikedev/app/task_manager_v2/view/*.java</sonar.issue.ignore.multicriteria.e1.resourceKey>
+
+		<sonar.issue.ignore.multicriteria.e2.ruleKey>java:S2699</sonar.issue.ignore.multicriteria.e2.ruleKey>
+		<sonar.issue.ignore.multicriteria.e2.resourceKey>${project.basedir}/src/test/java/edu/mikedev/app/task_manager_v2/view/*.java</sonar.issue.ignore.multicriteria.e2.resourceKey>
+
+
 	</properties>
 
 	<dependencies>

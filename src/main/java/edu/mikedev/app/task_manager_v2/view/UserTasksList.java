@@ -37,21 +37,7 @@ public class UserTasksList extends JPanel {
 			btnDetailTask.setName("btnDetailTask" + (i+1));
 			add(btnDetailTask, gbc_btnDetail);
 			}
-//		
-//		JLabel lblTask = new JLabel("Task 1");
-//		GridBagConstraints gbc_lblTask = new GridBagConstraints();
-//		gbc_lblTask.insets = new Insets(0, 0, 5, 5);
-//		gbc_lblTask.gridx = 0;
-//		gbc_lblTask.gridy = 0;
-//		add(lblTask, gbc_lblTask);
-//		
-//		JButton btnDetail = new JButton("Detail");
-//		GridBagConstraints gbc_btnDetail = new GridBagConstraints();
-//		gbc_btnDetail.insets = new Insets(0, 0, 5, 0);
-//		gbc_btnDetail.gridx = 1;
-//		gbc_btnDetail.gridy = 0;
-//		add(btnDetail, gbc_btnDetail);
-//		
+	
 		JButton btnNew = new JButton("New");
 		GridBagConstraints gbc_btnNew = new GridBagConstraints();
 		gbc_btnNew.gridwidth = 2;
