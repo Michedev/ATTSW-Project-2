@@ -86,8 +86,8 @@ public class RegisterPage extends JPanel {
 		add(lblEmail, gbc_lblEmail);
 		
 		txtEmail = new JTextField();
+		txtEmail.setText("");
 		txtEmail.setName("txtEmail");
-		txtEmail.setVisible(false);
 		GridBagConstraints gbc_txtEmail = new GridBagConstraints();
 		gbc_txtEmail.insets = new Insets(0, 0, 5, 0);
 		gbc_txtEmail.fill = GridBagConstraints.HORIZONTAL;
