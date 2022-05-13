@@ -4,29 +4,34 @@ import static org.junit.Assert.*;
 
 import javax.swing.JFrame;
 
+import org.assertj.swing.annotation.GUITest;
 import org.assertj.swing.core.matcher.JLabelMatcher;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
+import org.assertj.swing.junit.runner.GUITestRunner;
+import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
-public class RegisterPageTest {
+@RunWith(GUITestRunner.class)
+public class RegisterPageTest extends AssertJSwingJUnitTestCase {
 
 	FrameFixture window;
 
-	@Before
-	public void setUp() throws Exception {
+	@Override
+	protected void onSetUp() {
 		  JFrame frame = GuiActionRunner.execute(() -> {
 			 JFrame jframe = new JFrame();
 			 jframe.setContentPane(new RegisterPage());
 			 return jframe;
 		  });
-		  window = new FrameFixture(frame);
+		  window = new FrameFixture(robot(), frame);
 		  window.show(); // shows the frame to test
 	}
 
-	@Test
+	@Test @GUITest
 	public void testBaseView() {
 		window.label("lblUsername").requireText("Username");
 		window.textBox("txtUsername").requireEmpty();
@@ -39,9 +44,4 @@ public class RegisterPageTest {
 		window.label(JLabelMatcher.withName("lblEmailError")).requireNotVisible();
 		window.button("btnConfirm").requireText("Confirm");
 	}
-	
-	  @After
-	  public void tearDown() {
-	    window.cleanUp();
-	  }
 }

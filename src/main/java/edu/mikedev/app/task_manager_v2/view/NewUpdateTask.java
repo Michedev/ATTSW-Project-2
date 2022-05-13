@@ -16,6 +16,8 @@ public class NewUpdateTask extends JPanel {
 	private JTextField txtStep1;
 	private JTextField txtStep2;
 	private JTextField txtStep3;
+	private JButton btnMake;
+	
 	public NewUpdateTask() {
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0};
@@ -96,7 +98,7 @@ public class NewUpdateTask extends JPanel {
 		add(txtStep3, gbc_txtStep3);
 		txtStep3.setColumns(10);
 		
-		JButton btnMake = new JButton("Add");
+		btnMake = new JButton("Add");
 		btnMake.setName("btnMake");
 		GridBagConstraints gbc_btnMake = new GridBagConstraints();
 		gbc_btnMake.gridx = 0;
@@ -104,8 +106,11 @@ public class NewUpdateTask extends JPanel {
 		add(btnMake, gbc_btnMake);
 	}
 	public void setUpdateMode(Task task) {
-		// TODO Auto-generated method stub
-		
+		txtTaskTitle.setText(task.getTitle());
+		txtStep1.setText(task.getSubtask1());
+		txtStep2.setText(task.getSubtask2());
+		txtStep3.setText(task.getSubtask3());
+		btnMake.setText("Update");
 	}
 
 }

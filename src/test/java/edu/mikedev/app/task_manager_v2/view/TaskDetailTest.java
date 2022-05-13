@@ -7,31 +7,36 @@ import java.util.List;
 
 import javax.swing.JFrame;
 
+import org.assertj.swing.annotation.GUITest;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
+import org.assertj.swing.junit.runner.GUITestRunner;
+import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import edu.mikedev.app.task_manager_v2.data.Task;
+import org.junit.runner.RunWith;
 
-public class TaskDetailTest {
+@RunWith(GUITestRunner.class)
+public class TaskDetailTest extends AssertJSwingJUnitTestCase {
 
 	FrameFixture window;
 
-	@Before
-	public void setUp() throws Exception {
+	@Override
+	protected void onSetUp() {
 		Task task = new Task("TaskTitle", "subtask1", "subtask2", "subtask3");
 		JFrame frame = GuiActionRunner.execute(() -> {
 			 JFrame jframe = new JFrame();
 			 jframe.setContentPane(new TaskDetail(task));
 			 return jframe;
 		  });
-		  window = new FrameFixture(frame);
+		  window = new FrameFixture(robot(), frame);
 		  window.show(); // shows the frame to test
 	}
 
-	@Test
+	@Test @GUITest
 	public void testBaseView() {
 		window.label("lblTaskTitle").requireText("TaskTitle");
 		window.label("lblSubtask1").requireText("subtask1");
@@ -41,10 +46,4 @@ public class TaskDetailTest {
 		window.button("btnUpdate").requireText("Update");
 		window.button("btnDelete").requireText("Delete");
 	}
-	
-	  @After
-	  public void tearDown() {
-	    window.cleanUp();
-	  }
-
 }
