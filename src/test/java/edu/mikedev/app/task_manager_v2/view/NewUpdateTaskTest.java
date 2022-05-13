@@ -14,13 +14,15 @@ import edu.mikedev.app.task_manager_v2.data.Task;
 
 public class NewUpdateTaskTest {
 	FrameFixture window;
+	NewUpdateTask view;
 
 	@Before
 	public void setUp() throws Exception {
 		Task task = new Task("TaskTitle", "subtask1", "subtask2", "subtask3");
+		view = new NewUpdateTask();
 		JFrame frame = GuiActionRunner.execute(() -> {
 			 JFrame jframe = new JFrame();
-			 jframe.setContentPane(new NewUpdateTask());
+			 jframe.setContentPane(view);
 			 return jframe;
 		  });
 		  window = new FrameFixture(frame);
@@ -30,6 +32,7 @@ public class NewUpdateTaskTest {
 	@Test
 	public void testBaseView() {
 		window.label("lblTaskTitle").requireText("Title");
+		window.textBox("txtTaskTitle").requireEmpty();
 		window.label("lblStep1").requireText("Step 1");
 		window.textBox("txtStep1").requireEmpty();
 		window.label("lblStep2").requireText("Step 2");
@@ -39,7 +42,6 @@ public class NewUpdateTaskTest {
 		
 		window.button("btnMake").requireText("Add");
 	}
-	
 	
 	  @After
 	  public void tearDown() {
