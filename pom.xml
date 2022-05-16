@@ -15,10 +15,10 @@
 		<sonar.issue.ignore.multicriteria>e1,e2</sonar.issue.ignore.multicriteria>
 
 		<sonar.issue.ignore.multicriteria.e1.ruleKey>java:S117</sonar.issue.ignore.multicriteria.e1.ruleKey>
-		<sonar.issue.ignore.multicriteria.e1.resourceKey>${project.basedir}/src/main/java/edu/mikedev/app/task_manager_v2/view/*.java</sonar.issue.ignore.multicriteria.e1.resourceKey>
+		<sonar.issue.ignore.multicriteria.e1.resourceKey>src/main/**/view/*.java</sonar.issue.ignore.multicriteria.e1.resourceKey>
 
 		<sonar.issue.ignore.multicriteria.e2.ruleKey>java:S2699</sonar.issue.ignore.multicriteria.e2.ruleKey>
-		<sonar.issue.ignore.multicriteria.e2.resourceKey>${project.basedir}/src/test/java/edu/mikedev/app/task_manager_v2/view/*.java</sonar.issue.ignore.multicriteria.e2.resourceKey>
+		<sonar.issue.ignore.multicriteria.e2.resourceKey>src/test/**/view/*.java</sonar.issue.ignore.multicriteria.e2.resourceKey>
 
 
 	</properties>
