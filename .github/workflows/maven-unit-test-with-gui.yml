@@ -1,0 +1,36 @@
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: Maven test and package
+
+on:
+  push:
+    branches:
+      - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java_version: [8]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK ${{matrix.java_version}}
+      uses: actions/setup-java@v2
+      with:
+        java-version: ${{matrix.java_version}}
+        distribution: 'adopt'
+        cache: maven
+    - name: Cache Maven packages
+      uses: actions/cache@v2
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml', '**/*.yml') }}
+        restore-keys: ${{ runner.os }}-m2-
+    - name: install tightserver
+      run: sudo apt update && sudo apt install -y tightvncserver
+    - name: set tight vnc server password
+      run: export vncpassword="mypsswrd"; umask 0077; mkdir -p "${HOME}/.vnc"; chmod go-rwx "${HOME}/.vnc"; vncpasswd -f <<<"${vncpassword}" >"${HOME}/.vnc/passwd";
+    - name: Build with Maven using Java ${{matrix.java_version}}
+      run:  chmod +x execute-on-vnc.sh && ./execute-on-vnc.sh mvn -B package --file pom.xml
