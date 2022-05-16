@@ -12,7 +12,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
-		<sonar.issue.issue.multicriteria>e1,e2</sonar.issue.issue.multicriteria>
+		<sonar.issue.ignore.multicriteria>e1,e2</sonar.issue.ignore.multicriteria>
 
 		<sonar.issue.ignore.multicriteria.e1.ruleKey>java:S117</sonar.issue.ignore.multicriteria.e1.ruleKey>
 		<sonar.issue.ignore.multicriteria.e1.resourceKey>${project.basedir}/src/main/java/edu/mikedev/app/task_manager_v2/view/*.java</sonar.issue.ignore.multicriteria.e1.resourceKey>
