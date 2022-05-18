@@ -24,4 +24,8 @@ public class UserTaskRepository {
     public void update(Task task) {
         session.update(task);
     }
+
+    public User getById(int id) {
+        return null;
+    }
 }

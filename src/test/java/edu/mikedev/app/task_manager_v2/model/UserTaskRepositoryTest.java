@@ -79,6 +79,20 @@ public class UserTaskRepositoryTest {
     }
 
     @Test
+    public void testUserById(){
+        User expectedUser = dbUtils.users.get(0);
+        Transaction t = session.beginTransaction();
+        User actual = userTaskRepository.getById(expectedUser.getId());
+
+        Assert.assertNotNull(actual);
+
+        Assert.assertEquals(expectedUser.getUsername(), actual.getUsername());
+        Assert.assertEquals(expectedUser.getPassword(), actual.getPassword());
+        Assert.assertEquals(expectedUser.getEmail(), actual.getEmail());
+
+    }
+
+    @Test
     public void testTaskUpdate(){
         Task toUpdate = dbUtils.users.get(0).getTasks().iterator().next();
         String oldtitle = toUpdate.getTitle();
@@ -93,4 +107,5 @@ public class UserTaskRepositoryTest {
         Assert.assertTrue(dbTaskTitles.contains(newTitle));
         Assert.assertFalse(dbTaskTitles.contains(oldtitle));
     }
+
 }
