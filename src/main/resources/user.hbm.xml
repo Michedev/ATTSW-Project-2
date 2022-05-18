@@ -1,4 +1,4 @@
-<hibernate-mapping package="edu.mikedev.task_manager_v2.data">
+<hibernate-mapping package="edu.mikedev.app.task_manager_v2.data">
     <!-- class name is the fully qualified name of the POJO class -->
     <!-- table is the name of the database table which represents the Student -->
     <class name="User" table="users">
