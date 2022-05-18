@@ -62,7 +62,7 @@ public class HibernateDBUtilsInMemory extends HibernateDBUtils {
         taskSet2.add(task6);
 
         User user1 = new User(username1, password1, email);
-        user1.setTasks(new HashSet<>());
+        user1.setTasks(taskSet1);
         for(Task t: taskSet1){
             t.setTaskOwner(user1);
         }
@@ -70,7 +70,7 @@ public class HibernateDBUtilsInMemory extends HibernateDBUtils {
         insertUser(statement, user1);
 
         User user2 = new User(username2, password2, email);
-        user2.setTasks(new HashSet<>());
+        user2.setTasks(taskSet2);
         for(Task t: taskSet2){
             t.setTaskOwner(user2);
         }
