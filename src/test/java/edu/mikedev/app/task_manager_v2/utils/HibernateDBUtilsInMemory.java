@@ -30,8 +30,8 @@ public class HibernateDBUtilsInMemory extends HibernateDBUtils {
         Connection connection = initDBConnection();
         Statement statement = connection.createStatement();
 
-        statement.execute("DROP TABLE IF EXISTS User");
-        statement.execute("DROP TABLE IF EXISTS Task");
+        statement.execute("DELETE FROM tasks");
+        statement.execute("DELETE FROM users");
 
         Set<Task> taskSet1 = new HashSet<>();
         Task task1 = new Task("title1", "subtask1-1", "subtask2-1", "subtask3-1");
