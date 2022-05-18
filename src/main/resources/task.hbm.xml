@@ -1,4 +1,4 @@
-<hibernate-mapping package="edu.mikedev.task_manager.data">
+<hibernate-mapping package="edu.mikedev.task_manager_v2.data">
     <!-- class name is the fully qualified name of the POJO class -->
     <!-- table is the name of the database table which represents the Student -->
     <class name="Task" table="tasks">
@@ -13,19 +13,20 @@
             <column name="title" not-null="true" />
         </property>
 
-        <property name="description" type="string">
-            <column name="description" not-null="true"/>
+        <property name="subtask1" type="string">
+            <column name="subtask1" not-null="true"/>
         </property>
 
-        <property name="deadline" type="java.util.Date">
-            <column name="deadline" not-null="true"/>
+        <property name="subtask2" type="string">
+            <column name="subtask2" not-null="true"/>
         </property>
 
-        <property name="done" type="boolean">
-            <column name="done" />
+        <property name="subtask3" type="string">
+            <column name="subtask3" not-null="true"/>
         </property>
 
-        <many-to-one name="user" class="User"
+
+        <many-to-one name="taskOwner" class="User"
                      column="ID_USER" not-null="true"/>
 
     </class>
