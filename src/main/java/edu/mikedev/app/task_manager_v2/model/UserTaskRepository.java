@@ -20,4 +20,8 @@ public class UserTaskRepository {
         User persistentUser = session.find(User.class, user.getId());
         session.delete(persistentUser);
     }
+
+    public void update(Task task) {
+
+    }
 }
