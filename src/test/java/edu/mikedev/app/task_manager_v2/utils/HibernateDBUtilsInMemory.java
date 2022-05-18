@@ -30,26 +30,22 @@ public class HibernateDBUtilsInMemory extends HibernateDBUtils {
         Connection connection = initDBConnection();
         Statement statement = connection.createStatement();
 
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        statement.execute("DROP TABLE IF EXISTS User");
+        statement.execute("DROP TABLE IF EXISTS Task");
+
         Set<Task> taskSet1 = new HashSet<>();
-        Task task1 = null;
-        Task task2 = null;
-        Task task3 = null;
-        Task task4 = null;
-        Task task5 = null;
-        Task task6 = null;
+        Task task1 = new Task("title1", "subtask1-1", "subtask2-1", "subtask3-1");
+        Task task2 = new Task("title2", "subtask1-2", "subtask2-2", "subtask3-2");
+        Task task3 = new Task("title3", "subtask1-3", "subtask2-3", "subtask3-3");
+        Task task4 = new Task("title4", "subtask1-4", "subtask2-4", "subtask3-4");
+        Task task5 = new Task("title5", "subtask1-5", "subtask2-5", "subtask3-5");
+        Task task6 = new Task("title6", "subtask1-6", "subtask2-6", "subtask3-6");
         String username1 = "username1";
         String password1 = "password1";
         String username2 = "username";
         String password2 = "password";
         String email = "email@email.com";
         Set<Task> taskSet2 = new HashSet<>();
-        task1 = new Task("title1", "subtask1-1", "subtask2-1", "subtask3-1");
-        task2 = new Task("title2", "subtask1-2", "subtask2-2", "subtask3-2");
-        task3 = new Task("title3", "subtask1-3", "subtask2-3", "subtask3-3");
-        task4 = new Task("title4", "subtask1-4", "subtask2-4", "subtask3-4");
-        task5 = new Task("title5", "subtask1-5", "subtask2-5", "subtask3-5");
-        task6 = new Task("title6", "subtask1-6", "subtask2-6", "subtask3-6");
 
         task1.setId(1);
         task2.setId(2);
