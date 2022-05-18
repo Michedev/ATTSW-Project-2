@@ -22,6 +22,6 @@ public class UserTaskRepository {
     }
 
     public void update(Task task) {
-
+        session.update(task);
     }
 }
