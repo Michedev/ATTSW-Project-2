@@ -1,5 +1,6 @@
 package edu.mikedev.app.task_manager_v2.data;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class User {
@@ -11,7 +12,16 @@ public class User {
 	private Set<Task> tasks;
 	
 	public User() {}
-	
+
+	public User(String username, String password, String email) {
+		super();
+		this.username = username;
+		this.password = password;
+		this.email = email;
+		this.tasks = new HashSet<>();
+	}
+
+
 	public User(String username, String password, String email, Set<Task> tasks) {
 		super();
 		this.username = username;
