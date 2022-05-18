@@ -18,6 +18,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.HashSet;
+import java.util.List;
 
 public class UserTaskRepositoryTest {
 
@@ -71,5 +72,9 @@ public class UserTaskRepositoryTest {
         t.commit();
         session.close();
         Assert.assertFalse(dbUtils.getDBUsernames().contains(toDelete.getUsername()));
+        List<String> dbTaskTitles = dbUtils.getDBTaskTitles();
+        for(Task task: toDelete.getTasks()){
+            Assert.assertFalse(dbTaskTitles.contains(task.getTitle()));
+        }
     }
 }
