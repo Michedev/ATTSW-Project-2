@@ -77,4 +77,20 @@ public class UserTaskRepositoryTest {
             Assert.assertFalse(dbTaskTitles.contains(task.getTitle()));
         }
     }
+
+    @Test
+    public void testTaskUpdate(){
+        Task toUpdate = dbUtils.users.get(0).getTasks().iterator().next();
+        String oldtitle = toUpdate.getTitle();
+        String newTitle = "New Title";
+        toUpdate.setTitle(newTitle);
+        Transaction t = session.beginTransaction();
+        userTaskRepository.update(toUpdate);
+        t.commit();
+        session.close();
+
+        List<String> dbTaskTitles = dbUtils.getDBTaskTitles();
+        Assert.assertTrue(dbTaskTitles.contains(newTitle));
+        Assert.assertFalse(dbTaskTitles.contains(oldtitle));
+    }
 }
