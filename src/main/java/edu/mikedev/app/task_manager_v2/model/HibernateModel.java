@@ -16,6 +16,10 @@ public class HibernateModel {
     }
 
     public User login(String username, String password) {
-        return null;
+        Session session = sessionFactory.openSession();
+        HibernateUserTaskRepository repository = new HibernateUserTaskRepository(session);
+        User logged = repository.getUserByUsernamePassword(username, password);
+        session.close();
+        return logged;
     }
 }

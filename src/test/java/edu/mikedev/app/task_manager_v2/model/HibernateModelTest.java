@@ -33,15 +33,16 @@ public class HibernateModelTest {
         }
     }
 
-//    @Test
-//    public void testModelLogin(){
-//        final String USERNAME = "username1";
-//        String PASSWORD = "password1";
-//        User expected = dbUtils.users.stream().filter(u -> u.getUsername().equals(USERNAME) && u.getPassword().equals(PASSWORD)).findFirst().get();
-//        User actual = model.login(USERNAME, PASSWORD);
-//
-//        Assert.assertEquals(expected.getUsername(), actual.getUsername());
-//        Assert.assertEquals(expected.getPassword(), actual.getPassword());
-//        Assert.assertEquals(expected.getEmail(), actual.getEmail());
-//    }
+    @Test
+    public void testModelLogin(){
+        final String USERNAME = "username1";
+        String PASSWORD = "password1";
+        User expected = dbUtils.users.stream().filter(u -> u.getUsername().equals(USERNAME) && u.getPassword().equals(PASSWORD)).findFirst().get();
+        User actual = model.login(USERNAME, PASSWORD);
+
+        Assert.assertEquals(expected.getId(), actual.getId());
+        Assert.assertEquals(expected.getUsername(), actual.getUsername());
+        Assert.assertEquals(expected.getPassword(), actual.getPassword());
+        Assert.assertEquals(expected.getEmail(), actual.getEmail());
+    }
 }
