@@ -26,6 +26,7 @@ public class UserTaskRepository {
     }
 
     public User getById(int id) {
-        return null;
+        return session.createQuery(String.format("Select u from User u where u.id = %d", id), User.class).getSingleResult();
     }
+
 }
