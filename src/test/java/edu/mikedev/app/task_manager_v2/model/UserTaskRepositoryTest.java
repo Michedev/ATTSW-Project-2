@@ -2,7 +2,6 @@ package edu.mikedev.app.task_manager_v2.model;
 
 import edu.mikedev.app.task_manager_v2.data.Task;
 import edu.mikedev.app.task_manager_v2.data.User;
-import edu.mikedev.app.task_manager_v2.utils.HibernateDBUtils;
 import edu.mikedev.app.task_manager_v2.utils.HibernateDBUtilsInMemory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -79,7 +78,7 @@ public class UserTaskRepositoryTest {
     }
 
     @Test
-    public void testUserById(){
+    public void testGetUserById(){
         User expectedUser = dbUtils.users.get(0);
         Transaction t = session.beginTransaction();
         User actual = userTaskRepository.getById(expectedUser.getId());
@@ -89,7 +88,6 @@ public class UserTaskRepositoryTest {
         Assert.assertEquals(expectedUser.getUsername(), actual.getUsername());
         Assert.assertEquals(expectedUser.getPassword(), actual.getPassword());
         Assert.assertEquals(expectedUser.getEmail(), actual.getEmail());
-
     }
 
     @Test
@@ -98,6 +96,7 @@ public class UserTaskRepositoryTest {
         String oldtitle = toUpdate.getTitle();
         String newTitle = "New Title";
         toUpdate.setTitle(newTitle);
+        Assert.assertFalse(session.contains(toUpdate));
         Transaction t = session.beginTransaction();
         userTaskRepository.update(toUpdate);
         t.commit();
