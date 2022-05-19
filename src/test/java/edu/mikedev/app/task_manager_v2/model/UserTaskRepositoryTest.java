@@ -33,8 +33,6 @@ public class UserTaskRepositoryTest {
         dbUtils = new HibernateDBUtilsInMemory();
     }
 
-
-
     @Before
     public void setUp(){
         try {
