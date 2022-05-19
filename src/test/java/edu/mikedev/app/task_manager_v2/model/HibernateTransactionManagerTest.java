@@ -30,18 +30,16 @@ public class HibernateTransactionManagerTest {
 
     @Test
     public void testDoInTransaction(){
-        Session session = sessionFactory.openSession();
-        Task toAdd = new Task("123", "1", "2", "3");
-        doAnswer(answer((Task t) -> {
-            session.save(t);
+        User toAdd = new User("123", "1", "2");
+
+        Assert.assertFalse(inMemory.getDBUsernames().contains(toAdd.getUsername()));
+
+        transactionManager.doInTransaction((repository) -> {
+            repository.add(toAdd);
             return null;
-        })).when(repository).add(any(Task.class));
+        });
 
-        Assert.assertFalse(inMemory.getDBTaskTitles().contains(toAdd.getTitle()));
-
-        transactionManager.doInTransaction(() -> repository.add(toAdd));
-
-        Assert.assertTrue(inMemory.getDBTaskTitles().contains(toAdd.getTitle()));
+        Assert.assertTrue(inMemory.getDBUsernames().contains(toAdd.getUsername()));
 
     }
 }
