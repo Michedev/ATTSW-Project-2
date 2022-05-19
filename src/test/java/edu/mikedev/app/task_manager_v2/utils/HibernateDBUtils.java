@@ -79,7 +79,7 @@ public abstract class HibernateDBUtils {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         try {
             statement.execute("INSERT INTO tasks (id, title, subtask1, subtask2, subtask3, ID_USER) " +
-                    String.format("VALUES (%d, '%s', '%s', '%s 00:00:00', %b, '%d'); ", t.getId(), t.getTitle(), t.getSubtask1(), t.getSubtask2(), t.getSubtask3(), t.getTaskOwner().getId()));
+                    String.format("VALUES (%d, '%s', '%s', '%s', %s, '%d'); ", t.getId(), t.getTitle(), t.getSubtask1(), t.getSubtask2(), t.getSubtask3(), t.getTaskOwner().getId()));
         } catch (SQLException e) {
             e.printStackTrace();
         }
