@@ -25,15 +25,19 @@ public class UserTaskRepository {
         session.update(task);
     }
 
-    public User getById(int id) {
+    public User getUserById(int id) {
         return session.createQuery(String.format("Select u from User u where u.id = %d", id), User.class).getSingleResult();
+    }
+
+    public Task getTaskById(int id) {
+        return session.createQuery(String.format("Select t from Task t where t.id = %d", id), Task.class).getSingleResult();
     }
 
     public void add(Task task) {
         session.save(task);
     }
 
-    public void delete(Task task) {
-        session.delete(task);
+    public void delete(Task toDelete) {
+        session.delete(toDelete);
     }
 }

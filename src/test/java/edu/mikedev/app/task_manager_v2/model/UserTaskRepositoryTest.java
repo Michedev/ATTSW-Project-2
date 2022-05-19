@@ -77,7 +77,7 @@ public class UserTaskRepositoryTest {
     @Test
     public void testGetUserById(){
         User expectedUser = dbUtils.users.get(0);
-        User actual = userTaskRepository.getById(expectedUser.getId());
+        User actual = userTaskRepository.getUserById(expectedUser.getId());
 
         Assert.assertNotNull(actual);
 
@@ -138,7 +138,14 @@ public class UserTaskRepositoryTest {
     public void testGetTaskById(){
         Task expected = dbUtils.users.get(1).getTasks().iterator().next();
 
+        Transaction t = session.beginTransaction();
+        Task actual = userTaskRepository.getTaskById(expected.getId());
+        t.commit();
 
+        Assert.assertEquals(expected.getTitle(), actual.getTitle());
+        Assert.assertEquals(expected.getSubtask1(), actual.getSubtask1());
+        Assert.assertEquals(expected.getSubtask2(), actual.getSubtask2());
+        Assert.assertEquals(expected.getSubtask3(), actual.getSubtask3());
     }
 
     @After
