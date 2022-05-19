@@ -85,6 +85,15 @@ public class HibernateUserTaskRepositoryTest {
     }
 
     @Test
+    public void testUserGetByUsernamePassword(){
+        User expected = dbUtils.users.get(0);
+        User actual = hibernateUserTaskRepository.getUserByUsernamePassword(expected.getUsername(), expected.getPassword());
+
+        Assert.assertEquals(expected.getId(), actual.getId());
+        Assert.assertEquals(expected.getEmail(), actual.getEmail());
+    }
+
+    @Test
     public void testTaskAdd(){
         Task newTask = new Task("Task123", "Subtask123", "Subtask234", "Subtask345");
         User taskOwner = dbUtils.users.get(0);

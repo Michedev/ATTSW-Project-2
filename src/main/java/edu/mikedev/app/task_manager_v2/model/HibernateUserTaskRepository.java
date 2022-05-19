@@ -47,4 +47,9 @@ public class HibernateUserTaskRepository implements UserTaskRepository {
     public void delete(Task toDelete) {
         session.delete(toDelete);
     }
+
+    @Override
+    public User getUserByUsernamePassword(String username, String password) {
+        return null;
+    }
 }

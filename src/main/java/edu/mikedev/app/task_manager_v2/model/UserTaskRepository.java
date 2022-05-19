@@ -17,4 +17,6 @@ public interface UserTaskRepository {
     void add(Task task);
 
     void delete(Task toDelete);
+
+    User getUserByUsernamePassword(String username, String password);
 }
