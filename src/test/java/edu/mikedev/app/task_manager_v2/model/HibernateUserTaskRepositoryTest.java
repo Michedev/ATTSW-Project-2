@@ -16,11 +16,11 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
 
-public class UserTaskRepositoryTest {
+public class HibernateUserTaskRepositoryTest {
 
     private static SessionFactory sessionFactory;
     private static HibernateDBUtilsInMemory dbUtils;
-    private UserTaskRepository userTaskRepository;
+    private HibernateUserTaskRepository hibernateUserTaskRepository;
     private Session session;
 
     @BeforeClass
@@ -41,7 +41,7 @@ public class UserTaskRepositoryTest {
             throw new RuntimeException(e);
         }
         session = sessionFactory.openSession();
-        userTaskRepository = new UserTaskRepository(session);
+        hibernateUserTaskRepository = new HibernateUserTaskRepository(session);
     }
 
     @Test
@@ -50,7 +50,7 @@ public class UserTaskRepositoryTest {
         User u = new User(newUsername, "passw1", "email@mail.it", new HashSet<Task>());
         Assert.assertFalse(dbUtils.getDBUsernames().contains(newUsername));
         Transaction t = session.beginTransaction();
-        userTaskRepository.add(u);
+        hibernateUserTaskRepository.add(u);
         t.commit();
 
         Assert.assertTrue(dbUtils.getDBUsernames().contains(newUsername));
@@ -62,7 +62,7 @@ public class UserTaskRepositoryTest {
 
         Assert.assertTrue(dbUtils.getDBUsernames().contains(toDelete.getUsername()));
         Transaction t = session.beginTransaction();
-        userTaskRepository.delete(toDelete);
+        hibernateUserTaskRepository.delete(toDelete);
         t.commit();
 
         Assert.assertFalse(dbUtils.getDBUsernames().contains(toDelete.getUsername()));
@@ -75,7 +75,7 @@ public class UserTaskRepositoryTest {
     @Test
     public void testUserGetById(){
         User expectedUser = dbUtils.users.get(0);
-        User actual = userTaskRepository.getUserById(expectedUser.getId());
+        User actual = hibernateUserTaskRepository.getUserById(expectedUser.getId());
 
         Assert.assertNotNull(actual);
 
@@ -93,7 +93,7 @@ public class UserTaskRepositoryTest {
 
 
         Transaction t = session.beginTransaction();
-        userTaskRepository.add(newTask);
+        hibernateUserTaskRepository.add(newTask);
         t.commit();
 
         List<String> dbTaskTitles = dbUtils.getDBTaskTitles();
@@ -113,7 +113,7 @@ public class UserTaskRepositoryTest {
         Assert.assertFalse(session.contains(toUpdate));
 
         Transaction t = session.beginTransaction();
-        userTaskRepository.update(toUpdate);
+        hibernateUserTaskRepository.update(toUpdate);
         t.commit();
 
         List<String> dbTaskTitles = dbUtils.getDBTaskTitles();
@@ -126,7 +126,7 @@ public class UserTaskRepositoryTest {
         Task toDelete = dbUtils.users.get(1).getTasks().iterator().next();
 
         Transaction t = session.beginTransaction();
-        userTaskRepository.delete(toDelete);
+        hibernateUserTaskRepository.delete(toDelete);
         t.commit();
 
         Assert.assertFalse(dbUtils.getDBTaskTitles().contains(toDelete.getTitle()));
@@ -137,7 +137,7 @@ public class UserTaskRepositoryTest {
         Task expected = dbUtils.users.get(1).getTasks().iterator().next();
 
         Transaction t = session.beginTransaction();
-        Task actual = userTaskRepository.getTaskById(expected.getId());
+        Task actual = hibernateUserTaskRepository.getTaskById(expected.getId());
         t.commit();
 
         Assert.assertEquals(expected.getTitle(), actual.getTitle());
