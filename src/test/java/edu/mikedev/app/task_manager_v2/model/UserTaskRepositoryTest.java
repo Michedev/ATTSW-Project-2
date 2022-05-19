@@ -7,10 +7,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -57,7 +54,7 @@ public class UserTaskRepositoryTest {
         Transaction t = session.beginTransaction();
         userTaskRepository.add(u);
         t.commit();
-        session.close();
+
         Assert.assertTrue(dbUtils.getDBUsernames().contains(newUsername));
     }
 
@@ -69,7 +66,7 @@ public class UserTaskRepositoryTest {
         Transaction t = session.beginTransaction();
         userTaskRepository.delete(toDelete);
         t.commit();
-        session.close();
+
         Assert.assertFalse(dbUtils.getDBUsernames().contains(toDelete.getUsername()));
         List<String> dbTaskTitles = dbUtils.getDBTaskTitles();
         for(Task task: toDelete.getTasks()){
@@ -80,7 +77,6 @@ public class UserTaskRepositoryTest {
     @Test
     public void testGetUserById(){
         User expectedUser = dbUtils.users.get(0);
-        Transaction t = session.beginTransaction();
         User actual = userTaskRepository.getById(expectedUser.getId());
 
         Assert.assertNotNull(actual);
@@ -91,20 +87,45 @@ public class UserTaskRepositoryTest {
     }
 
     @Test
+    public void testAddNewTask(){
+        Task newTask = new Task("Task123", "Subtask123", "Subtask234", "Subtask345");
+        User taskOwner = dbUtils.users.get(0);
+        newTask.setTaskOwner(taskOwner);
+        List<String> dbTaskTitlesPreAdd = dbUtils.getDBTaskTitles();
+
+
+        Transaction t = session.beginTransaction();
+        userTaskRepository.add(newTask);
+        t.commit();
+
+        List<String> dbTaskTitles = dbUtils.getDBTaskTitles();
+        Assert.assertEquals(dbTaskTitles.size(), dbTaskTitlesPreAdd.size() + 1);
+        Assert.assertTrue(dbTaskTitles.contains(newTask.getTitle()));
+
+        List<Task> userTasks = dbUtils.getUsersTask(taskOwner.getId());
+        Assert.assertTrue(userTasks.stream().anyMatch((task) -> task.getTitle().equals(newTask.getTitle())));
+    }
+
+    @Test
     public void testTaskUpdate(){
         Task toUpdate = dbUtils.users.get(0).getTasks().iterator().next();
         String oldtitle = toUpdate.getTitle();
         String newTitle = "New Title";
         toUpdate.setTitle(newTitle);
         Assert.assertFalse(session.contains(toUpdate));
+
         Transaction t = session.beginTransaction();
         userTaskRepository.update(toUpdate);
         t.commit();
-        session.close();
 
         List<String> dbTaskTitles = dbUtils.getDBTaskTitles();
         Assert.assertTrue(dbTaskTitles.contains(newTitle));
         Assert.assertFalse(dbTaskTitles.contains(oldtitle));
+    }
+
+    @After
+    public void closeSession(){
+        session.close();
     }
 
 }
