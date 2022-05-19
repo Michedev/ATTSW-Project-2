@@ -50,6 +50,6 @@ public class HibernateUserTaskRepository implements UserTaskRepository {
 
     @Override
     public User getUserByUsernamePassword(String username, String password) {
-        return null;
+        return session.createQuery(String.format("SELECT u FROM User u where u.username = '%s' and u.password = '%s'", username, password), User.class).getSingleResult();
     }
 }
