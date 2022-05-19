@@ -47,7 +47,7 @@ public class UserTaskRepositoryTest {
     }
 
     @Test
-    public void testAddNewUser(){
+    public void testUserAdd(){
         String newUsername = "username41";
         User u = new User(newUsername, "passw1", "email@mail.it", new HashSet<Task>());
         Assert.assertFalse(dbUtils.getDBUsernames().contains(newUsername));
@@ -75,7 +75,7 @@ public class UserTaskRepositoryTest {
     }
 
     @Test
-    public void testGetUserById(){
+    public void testUserGetById(){
         User expectedUser = dbUtils.users.get(0);
         User actual = userTaskRepository.getUserById(expectedUser.getId());
 
@@ -87,7 +87,7 @@ public class UserTaskRepositoryTest {
     }
 
     @Test
-    public void testAddNewTask(){
+    public void testTaskAdd(){
         Task newTask = new Task("Task123", "Subtask123", "Subtask234", "Subtask345");
         User taskOwner = dbUtils.users.get(0);
         newTask.setTaskOwner(taskOwner);
@@ -135,7 +135,7 @@ public class UserTaskRepositoryTest {
     }
 
     @Test
-    public void testGetTaskById(){
+    public void testTaskGetById(){
         Task expected = dbUtils.users.get(1).getTasks().iterator().next();
 
         Transaction t = session.beginTransaction();
