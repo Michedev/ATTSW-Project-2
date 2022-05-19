@@ -32,4 +32,8 @@ public class UserTaskRepository {
     public void add(Task task) {
         session.save(task);
     }
+
+    public void delete(Task task) {
+        session.delete(task);
+    }
 }

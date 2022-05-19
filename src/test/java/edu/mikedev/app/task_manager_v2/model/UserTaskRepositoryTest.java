@@ -123,6 +123,24 @@ public class UserTaskRepositoryTest {
         Assert.assertFalse(dbTaskTitles.contains(oldtitle));
     }
 
+    @Test
+    public void testTaskDelete(){
+        Task toDelete = dbUtils.users.get(1).getTasks().iterator().next();
+
+        Transaction t = session.beginTransaction();
+        userTaskRepository.delete(toDelete);
+        t.commit();
+
+        Assert.assertFalse(dbUtils.getDBTaskTitles().contains(toDelete.getTitle()));
+    }
+
+    @Test
+    public void testGetTaskById(){
+        Task expected = dbUtils.users.get(1).getTasks().iterator().next();
+
+
+    }
+
     @After
     public void closeSession(){
         session.close();
