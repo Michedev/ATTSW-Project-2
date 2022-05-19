@@ -29,4 +29,7 @@ public class UserTaskRepository {
         return session.createQuery(String.format("Select u from User u where u.id = %d", id), User.class).getSingleResult();
     }
 
+    public void add(Task task) {
+        session.save(task);
+    }
 }
