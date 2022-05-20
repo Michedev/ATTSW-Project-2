@@ -253,9 +253,15 @@ public class HibernateModelTest {
 
     @Test
     public void testAddUser(){
-        User user = new User("NewUser", "NewPassword", "NewEmail@newmail.net");
+        User newUser = new User("NewUser", "NewPassword", "NewEmail@newmail.net");
 
-        model.addUser(user);
+        List<String> dbUsernamesPreAdd = dbUtils.getDBUsernames();
+        model.addUser(newUser);
+
+        List<String> dbUsernamesPostAdd = dbUtils.getDBUsernames();
+
+        Assert.assertTrue(dbUsernamesPostAdd.contains(newUser.getUsername()));
+        Assert.assertEquals(dbUsernamesPreAdd.size() + 1, dbUsernamesPostAdd.size());
     }
 
 }
