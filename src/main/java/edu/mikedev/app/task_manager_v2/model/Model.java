@@ -20,11 +20,14 @@ public class Model {
         return logged;
     }
 
-    public Task getUserTask(int taskId) throws PermissionException {
+    public Task getUserTask(int taskId) throws PermissionException, IllegalArgumentException {
         if(this.logged == null){
             throw new PermissionException("You must call the login() method before calling this one.");
         }
         Task task = transactionManager.doInTransaction(repository -> repository.getTaskById(taskId));
+        if(task == null){
+            throw new IllegalArgumentException(String.format("Task with id %d not found", taskId));
+        }
         if(task.getTaskOwner().getId() != logged.getId()){
             throw new PermissionException("You can access only to logged user tasks");
         }
