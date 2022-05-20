@@ -16,15 +16,12 @@ import static org.mockito.Mockito.*;
 public class HibernateTransactionManagerTest {
 
     private HibernateDBUtilsInMemory inMemory;
-    private SessionFactory sessionFactory;
     private HibernateTransactionManager transactionManager;
-    private UserTaskRepository repository;
 
     @Before
     public void setUp(){
-        repository = mock(UserTaskRepository.class);
         inMemory = new HibernateDBUtilsInMemory();
-        sessionFactory = inMemory.buildSessionFactory();
+        SessionFactory sessionFactory = inMemory.buildSessionFactory();
         transactionManager = new HibernateTransactionManager(sessionFactory);
     }
 
