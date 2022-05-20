@@ -48,4 +48,8 @@ public class Model {
             return null;
         });
     }
+
+    public void deleteTask(Task task) {
+
+    }
 }

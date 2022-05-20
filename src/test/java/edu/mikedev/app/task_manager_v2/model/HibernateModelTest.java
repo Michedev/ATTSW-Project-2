@@ -15,6 +15,8 @@ public class HibernateModelTest {
 
     private static HibernateDBUtilsInMemory dbUtils;
     private static SessionFactory sessionFactory;
+    private final String OTHER_USER_ERROR_MESSAGE = "The task owner is not the logged user";
+    private final String LOGIN_ERROR_MESSAGE = "You must login by calling the login() method before calling this one.";
     private Model model;
     private final String USERNAME = "username1";
     private final String PASSWORD = "password1";
@@ -70,21 +72,21 @@ public class HibernateModelTest {
     }
 
     @Test
-    public void testModelGetTaskUnloggedUser() throws PermissionException {
+    public void testModelGetTaskUnloggedUser() {
         Task expected = user.getTasks().iterator().next();
 
         PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.getUserTask(expected.getId()));
-        Assert.assertEquals("You must login by calling the login() method before calling this one.", e.getMessage());
+        Assert.assertEquals(LOGIN_ERROR_MESSAGE, e.getMessage());
     }
 
     @Test
-    public void testModelGetTaskLoggedButOtherUser() throws PermissionException {
+    public void testModelGetTaskLoggedButOtherUser() {
         User otherUser = getOtherUser();
         Task taskOtherUser = otherUser.getTasks().iterator().next();
         model.login(USERNAME, PASSWORD);
 
         PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.getUserTask(taskOtherUser.getId()));
-        Assert.assertEquals("You can access only to logged user tasks", e.getMessage());
+        Assert.assertEquals(OTHER_USER_ERROR_MESSAGE, e.getMessage());
     }
 
     private User getOtherUser() {
@@ -105,7 +107,7 @@ public class HibernateModelTest {
         task.setTitle("NewTitleABC");
 
         PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.updateTask(task));
-        Assert.assertEquals("You must login by calling the login() method before calling this one.", e.getMessage());
+        Assert.assertEquals(LOGIN_ERROR_MESSAGE, e.getMessage());
         Assert.assertFalse(dbUtils.getDBTaskTitles().contains(task.getTitle()));
     }
 
@@ -136,7 +138,7 @@ public class HibernateModelTest {
         Task otherUserTask = otherUser.getTasks().iterator().next();
         otherUserTask.setTitle("NewTitle1");
         PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.updateTask(otherUserTask));
-        Assert.assertEquals("The task owner is not the logged user", e.getMessage());
+        Assert.assertEquals(OTHER_USER_ERROR_MESSAGE, e.getMessage());
     }
 
     @Test
@@ -154,6 +156,30 @@ public class HibernateModelTest {
         }
 
         Assert.assertFalse(dbUtils.getDBTaskTitles().contains(toUpdate.getTitle()));
+    }
 
+    @Test
+    public void testRemoveTaskUnloggedUser(){
+        Task task = user.getTasks().iterator().next();
+
+        PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.deleteTask(task));
+        Assert.assertEquals(LOGIN_ERROR_MESSAGE, e.getMessage());
+    }
+
+    @Test
+    public void testRemoveTask(){
+        Task task = user.getTasks().iterator().next();
+
+        model.deleteTask(task);
+
+        Assert.assertFalse(dbUtils.getDBTaskTitles().contains(task.getTitle()));
+    }
+
+    @Test
+    public void testRemoveTaskOtherUser(){
+        Task taskOtherUser = getOtherUser().getTasks().iterator().next();
+
+        PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.deleteTask(taskOtherUser));
+        Assert.assertEquals(OTHER_USER_ERROR_MESSAGE, e.getMessage());
     }
 }
