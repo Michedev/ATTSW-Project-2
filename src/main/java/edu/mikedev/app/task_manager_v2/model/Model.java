@@ -69,7 +69,10 @@ public class Model {
         });
     }
 
-    public void addUser(User user) {
-
+    public void addUser(User newUser) {
+        transactionManager.doInTransaction(repository -> {
+           repository.add(newUser);
+           return null;
+        });
     }
 }
