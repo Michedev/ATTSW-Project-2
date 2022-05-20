@@ -15,7 +15,7 @@ public class HibernateModelTest {
 
     private static HibernateDBUtilsInMemory dbUtils;
     private static SessionFactory sessionFactory;
-    private HibernateModel model;
+    private Model model;
     private final String USERNAME = "username1";
     private final String PASSWORD = "password1";
     private User user;
@@ -25,12 +25,11 @@ public class HibernateModelTest {
     public static void setUpClass(){
         dbUtils = new HibernateDBUtilsInMemory();
         sessionFactory = dbUtils.buildSessionFactory();
-
     }
 
     @Before
     public void setUp(){
-        model = new HibernateModel(sessionFactory);
+        model = new Model(new HibernateTransactionManager(sessionFactory));
         try {
             dbUtils.initDBTables();
         } catch (SQLException e) {
@@ -56,7 +55,12 @@ public class HibernateModelTest {
 
         Task expected = user.getTasks().iterator().next();
 
-        Task actual = model.getUserTask(expected.getId());
+        Task actual = null;
+        try {
+            actual = model.getUserTask(expected.getId());
+        } catch (PermissionException e) {
+            throw new RuntimeException(e);
+        }
 
         Assert.assertEquals(expected.getId(), actual.getId());
         Assert.assertEquals(expected.getTitle(), actual.getTitle());
@@ -65,11 +69,20 @@ public class HibernateModelTest {
         Assert.assertEquals(expected.getSubtask3(), actual.getSubtask3());
     }
 
-    @Test(expected = IllegalAccessException.class)
-    public void testModelGetTaskUnloggedUser(){
+    @Test(expected = PermissionException.class)
+    public void testModelGetTaskUnloggedUser() throws PermissionException {
         Task expected = user.getTasks().iterator().next();
 
         model.getUserTask(expected.getId());
+    }
+
+    @Test(expected =  PermissionException.class)
+    public void testModelGetTaskLoggedButOtherUser() throws PermissionException {
+        User otherUser = dbUtils.users.stream().filter((u) -> (! u.getUsername().equals(USERNAME)) && (! u.getPassword().equals(PASSWORD))).findFirst().get();
+        Task taskOtherUser = otherUser.getTasks().iterator().next();
+        model.login(USERNAME, PASSWORD);
+
+        model.getUserTask(taskOtherUser.getId());
     }
 
 }
