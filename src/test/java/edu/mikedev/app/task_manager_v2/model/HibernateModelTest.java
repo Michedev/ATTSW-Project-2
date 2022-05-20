@@ -96,4 +96,11 @@ public class HibernateModelTest {
         }
     }
 
+    @Test(expected = PermissionException.class)
+    public void testUpdateTaskUnloggedUser(){
+        Task task = user.getTasks().iterator().next();
+
+        model.updateTask(task);
+    }
+
 }

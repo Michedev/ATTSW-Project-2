@@ -22,7 +22,7 @@ public class Model {
 
     public Task getUserTask(int taskId) throws PermissionException, IllegalArgumentException {
         if(this.logged == null){
-            throw new PermissionException("You must call the login() method before calling this one.");
+            throw new PermissionException("You must login by calling the login() method before calling this one.");
         }
         Task task = transactionManager.doInTransaction(repository -> repository.getTaskById(taskId));
         if(task == null){
@@ -32,5 +32,11 @@ public class Model {
             throw new PermissionException("You can access only to logged user tasks");
         }
         return task;
+    }
+
+    public void updateTask(Task task) {
+        if(this.logged == null){
+            throw new PermissionException("You must login by calling the login() method before calling this one.");
+        }
     }
 }
