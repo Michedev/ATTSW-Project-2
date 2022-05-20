@@ -58,7 +58,18 @@ public class Model {
         });
     }
 
-    public void addTask(Task task) {
+    public void addTask(Task task) throws PermissionException {
+        if(this.logged == null){
+            throw new PermissionException(LOGIN_ERROR_MESSAGE);
+        }
+        task.setTaskOwner(logged);
+        transactionManager.doInTransaction(repository -> {
+            repository.add(task);
+            return null;
+        });
+    }
+
+    public void addUser(User user) {
 
     }
 }

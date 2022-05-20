@@ -205,7 +205,7 @@ public class HibernateModelTest {
         try {
             model.removeTask(task);
         } catch (PermissionException e) {
-            Assert.fail("Caught PermissionException when shouldn't");
+            Assert.fail(String.format("Caught PermissionException when shouldn't with message '%s'", e.getMessage()));
         }
 
         List<String> dbTaskTitlesAfterRemove = dbUtils.getDBTaskTitles();
@@ -236,7 +236,11 @@ public class HibernateModelTest {
         List<Task> dbUserTasksPreAdd = dbUtils.getUsersTask(user.getId());
 
 
-        model.addTask(newTask);
+        try {
+            model.addTask(newTask);
+        } catch (PermissionException e) {
+            Assert.fail(String.format("Caught PermissionException when shouldn't with message '%s'", e.getMessage()));
+        }
 
         List<Task> dbUserTasks = dbUtils.getUsersTask(user.getId());
 
@@ -245,6 +249,13 @@ public class HibernateModelTest {
                                                                 && task.getSubtask1().equals(newTask.getSubtask1())
                                                                 && task.getSubtask2().equals(newTask.getSubtask2())
                                                                 && task.getSubtask3().equals(newTask.getSubtask3())));
+    }
+
+    @Test
+    public void testAddUser(){
+        User user = new User("NewUser", "NewPassword", "NewEmail@newmail.net");
+
+        model.addUser(user);
     }
 
 }
