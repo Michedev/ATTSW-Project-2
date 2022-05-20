@@ -169,12 +169,14 @@ public class HibernateModelTest {
 
     @Test
     public void testRemoveTask(){
+        model.login(USERNAME, PASSWORD);
+
         Task task = user.getTasks().iterator().next();
 
         try {
             model.removeTask(task);
         } catch (PermissionException e) {
-            Assert.fail("Caught PermissionException when shouldn't");
+            Assert.fail(String.format("Caught PermissionException when shouldn't with message '%s'", e.getMessage()));
         }
 
         Assert.assertFalse(dbUtils.getDBTaskTitles().contains(task.getTitle()));
@@ -191,8 +193,11 @@ public class HibernateModelTest {
 
     @Test
     public void testRemoveTaskNonexisting(){
+        model.login(USERNAME, PASSWORD);
+
         Task task = user.getTasks().iterator().next();
 
+        task.setId(439403);
         task.setTitle("ijr3ri3ori3oi");
 
         List<String> dbTaskTitlesPreRemove = dbUtils.getDBTaskTitles();
@@ -205,6 +210,7 @@ public class HibernateModelTest {
 
         List<String> dbTaskTitlesAfterRemove = dbUtils.getDBTaskTitles();
 
+        Assert.assertEquals(dbTaskTitlesPreRemove.size(), dbTaskTitlesAfterRemove.size());
         Assert.assertArrayEquals(dbTaskTitlesPreRemove.toArray(), dbTaskTitlesAfterRemove.toArray());
     }
 }
