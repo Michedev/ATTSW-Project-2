@@ -85,4 +85,15 @@ public class HibernateModelTest {
         model.getUserTask(taskOtherUser.getId());
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testModelGetNonexistentTask(){
+        model.login(USERNAME, PASSWORD);
+
+        try {
+            model.getUserTask(110000000);
+        } catch (PermissionException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
