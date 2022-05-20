@@ -10,6 +10,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class HibernateModelTest {
 
@@ -124,7 +125,7 @@ public class HibernateModelTest {
         try {
             model.updateTask(task);
         } catch (PermissionException e) {
-            throw new RuntimeException(e);
+            Assert.fail();
         }
 
         Assert.assertTrue(dbUtils.getDBTaskTitles().contains(newTitle));
@@ -152,7 +153,7 @@ public class HibernateModelTest {
         try {
             model.updateTask(toUpdate);
         } catch (PermissionException e) {
-            throw new RuntimeException(e);
+            Assert.fail();
         }
 
         Assert.assertFalse(dbUtils.getDBTaskTitles().contains(toUpdate.getTitle()));
@@ -162,7 +163,7 @@ public class HibernateModelTest {
     public void testRemoveTaskUnloggedUser(){
         Task task = user.getTasks().iterator().next();
 
-        PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.deleteTask(task));
+        PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.removeTask(task));
         Assert.assertEquals(LOGIN_ERROR_MESSAGE, e.getMessage());
     }
 
@@ -170,16 +171,40 @@ public class HibernateModelTest {
     public void testRemoveTask(){
         Task task = user.getTasks().iterator().next();
 
-        model.deleteTask(task);
+        try {
+            model.removeTask(task);
+        } catch (PermissionException e) {
+            Assert.fail("Caught PermissionException when shouldn't");
+        }
 
         Assert.assertFalse(dbUtils.getDBTaskTitles().contains(task.getTitle()));
     }
 
     @Test
     public void testRemoveTaskOtherUser(){
+        model.login(USERNAME, PASSWORD);
         Task taskOtherUser = getOtherUser().getTasks().iterator().next();
 
-        PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.deleteTask(taskOtherUser));
+        PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.removeTask(taskOtherUser));
         Assert.assertEquals(OTHER_USER_ERROR_MESSAGE, e.getMessage());
+    }
+
+    @Test
+    public void testRemoveTaskNonexisting(){
+        Task task = user.getTasks().iterator().next();
+
+        task.setTitle("ijr3ri3ori3oi");
+
+        List<String> dbTaskTitlesPreRemove = dbUtils.getDBTaskTitles();
+
+        try {
+            model.removeTask(task);
+        } catch (PermissionException e) {
+            Assert.fail("Caught PermissionException when shouldn't");
+        }
+
+        List<String> dbTaskTitlesAfterRemove = dbUtils.getDBTaskTitles();
+
+        Assert.assertArrayEquals(dbTaskTitlesPreRemove.toArray(), dbTaskTitlesAfterRemove.toArray());
     }
 }
