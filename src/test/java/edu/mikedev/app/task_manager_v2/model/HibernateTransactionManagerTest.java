@@ -1,9 +1,7 @@
 package edu.mikedev.app.task_manager_v2.model;
 
-import edu.mikedev.app.task_manager_v2.data.Task;
 import edu.mikedev.app.task_manager_v2.data.User;
 import edu.mikedev.app.task_manager_v2.utils.HibernateDBUtilsInMemory;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.Assert;
 import org.junit.Before;
@@ -11,17 +9,16 @@ import org.junit.Test;
 
 import static org.mockito.AdditionalAnswers.answer;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
 public class HibernateTransactionManagerTest {
 
-    private HibernateDBUtilsInMemory inMemory;
+    private HibernateDBUtilsInMemory dbUtils;
     private HibernateTransactionManager transactionManager;
 
     @Before
     public void setUp(){
-        inMemory = new HibernateDBUtilsInMemory();
-        SessionFactory sessionFactory = inMemory.buildSessionFactory();
+        dbUtils = new HibernateDBUtilsInMemory();
+        SessionFactory sessionFactory = dbUtils.buildSessionFactory();
         transactionManager = new HibernateTransactionManager(sessionFactory);
     }
 
@@ -29,14 +26,14 @@ public class HibernateTransactionManagerTest {
     public void testDoInTransaction(){
         User toAdd = new User("123", "1", "2");
 
-        Assert.assertFalse(inMemory.getDBUsernames().contains(toAdd.getUsername()));
+        Assert.assertFalse(dbUtils.getDBUsernames().contains(toAdd.getUsername()));
 
         transactionManager.doInTransaction((repository) -> {
             repository.add(toAdd);
             return null;
         });
 
-        Assert.assertTrue(inMemory.getDBUsernames().contains(toAdd.getUsername()));
+        Assert.assertTrue(dbUtils.getDBUsernames().contains(toAdd.getUsername()));
 
     }
 
@@ -51,6 +48,6 @@ public class HibernateTransactionManagerTest {
             return null;
         });
 
-        Assert.assertFalse(inMemory.getDBUsernames().contains(toAdd.getUsername()));
+        Assert.assertFalse(dbUtils.getDBUsernames().contains(toAdd.getUsername()));
     }
 }
