@@ -75,4 +75,11 @@ public class Model {
            return null;
         });
     }
+
+    public void removeUser(User user) {
+        transactionManager.doInTransaction(repository -> {
+            repository.delete(user);
+            return null;
+        });
+    }
 }

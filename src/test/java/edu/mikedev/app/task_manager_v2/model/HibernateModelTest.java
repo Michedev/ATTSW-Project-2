@@ -265,8 +265,30 @@ public class HibernateModelTest {
     }
 
     @Test
-    public void testRemoveUser(){
+    public void testRemoveNonexistentUser(){
 
+        User nonExistentUser = new User("FakeUser", "FakePass", "FakeEmail");
+
+        List<String> dbUsernamesPreDel = dbUtils.getDBUsernames();
+
+        model.removeUser(nonExistentUser);
+
+        List<String> dbUsernamesPostDel = dbUtils.getDBUsernames();
+
+        Assert.assertArrayEquals(dbUsernamesPreDel.toArray(), dbUsernamesPostDel.toArray());
     }
 
+    @Test
+    public void testRemoveUser(){
+
+        List<String> dbUsernamesPreDel = dbUtils.getDBUsernames();
+
+        model.removeUser(user);
+
+        List<String> dbUsernamesPostDel = dbUtils.getDBUsernames();
+
+        Assert.assertEquals(dbUsernamesPreDel.size()-1, dbUsernamesPostDel.size());
+        Assert.assertFalse(dbUsernamesPostDel.contains(user.getUsername()));
+        Assert.assertTrue(dbUsernamesPreDel.contains(user.getUsername()));
+    }
 }
