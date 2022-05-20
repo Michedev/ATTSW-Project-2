@@ -2,10 +2,6 @@ package edu.mikedev.app.task_manager_v2.model;
 
 import edu.mikedev.app.task_manager_v2.data.Task;
 import edu.mikedev.app.task_manager_v2.data.User;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-
-import java.util.function.Function;
 
 public class Model {
     private final TransactionManager transactionManager;
@@ -49,7 +45,16 @@ public class Model {
         });
     }
 
-    public void deleteTask(Task task) {
-
+    public void removeTask(Task task) throws PermissionException {
+        if(this.logged == null){
+            throw new PermissionException(LOGIN_ERROR_MESSAGE);
+        }
+        if(this.logged.getId() != task.getTaskOwner().getId()){
+            throw new PermissionException(TASK_OWNER_ERROR_MESSAGE);
+        }
+        transactionManager.doInTransaction(repository -> {
+            repository.delete(task);
+            return null;
+        });
     }
 }
