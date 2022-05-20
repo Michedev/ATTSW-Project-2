@@ -69,38 +69,91 @@ public class HibernateModelTest {
         Assert.assertEquals(expected.getSubtask3(), actual.getSubtask3());
     }
 
-    @Test(expected = PermissionException.class)
+    @Test
     public void testModelGetTaskUnloggedUser() throws PermissionException {
         Task expected = user.getTasks().iterator().next();
 
-        model.getUserTask(expected.getId());
+        PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.getUserTask(expected.getId()));
+        Assert.assertEquals("You must login by calling the login() method before calling this one.", e.getMessage());
     }
 
-    @Test(expected =  PermissionException.class)
+    @Test
     public void testModelGetTaskLoggedButOtherUser() throws PermissionException {
-        User otherUser = dbUtils.users.stream().filter((u) -> (! u.getUsername().equals(USERNAME)) && (! u.getPassword().equals(PASSWORD))).findFirst().get();
+        User otherUser = getOtherUser();
         Task taskOtherUser = otherUser.getTasks().iterator().next();
         model.login(USERNAME, PASSWORD);
 
-        model.getUserTask(taskOtherUser.getId());
+        PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.getUserTask(taskOtherUser.getId()));
+        Assert.assertEquals("You can access only to logged user tasks", e.getMessage());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    private User getOtherUser() {
+        return dbUtils.users.stream().filter((u) -> (!u.getUsername().equals(USERNAME)) && (!u.getPassword().equals(PASSWORD))).findFirst().get();
+    }
+
+    @Test
     public void testModelGetNonexistentTask(){
         model.login(USERNAME, PASSWORD);
 
+        IllegalArgumentException e = Assert.assertThrows(IllegalArgumentException.class, () -> model.getUserTask(110000000));
+        Assert.assertEquals("Task with id 110000000 not found", e.getMessage());
+    }
+
+    @Test
+    public void testUpdateTaskNonloggedUser(){
+        Task task = user.getTasks().iterator().next();
+        task.setTitle("NewTitleABC");
+
+        PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.updateTask(task));
+        Assert.assertEquals("You must login by calling the login() method before calling this one.", e.getMessage());
+        Assert.assertFalse(dbUtils.getDBTaskTitles().contains(task.getTitle()));
+    }
+
+    @Test
+    public void testUpdateTask(){
+        model.login(USERNAME, PASSWORD);
+
+        Task task = user.getTasks().iterator().next();
+        String newTitle = "NewTitle1234";
+        task.setTitle(newTitle);
+
+        Assert.assertFalse(dbUtils.getDBTaskTitles().contains(newTitle));
+
         try {
-            model.getUserTask(110000000);
+            model.updateTask(task);
         } catch (PermissionException e) {
             throw new RuntimeException(e);
         }
+
+        Assert.assertTrue(dbUtils.getDBTaskTitles().contains(newTitle));
     }
 
-    @Test(expected = PermissionException.class)
-    public void testUpdateTaskUnloggedUser(){
-        Task task = user.getTasks().iterator().next();
+    @Test
+    public void testUpdateTaskOtherUser() {
+        model.login(USERNAME, PASSWORD);
 
-        model.updateTask(task);
+        User otherUser = getOtherUser();
+        Task otherUserTask = otherUser.getTasks().iterator().next();
+        otherUserTask.setTitle("NewTitle1");
+        PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.updateTask(otherUserTask));
+        Assert.assertEquals("The task owner is not the logged user", e.getMessage());
     }
 
+    @Test
+    public void testUpdateTaskMissingId(){
+        model.login(USERNAME, PASSWORD);
+
+        Task toUpdate = user.getTasks().iterator().next();
+        toUpdate.setId(4199812);
+        toUpdate.setTitle("Task title new");
+
+        try {
+            model.updateTask(toUpdate);
+        } catch (PermissionException e) {
+            throw new RuntimeException(e);
+        }
+
+        Assert.assertFalse(dbUtils.getDBTaskTitles().contains(toUpdate.getTitle()));
+
+    }
 }
