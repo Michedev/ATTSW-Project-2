@@ -57,4 +57,8 @@ public class Model {
             return null;
         });
     }
+
+    public void addTask(Task task) {
+
+    }
 }

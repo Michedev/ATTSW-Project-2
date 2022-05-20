@@ -213,4 +213,38 @@ public class HibernateModelTest {
         Assert.assertEquals(dbTaskTitlesPreRemove.size(), dbTaskTitlesAfterRemove.size());
         Assert.assertArrayEquals(dbTaskTitlesPreRemove.toArray(), dbTaskTitlesAfterRemove.toArray());
     }
+
+    @Test
+    public void testAddTaskNonloggedUser(){
+        Task newTask = new Task("TASK123", "A", "B", "C");
+
+        List<String> dbTaskTitlesPreAdd = dbUtils.getDBTaskTitles();
+
+        Assert.assertThrows(PermissionException.class, () -> model.addTask(newTask));
+
+        List<String> dbTaskTitlesAfterAdd = dbUtils.getDBTaskTitles();
+
+        Assert.assertArrayEquals(dbTaskTitlesPreAdd.toArray(), dbTaskTitlesAfterAdd.toArray());
+    }
+
+    @Test
+    public void testAddTask(){
+        model.login(USERNAME, PASSWORD);
+
+        Task newTask = new Task("TASK123", "A", "B", "C");
+
+        List<Task> dbUserTasksPreAdd = dbUtils.getUsersTask(user.getId());
+
+
+        model.addTask(newTask);
+
+        List<Task> dbUserTasks = dbUtils.getUsersTask(user.getId());
+
+        Assert.assertEquals(dbUserTasksPreAdd.size() + 1, dbUserTasks.size());
+        Assert.assertTrue(dbUserTasks.stream().anyMatch(task -> task.getTitle().equals(newTask.getTitle())
+                                                                && task.getSubtask1().equals(newTask.getSubtask1())
+                                                                && task.getSubtask2().equals(newTask.getSubtask2())
+                                                                && task.getSubtask3().equals(newTask.getSubtask3())));
+    }
+
 }
