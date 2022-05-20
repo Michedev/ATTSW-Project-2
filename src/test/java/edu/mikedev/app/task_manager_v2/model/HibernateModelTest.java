@@ -291,4 +291,23 @@ public class HibernateModelTest {
         Assert.assertFalse(dbUsernamesPostDel.contains(user.getUsername()));
         Assert.assertTrue(dbUsernamesPreDel.contains(user.getUsername()));
     }
+
+    @Test
+    public void testLogoutWithoutLogin(){
+        PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.logout());
+        Assert.assertEquals("You cannot logout before login", e.getMessage());
+    }
+
+    @Test
+    public void testLogout(){
+        model.login(USERNAME, PASSWORD);
+        Task task = user.getTasks().iterator().next();
+        try {
+            model.logout();
+        } catch (PermissionException e) {
+            Assert.fail();
+        }
+        PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.getUserTask(task.getId()));
+        Assert.assertEquals(LOGIN_ERROR_MESSAGE, e.getMessage());
+    }
 }

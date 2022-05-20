@@ -82,4 +82,11 @@ public class Model {
             return null;
         });
     }
+
+    public void logout() throws PermissionException {
+        if(this.logged == null){
+            throw new PermissionException("You cannot logout before login");
+        }
+        this.logged = null;
+    }
 }
