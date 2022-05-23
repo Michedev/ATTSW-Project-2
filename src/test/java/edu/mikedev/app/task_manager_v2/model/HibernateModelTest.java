@@ -132,16 +132,21 @@ public class HibernateModelTest {
 
     @Test
     public void testAddNewTask(){
-        Task userTask = getUserTask();
+        Task newTask = new Task("FGH", "M", "N", "O");
         try {
             model.login(USERNAME, PASSWORD);
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
 
-        model.addUserTask(userTask);
+        try {
+            model.addUserTask(newTask);
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
 
         verify(repository, times(1)).add(any(Task.class));
+        Assert.assertEquals(mockedUser, newTask.getTaskOwner());
     }
 
     @Test

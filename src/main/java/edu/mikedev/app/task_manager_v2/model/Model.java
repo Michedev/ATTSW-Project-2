@@ -36,7 +36,10 @@ public class Model {
         return task;
     }
 
-    public void addUserTask(Task task) {
+    public void addUserTask(Task task) throws PermissionException {
+        if(this.logged == null){
+            throw new PermissionException(LOGIN_ERROR_MESSAGE);
+        }
 
         transactionManager.doInTransaction(repository -> {
             repository.add(task);
