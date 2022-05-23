@@ -46,4 +46,8 @@ public class Model {
             return null;
         });
     }
+
+    public void updateTask(Task userTask) {
+
+    }
 }

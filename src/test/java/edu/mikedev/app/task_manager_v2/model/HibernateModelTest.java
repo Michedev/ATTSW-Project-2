@@ -158,6 +158,21 @@ public class HibernateModelTest {
         verify(repository, times(0)).add(any(Task.class));
     }
 
+    @Test
+    public void testUpdateTask(){
+        try {
+            model.login(USERNAME, PASSWORD);
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
+
+        Task userTask = getUserTask();
+
+        model.updateTask(userTask);
+
+        verify(repository, times(1)).update(any(Task.class));
+    }
+
     private Task getOtherUserTask() {
         Task otherUserTask = new Task("BBB", "5", "6", "7");
         User otherUser = new User();
