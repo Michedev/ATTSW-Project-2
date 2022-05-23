@@ -101,4 +101,22 @@ public class HibernateModelTest {
         return userTask;
     }
 
+    @Test
+    public void testGetUserTaskOtherUser(){
+        Task otherUserTask = getOtherUserTask();
+        when(repository.getTaskById(500)).thenReturn(otherUserTask);
+
+        PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.getUserTask(500));
+
+        Assert.assertEquals(OTHER_USER_ERROR_MESSAGE, e.getMessage());
+        verify(repository, times(1)).getTaskById(500);
+    }
+
+    private Task getOtherUserTask() {
+        Task otherUserTask = new Task("BBB", "5", "6", "7");
+        User otherUser = new User();
+        otherUser.setId(10000);
+        otherUserTask.setTaskOwner(otherUser);
+        return otherUserTask;
+    }
 }
