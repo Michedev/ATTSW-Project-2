@@ -125,10 +125,32 @@ public class HibernateModelTest {
 
     @Test
     public void testGetUserTaskWhenNonlogged(){
-
         PermissionException e = Assert.assertThrows(PermissionException.class, () ->model.getUserTask(100));
         Assert.assertEquals(LOGIN_ERROR_MESSAGE, e.getMessage());
-        verify(repository, times(0)).getTaskById(any());
+        verify(repository, times(0)).getTaskById(anyInt());
+    }
+
+    @Test
+    public void testAddNewTask(){
+        Task userTask = getUserTask();
+        try {
+            model.login(USERNAME, PASSWORD);
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
+
+        model.addUserTask(userTask);
+
+        verify(repository, times(1)).add(any(Task.class));
+    }
+
+    @Test
+    public void testAddNewTaskWhenNotLogged(){
+        Task userTask = getUserTask();
+
+        PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.addUserTask(userTask));
+        Assert.assertEquals(LOGIN_ERROR_MESSAGE, e.getMessage());
+        verify(repository, times(0)).add(any(Task.class));
     }
 
     private Task getOtherUserTask() {
@@ -138,4 +160,5 @@ public class HibernateModelTest {
         otherUserTask.setTaskOwner(otherUser);
         return otherUserTask;
     }
+
 }
