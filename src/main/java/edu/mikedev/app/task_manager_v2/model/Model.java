@@ -40,7 +40,7 @@ public class Model {
         if(this.logged == null){
             throw new PermissionException(LOGIN_ERROR_MESSAGE);
         }
-
+        task.setTaskOwner(logged);
         transactionManager.doInTransaction(repository -> {
             repository.add(task);
             return null;
