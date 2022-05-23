@@ -89,7 +89,12 @@ public class HibernateModelTest {
             Assert.fail(e.getMessage());
         }
 
-        Task actualTask = model.getUserTask(10);
+        Task actualTask = null;
+        try {
+            actualTask = model.getUserTask(10);
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
 
         Assert.assertEquals(userTask, actualTask);
         verify(repository, times(1)).getTaskById(10);
@@ -103,6 +108,12 @@ public class HibernateModelTest {
 
     @Test
     public void testGetUserTaskOtherUser(){
+        try {
+            model.login(USERNAME, PASSWORD);
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
+
         Task otherUserTask = getOtherUserTask();
         when(repository.getTaskById(500)).thenReturn(otherUserTask);
 
@@ -110,6 +121,11 @@ public class HibernateModelTest {
 
         Assert.assertEquals(OTHER_USER_ERROR_MESSAGE, e.getMessage());
         verify(repository, times(1)).getTaskById(500);
+    }
+
+    @Test
+    public void testGetUserTaskWhenNonlogged(){
+
     }
 
     private Task getOtherUserTask() {

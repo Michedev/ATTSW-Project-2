@@ -25,7 +25,12 @@ public class Model {
         return logged;
     }
 
-    public Task getUserTask(int taskId) {
-        return transactionManager.doInTransaction(repository -> repository.getTaskById(taskId));
+    public Task getUserTask(int taskId) throws PermissionException {
+
+        Task task = transactionManager.doInTransaction(repository -> repository.getTaskById(taskId));
+        if(this.logged.getId() != task.getTaskOwner().getId()){
+            throw new PermissionException(TASK_OWNER_ERROR_MESSAGE);
+        }
+        return task;
     }
 }
