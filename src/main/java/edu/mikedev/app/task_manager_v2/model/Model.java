@@ -13,7 +13,10 @@ public class Model {
         this.transactionManager = transactionManager;
     }
 
-    public User login(String username, String password) {
+    public User login(String username, String password) throws PermissionException, IllegalArgumentException {
+        if(this.logged != null){
+            throw new PermissionException("You cannot login twice");
+        }
         User logged = transactionManager.doInTransaction(repository -> repository.getUserByUsernamePassword(username, password));
         if(logged == null){
             throw new IllegalArgumentException("User with this credential doesn't exists");
@@ -22,4 +25,7 @@ public class Model {
         return logged;
     }
 
+    public Task getUserTask(int taskId) {
+        return transactionManager.doInTransaction(repository -> repository.getTaskById(taskId));
+    }
 }

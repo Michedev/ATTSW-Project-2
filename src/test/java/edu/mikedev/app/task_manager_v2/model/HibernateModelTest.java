@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.awt.*;
 import java.util.function.Function;
 import java.util.List;
 
@@ -46,7 +47,12 @@ public class HibernateModelTest {
 
     @Test
     public void testModelLogin(){
-        User loggedUser = model.login(USERNAME, PASSWORD);
+        User loggedUser = null;
+        try {
+            loggedUser = model.login(USERNAME, PASSWORD);
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
 
         verify(repository, times(1)).getUserByUsernamePassword(any(), any());
         Assert.assertEquals(mockedUser, loggedUser);
@@ -61,11 +67,38 @@ public class HibernateModelTest {
 
     @Test
     public void testDoubleLogin() {
-        model.login(USERNAME, PASSWORD);
+        try {
+            model.login(USERNAME, PASSWORD);
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
 
         PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.login(USERNAME, PASSWORD));
 
-        Assert.assertEquals("You cannot login after login", e.getMessage());
+        Assert.assertEquals("You cannot login twice", e.getMessage());
         verify(repository, times(1)).getUserByUsernamePassword(any(), any());
     }
+
+    @Test
+    public void testGetUserTask(){
+        Task userTask = getUserTask();
+        when(repository.getTaskById(10)).thenReturn(userTask);
+        try {
+            model.login(USERNAME, PASSWORD);
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
+
+        Task actualTask = model.getUserTask(10);
+
+        Assert.assertEquals(userTask, actualTask);
+        verify(repository, times(1)).getTaskById(10);
+    }
+
+    private Task getUserTask() {
+        Task userTask = new Task("AAA", "1", "2", "3");
+        userTask.setTaskOwner(mockedUser);
+        return userTask;
+    }
+
 }
