@@ -15,6 +15,9 @@ public class Model {
 
     public User login(String username, String password) {
         User logged = transactionManager.doInTransaction(repository -> repository.getUserByUsernamePassword(username, password));
+        if(logged == null){
+            throw new IllegalArgumentException("User with this credential doesn't exists");
+        }
         this.logged = logged;
         return logged;
     }

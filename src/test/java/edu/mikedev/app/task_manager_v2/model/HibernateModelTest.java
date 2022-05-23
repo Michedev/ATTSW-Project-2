@@ -35,7 +35,7 @@ public class HibernateModelTest {
         repository = mock(UserTaskRepository.class);
         mockedUser = new User(USERNAME, PASSWORD, "email@email.com");
         mockedUser.setId(userId);
-        when(repository.getUserByUsernamePassword(any(), any())).thenReturn(mockedUser);
+        when(repository.getUserByUsernamePassword(USERNAME, PASSWORD)).thenReturn(mockedUser);
 
         when(transactionManager.doInTransaction(any())).thenAnswer(answer((Function<UserTaskRepository, ?> f) -> {
             return f.apply(repository);
@@ -50,6 +50,13 @@ public class HibernateModelTest {
 
         verify(repository, times(1)).getUserByUsernamePassword(any(), any());
         Assert.assertEquals(mockedUser, loggedUser);
+    }
+
+    @Test
+    public void testModelLoginWithWrongCredential(){
+        IllegalArgumentException e = Assert.assertThrows(IllegalArgumentException.class ,() -> model.login("A", "B"));
+        Assert.assertEquals("User with this credential doesn't exists", e.getMessage());
+        verify(repository, times(1)).getUserByUsernamePassword(any(), any());
     }
 
 }
