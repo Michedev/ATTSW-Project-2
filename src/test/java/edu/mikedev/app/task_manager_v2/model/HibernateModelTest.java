@@ -215,6 +215,19 @@ public class HibernateModelTest {
         verify(repository, times(0)).delete(any(Task.class));
     }
 
+    @Test
+    public void testDeleteTaskAnotherUser(){
+        Task otherUserTask = getOtherUserTask();
+        try {
+            model.login(USERNAME, PASSWORD);
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
+        PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.deleteTask(otherUserTask));
+        Assert.assertEquals(OTHER_USER_ERROR_MESSAGE, e.getMessage());
+        verify(repository, times(0)).delete(any(Task.class));
+    }
+
     private Task getOtherUserTask() {
         Task otherUserTask = new Task("BBB", "5", "6", "7");
         User otherUser = new User();
