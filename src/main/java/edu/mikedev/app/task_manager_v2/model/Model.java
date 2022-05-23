@@ -61,6 +61,9 @@ public class Model {
         if(this.logged == null){
             throw new PermissionException(LOGIN_ERROR_MESSAGE);
         }
+        if(this.logged.getId() != task.getTaskOwner().getId()){
+            throw new PermissionException(TASK_OWNER_ERROR_MESSAGE);
+        }
         transactionManager.doInTransaction(repository -> {
             repository.delete(task);
             return null;
