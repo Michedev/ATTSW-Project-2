@@ -59,4 +59,13 @@ public class HibernateModelTest {
         verify(repository, times(1)).getUserByUsernamePassword(any(), any());
     }
 
+    @Test
+    public void testDoubleLogin() {
+        model.login(USERNAME, PASSWORD);
+
+        PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.login(USERNAME, PASSWORD));
+
+        Assert.assertEquals("You cannot login after login", e.getMessage());
+        verify(repository, times(1)).getUserByUsernamePassword(any(), any());
+    }
 }
