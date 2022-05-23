@@ -48,6 +48,9 @@ public class Model {
     }
 
     public void updateTask(Task userTask) {
-
+        transactionManager.doInTransaction(repository -> {
+            repository.update(userTask);
+            return null;
+        });
     }
 }
