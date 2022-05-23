@@ -168,9 +168,51 @@ public class HibernateModelTest {
 
         Task userTask = getUserTask();
 
-        model.updateTask(userTask);
+        try {
+            model.updateTask(userTask);
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
 
         verify(repository, times(1)).update(any(Task.class));
+    }
+
+    @Test
+    public void testUpdateTaskWhenNotLogged(){
+        Task userTask = getUserTask();
+
+        PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.updateTask(userTask));
+        Assert.assertEquals(LOGIN_ERROR_MESSAGE, e.getMessage());
+
+        verify(repository, times(0)).update(any(Task.class));
+    }
+
+    @Test
+    public void testDeleteTask(){
+        try {
+            model.login(USERNAME, PASSWORD);
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
+
+        Task userTask = getUserTask();
+
+        try {
+            model.deleteTask(userTask);
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
+
+        verify(repository, times(1)).delete(any(Task.class));
+    }
+
+    @Test
+    public void testDeleteTaskWhenNonLogged(){
+        Task userTask = getUserTask();
+        PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.deleteTask(userTask));
+
+        Assert.assertEquals(LOGIN_ERROR_MESSAGE, e.getMessage());
+        verify(repository, times(0)).delete(any(Task.class));
     }
 
     private Task getOtherUserTask() {

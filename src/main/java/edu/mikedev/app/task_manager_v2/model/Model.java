@@ -47,10 +47,24 @@ public class Model {
         });
     }
 
-    public void updateTask(Task userTask) {
+    public void updateTask(Task userTask) throws PermissionException {
+        if(this.logged == null){
+            throw new PermissionException(LOGIN_ERROR_MESSAGE);
+        }
         transactionManager.doInTransaction(repository -> {
             repository.update(userTask);
             return null;
         });
+    }
+
+    public void deleteTask(Task task) throws PermissionException {
+        if(this.logged == null){
+            throw new PermissionException(LOGIN_ERROR_MESSAGE);
+        }
+        transactionManager.doInTransaction(repository -> {
+            repository.delete(task);
+            return null;
+        });
+
     }
 }
