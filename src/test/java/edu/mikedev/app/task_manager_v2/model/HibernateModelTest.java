@@ -291,6 +291,12 @@ public class HibernateModelTest {
         verify(repository, times(1)).getUserByUsernamePassword(any(), any());
     }
 
+    @Test
+    public void testLogoutBeforeLogin(){
+        IllegalStateException e = Assert.assertThrows(IllegalStateException.class, () -> model.logout());
+        Assert.assertEquals("You should login before logout", e.getMessage());
+    }
+
     private Task getOtherUserTask() {
         Task otherUserTask = new Task("BBB", "5", "6", "7");
         User otherUser = new User();
