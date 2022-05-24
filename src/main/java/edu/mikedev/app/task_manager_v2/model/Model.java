@@ -99,4 +99,8 @@ public class Model {
         });
 
     }
+
+    public void logout() {
+        this.logged = null;
+    }
 }

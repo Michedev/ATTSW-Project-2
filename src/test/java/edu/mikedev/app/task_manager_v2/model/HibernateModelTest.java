@@ -278,6 +278,19 @@ public class HibernateModelTest {
         Assert.assertEquals("You cannot register when an user is logged ", e.getMessage());
     }
 
+    @Test
+    public void testUserLogout(){
+        try {
+            model.login(USERNAME, PASSWORD);
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
+        model.logout();
+        PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.addUserTask(new Task()));
+        Assert.assertEquals(LOGIN_ERROR_MESSAGE, e.getMessage());
+        verify(repository, times(1)).getUserByUsernamePassword(any(), any());
+    }
+
     private Task getOtherUserTask() {
         Task otherUserTask = new Task("BBB", "5", "6", "7");
         User otherUser = new User();
