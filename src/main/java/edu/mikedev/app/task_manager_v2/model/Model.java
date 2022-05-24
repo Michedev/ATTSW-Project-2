@@ -72,6 +72,24 @@ public class Model {
     }
 
     public void registerUser(User user) {
+        if(user.getUsername() == null){
+            throw new IllegalArgumentException("Null username");
+        }
+        if(user.getUsername().equals("")){
+            throw new IllegalArgumentException("Empty username");
+        }
+        if(user.getPassword() == null){
+            throw new IllegalArgumentException("Null password");
+        }
+        if(user.getPassword().equals("")){
+            throw new IllegalArgumentException("Empty password");
+        }
+        if(user.getEmail() == null){
+            throw new IllegalArgumentException("Null email");
+        }
+        if(user.getEmail().equals("")){
+            throw new IllegalArgumentException("Empty email");
+        }
         transactionManager.doInTransaction(repository -> {
            repository.add(user);
            return null;

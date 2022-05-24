@@ -241,7 +241,7 @@ public class HibernateModelTest {
     public void testRegisterUserWithAnyMissingField(){
         User userWithoutUsername = new User(null, "AA", "BB");
         IllegalArgumentException e1 = Assert.assertThrows(IllegalArgumentException.class, () -> model.registerUser(userWithoutUsername));
-        Assert.assertEquals("Missing username", e1.getMessage());
+        Assert.assertEquals("Null username", e1.getMessage());
 
         User userWithEmptyUsername = new User("", "AA", "BB");
         IllegalArgumentException e2 = Assert.assertThrows(IllegalArgumentException.class, () -> model.registerUser(userWithEmptyUsername));
@@ -249,7 +249,7 @@ public class HibernateModelTest {
 
         User userWithoutPassword = new User("AA",  null, "ABC");
         IllegalArgumentException e3 = Assert.assertThrows(IllegalArgumentException.class, () -> model.registerUser(userWithoutPassword));
-        Assert.assertEquals("Missing password", e3.getMessage());
+        Assert.assertEquals("Null password", e3.getMessage());
 
         User userWithEmptyPassword = new User("ABC", "", "email");
         IllegalArgumentException e4 = Assert.assertThrows(IllegalArgumentException.class, () -> model.registerUser(userWithEmptyPassword));
@@ -257,7 +257,7 @@ public class HibernateModelTest {
 
         User userWithMissingEmail = new User("ABC", "A", null);
         IllegalArgumentException e5 = Assert.assertThrows(IllegalArgumentException.class, () -> model.registerUser(userWithMissingEmail));
-        Assert.assertEquals("Missing email", e5.getMessage());
+        Assert.assertEquals("Null email", e5.getMessage());
 
         User userWithEmptyEmail = new User("ABC", "A", "");
         IllegalArgumentException e6 = Assert.assertThrows(IllegalArgumentException.class, () -> model.registerUser(userWithEmptyEmail));
