@@ -21,6 +21,10 @@
 
 		<sonar.issue.ignore.multicriteria.e2.ruleKey>java:S2699</sonar.issue.ignore.multicriteria.e2.ruleKey>
 		<sonar.issue.ignore.multicriteria.e2.resourceKey>src/test/**/view/*.java</sonar.issue.ignore.multicriteria.e2.resourceKey>
+		<skipTests>false</skipTests>
+		<skipUnitTests>${skipTests}</skipUnitTests>
+		<skipIntegrationTests>${skipTests}</skipIntegrationTests>
+		<skipE2ETests>${skipTests}</skipE2ETests>
 	</properties>
 
 	<dependencies>
@@ -64,6 +68,12 @@
         	<artifactId>postgresql</artifactId>
         	<version>42.3.1</version>
         </dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>1.16.3</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -85,8 +95,49 @@
 					<version>3.8.0</version>
 				</plugin>
 				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>build-helper-maven-plugin</artifactId>
+					<version>3.3.0</version>
+					<executions>
+						<execution>
+							<id>add-test-source</id>
+							<phase>generate-test-sources</phase>
+							<goals>
+								<goal>add-test-source</goal>
+							</goals>
+							<configuration>
+								<sources>
+									<source>src/it/java</source>
+								</sources>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
 					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.12.4</version>
+					<configuration>
+						<skipTests>true</skipTests>
+						<includes>
+							<include>**/*Test.java</include>
+						</includes>
+						<excludes>
+							<exclude>**/*IT.java</exclude>
+						</excludes>
+					</configuration>
+				</plugin>
+				<plugin>
+					<artifactId>maven-failsafe-plugin</artifactId>
 					<version>2.22.1</version>
+					<executions>
+						<execution>
+							<id>default-it</id>
+							<goals>
+								<goal>integration-test</goal>
+								<goal>verify</goal>
+							</goals>
+						</execution>
+					</executions>
 				</plugin>
 				<plugin>
 					<artifactId>maven-jar-plugin</artifactId>

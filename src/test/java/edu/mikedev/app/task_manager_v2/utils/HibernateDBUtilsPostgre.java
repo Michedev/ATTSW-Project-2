@@ -20,23 +20,10 @@ public class HibernateDBUtilsPostgre extends HibernateDBUtils {
     }
 
     @Override
-    public void initDBTables() throws SQLException {
-        Connection conn = initDBConnection();
-        Statement statement = conn.createStatement();
-
-        statement.execute("DELETE FROM tasks;");
-        statement.execute("DELETE FROM users;");
-        statement.execute("COPY Users FROM '/db/fake-data/sample_user.csv' DELIMITER ',' CSV HEADER;");
-        statement.execute("COPY Tasks FROM '/db/fake-data/sample_task.csv' DELIMITER ',' CSV HEADER;");
-
-        conn.close();
-    }
-
-    @Override
     protected Connection initDBConnection() throws SQLException {
         try {
             return initDBConnection(
-                    "jdbc:postgresql://localhost:5432/",
+                    "jdbc:postgresql://localhost:5432/TaskManager",
                     "root",
                     "root"
             );
