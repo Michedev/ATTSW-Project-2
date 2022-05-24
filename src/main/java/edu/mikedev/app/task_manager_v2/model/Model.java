@@ -71,7 +71,10 @@ public class Model {
 
     }
 
-    public void registerUser(User user) {
+    public void registerUser(User user) throws IllegalStateException, IllegalArgumentException {
+        if(this.logged != null){
+            throw new IllegalStateException("You cannot register when an user is logged");
+        }
         if(user.getUsername() == null){
             throw new IllegalArgumentException("Null username");
         }

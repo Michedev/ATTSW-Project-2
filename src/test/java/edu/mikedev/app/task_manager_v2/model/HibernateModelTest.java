@@ -262,6 +262,20 @@ public class HibernateModelTest {
         User userWithEmptyEmail = new User("ABC", "A", "");
         IllegalArgumentException e6 = Assert.assertThrows(IllegalArgumentException.class, () -> model.registerUser(userWithEmptyEmail));
         Assert.assertEquals("Empty email", e6.getMessage());
+
+        verify(repository, times(0)).add(any(User.class));
+    }
+
+    @Test
+    public void testRegisterUserWhenLogged(){
+        try {
+            model.login(USERNAME, PASSWORD);
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
+        User newUser = new User("A", "B", "C");
+        IllegalStateException e = Assert.assertThrows(IllegalStateException.class , () -> model.registerUser(newUser));
+        Assert.assertEquals("You cannot register when an user is logged ", e.getMessage());
     }
 
     private Task getOtherUserTask() {
