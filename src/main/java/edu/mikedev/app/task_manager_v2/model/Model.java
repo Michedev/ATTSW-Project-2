@@ -70,4 +70,12 @@ public class Model {
         });
 
     }
+
+    public void registerUser(User user) {
+        transactionManager.doInTransaction(repository -> {
+           repository.add(user);
+           return null;
+        });
+
+    }
 }
