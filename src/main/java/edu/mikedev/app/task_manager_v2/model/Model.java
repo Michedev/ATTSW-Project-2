@@ -100,7 +100,10 @@ public class Model {
 
     }
 
-    public void logout() {
+    public void logout() throws IllegalStateException {
+        if(this.logged == null){
+            throw new IllegalStateException("You cannot logout before login");
+        }
         this.logged = null;
     }
 }

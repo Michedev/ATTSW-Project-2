@@ -275,7 +275,7 @@ public class HibernateModelTest {
         }
         User newUser = new User("A", "B", "C");
         IllegalStateException e = Assert.assertThrows(IllegalStateException.class , () -> model.registerUser(newUser));
-        Assert.assertEquals("You cannot register when an user is logged ", e.getMessage());
+        Assert.assertEquals("You cannot register when an user is logged", e.getMessage());
     }
 
     @Test
@@ -294,7 +294,7 @@ public class HibernateModelTest {
     @Test
     public void testLogoutBeforeLogin(){
         IllegalStateException e = Assert.assertThrows(IllegalStateException.class, () -> model.logout());
-        Assert.assertEquals("You should login before logout", e.getMessage());
+        Assert.assertEquals("You cannot logout before login", e.getMessage());
     }
 
     @Test
@@ -308,7 +308,7 @@ public class HibernateModelTest {
         model.logout();
 
         IllegalStateException e = Assert.assertThrows(IllegalStateException.class, () -> model.logout());
-        Assert.assertEquals("You should login before logout", e.getMessage());
+        Assert.assertEquals("You cannot logout before login", e.getMessage());
     }
 
     private Task getOtherUserTask() {
