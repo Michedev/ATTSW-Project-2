@@ -79,14 +79,14 @@ public class LoginControllerTest {
         when(loginPage.getPassword()).thenReturn("B");
 
         try{
-            when(model.login("A", "B")).thenReturn(new User());
+            when(model.login("A", "B")).thenReturn(new User("1", "2", "3"));
         } catch (PermissionException e){
             Assert.fail(e.getMessage());
         }
 
         loginController.onLoginButtonClick();
 
-        verify(mainController, times(1)).setController(any(UserTasksController.class));
+        verify(mainController, times(1)).setViewController(any(UserTasksController.class));
     }
 
 }
