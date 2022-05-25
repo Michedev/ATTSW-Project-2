@@ -109,7 +109,7 @@ public class HibernateUserTaskRepositoryTest {
         Assert.assertEquals(dbTaskTitles.size(), dbTaskTitlesPreAdd.size() + 1);
         Assert.assertTrue(dbTaskTitles.contains(newTask.getTitle()));
 
-        List<Task> userTasks = dbUtils.getUsersTask(taskOwner.getId());
+        List<Task> userTasks = dbUtils.getUserTasks(taskOwner.getId());
         Assert.assertTrue(userTasks.stream().anyMatch((task) -> task.getTitle().equals(newTask.getTitle())));
     }
 

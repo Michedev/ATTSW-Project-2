@@ -3,8 +3,6 @@ package edu.mikedev.app.task_manager_v2.utils;
 import edu.mikedev.app.task_manager_v2.data.Task;
 import edu.mikedev.app.task_manager_v2.data.User;
 import org.hibernate.SessionFactory;
-import org.junit.rules.TestRule;
-import org.junit.runner.Description;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
@@ -229,7 +227,7 @@ public abstract class HibernateDBUtils {
         return task;
     }
 
-    public List<Task> getUsersTask(int userId){
+    public List<Task> getUserTasks(int userId){
         List<Task> result = new ArrayList<>();
         try {
             Connection connection = initDBConnection();

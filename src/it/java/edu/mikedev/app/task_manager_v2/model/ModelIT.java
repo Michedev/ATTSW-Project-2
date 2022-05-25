@@ -1,14 +1,15 @@
 package edu.mikedev.app.task_manager_v2.model;
 
+import edu.mikedev.app.task_manager_v2.data.Task;
 import edu.mikedev.app.task_manager_v2.data.User;
-import edu.mikedev.app.task_manager_v2.utils.HibernateDBUtils;
 import edu.mikedev.app.task_manager_v2.utils.HibernateDBUtilsPostgre;
 import org.hibernate.SessionFactory;
 import org.junit.*;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.containers.output.OutputFrame;
 
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Optional;
 
 public class ModelIT {
 
@@ -62,8 +63,41 @@ public class ModelIT {
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
+        Task newTask = new Task("AAA", "1", "2", "3");
+        try {
+            model.addUserTask(newTask);
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
 
+        List<Task> userTasks = dbUtils.getUserTasks(user.getId());
+        List<String> dbTaskTitles = dbUtils.getDBTaskTitles();
+        Optional<Task> optionalMatchedTask = userTasks.stream().filter(task -> task.getTitle().equals(newTask.getTitle())).findFirst();
+        Assert.assertTrue(optionalMatchedTask.isPresent());
+        Task matchedTask = optionalMatchedTask.get();
+        Assert.assertEquals(dbTaskTitles.size(), matchedTask.getId());
     }
+
+    @Test
+    public void testRemoveTask(){
+        User user = dbUtils.users.iterator().next();
+
+        try {
+            model.login(user.getUsername(), user.getPassword());
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
+
+        Task toRemove = user.getTasks().iterator().next();
+        try {
+            model.deleteTask(toRemove);
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
+
+        Assert.assertFalse(dbUtils.getDBTaskTitles().contains(toRemove.getTitle()));
+    }
+
 
     @After
     public void closeSessionFactory(){
