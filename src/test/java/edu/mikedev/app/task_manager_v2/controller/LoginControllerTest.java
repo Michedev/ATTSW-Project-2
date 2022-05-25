@@ -1,25 +1,41 @@
 package edu.mikedev.app.task_manager_v2.controller;
 
+import edu.mikedev.app.task_manager_v2.data.User;
 import edu.mikedev.app.task_manager_v2.model.Model;
 import edu.mikedev.app.task_manager_v2.model.PermissionException;
 import edu.mikedev.app.task_manager_v2.view.LoginPage;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import static org.mockito.Mockito.*;
 
 public class LoginControllerTest {
 
-    private LoginController loginController;
+
+    @Mock
     private Model model;
+    @Mock
     private LoginPage loginPage;
+    @Mock
+    private TaskManagerController mainController;
+    @InjectMocks
+    private LoginController loginController;
+    private AutoCloseable autoCloseable;
+
 
     @Before
     public void setUp(){
-        model = mock(Model.class);
-        loginPage = mock(LoginPage.class);
-        this.loginController = new LoginController(model, loginPage);
+        autoCloseable = MockitoAnnotations.openMocks(this);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        autoCloseable.close();
     }
 
     @Test
@@ -49,7 +65,28 @@ public class LoginControllerTest {
 
         loginController.onLoginButtonClick();
 
+        try {
+            verify(model, times(1)).login(anyString(), anyString());
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
         verify(loginPage, times(1)).setErrorLabelText("Username/Password aren't registered");
+    }
+
+    @Test
+    public void testLoginButtonWithCorrectUsernamePassword(){
+        when(loginPage.getUsername()).thenReturn("A");
+        when(loginPage.getPassword()).thenReturn("B");
+
+        try{
+            when(model.login("A", "B")).thenReturn(new User());
+        } catch (PermissionException e){
+            Assert.fail(e.getMessage());
+        }
+
+        loginController.onLoginButtonClick();
+
+        verify(mainController, times(1)).setController(any(UserTasksController.class));
     }
 
 }
