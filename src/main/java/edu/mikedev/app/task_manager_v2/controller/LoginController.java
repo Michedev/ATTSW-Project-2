@@ -13,6 +13,9 @@ public class LoginController {
     }
 
     public void onLoginButtonClick(){
+        if(this.loginPage.getUsername().isEmpty() || this.loginPage.getPassword().isEmpty()){
+            this.loginPage.setErrorLabelText("Missing Username/Password");
+        }
 
     }
 }

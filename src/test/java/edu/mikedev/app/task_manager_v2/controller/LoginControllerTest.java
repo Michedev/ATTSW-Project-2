@@ -36,4 +36,20 @@ public class LoginControllerTest {
             Assert.fail(e.getMessage());
         }
     }
+
+    @Test
+    public void testLoginButtonWithNotexistingUsernamePassword(){
+        when(loginPage.getUsername()).thenReturn("MissingUsername");
+        when(loginPage.getPassword()).thenReturn("MissingPassword");
+        try {
+            when(model.login(anyString(), anyString())).thenReturn(null);
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
+
+        loginController.onLoginButtonClick();
+
+        verify(loginPage, times(1)).setErrorLabelText("Wrong Username/Password");
+    }
+
 }

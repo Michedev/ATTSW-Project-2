@@ -91,7 +91,7 @@ public class LoginPage extends JPanel {
 		return txtUsername.getText();
 	}
 
-	public Object getPassword() {
+	public String getPassword() {
 		return txtPassword.getText();
 	}
 
