@@ -5,8 +5,8 @@ import edu.mikedev.app.task_manager_v2.data.User;
 
 public class Model {
     private final TransactionManager transactionManager;
-    private final static String LOGIN_ERROR_MESSAGE = "You must login by calling the login() method before calling this one.";
-    private final static String TASK_OWNER_ERROR_MESSAGE = "The task owner is not the logged user";
+    private static final String LOGIN_ERROR_MESSAGE = "You must login by calling the login() method before calling this one.";
+    private static final String TASK_OWNER_ERROR_MESSAGE = "The task owner is not the logged user";
     private User logged;
 
     public Model(TransactionManager transactionManager) {
