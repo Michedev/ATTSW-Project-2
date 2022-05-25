@@ -16,4 +16,8 @@ public class RegisterController implements ViewController<RegisterPage> {
     public RegisterPage getView() {
         return null;
     }
+
+    public void onRegisterButtonClick() {
+
+    }
 }

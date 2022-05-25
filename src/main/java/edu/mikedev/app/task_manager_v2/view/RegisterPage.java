@@ -10,6 +10,9 @@ import java.awt.Color;
 import javax.swing.JButton;
 
 public class RegisterPage extends JPanel {
+	private final JLabel lblPasswordError;
+	private final JLabel lblUsernameError;
+	private final JLabel lblEmailError;
 	private JTextField txtUsername;
 	private JTextField txtPassword;
 	private JTextField txtEmail;
@@ -38,8 +41,8 @@ public class RegisterPage extends JPanel {
 		gbc_txtUsername.gridy = 1;
 		add(txtUsername, gbc_txtUsername);
 		txtUsername.setColumns(10);
-		
-		JLabel lblUsernameError = new JLabel("Username Error");
+
+		lblUsernameError = new JLabel("Username Error");
 		lblUsernameError.setVisible(false);
 		lblUsernameError.setForeground(Color.RED);
 		lblUsernameError.setName("lblUsernameError");
@@ -66,8 +69,8 @@ public class RegisterPage extends JPanel {
 		gbc_txtPassword.gridy = 4;
 		add(txtPassword, gbc_txtPassword);
 		txtPassword.setColumns(10);
-		
-		JLabel lblPasswordError = new JLabel("Password Error");
+
+		lblPasswordError = new JLabel("Password Error");
 		lblPasswordError.setVisible(false);
 		lblPasswordError.setForeground(Color.RED);
 		lblPasswordError.setName("lblPasswordError");
@@ -95,8 +98,8 @@ public class RegisterPage extends JPanel {
 		gbc_txtEmail.gridy = 7;
 		add(txtEmail, gbc_txtEmail);
 		txtEmail.setColumns(10);
-		
-		JLabel lblEmailError = new JLabel("Email Error");
+
+		lblEmailError = new JLabel("Email Error");
 		lblEmailError.setVisible(false);
 		lblEmailError.setName("lblEmailError");
 		lblEmailError.setForeground(Color.RED);
@@ -112,6 +115,30 @@ public class RegisterPage extends JPanel {
 		gbc_btnConfirm.gridx = 0;
 		gbc_btnConfirm.gridy = 9;
 		add(btnConfirm, gbc_btnConfirm);
+	}
+
+	public String getUsername() {
+		return txtUsername.getText();
+	}
+
+	public String getPassword() {
+		return txtPassword.getText();
+	}
+
+	public String getEmail() {
+		return txtEmail.getText();
+	}
+
+	public void setErrorLabelUsername(String errorMessage) {
+		lblUsernameError.setText(errorMessage);
+	}
+
+	public void setErrorLabelPassword(String errorMessage) {
+		lblPasswordError.setText(errorMessage);
+	}
+
+	public void setErrorLabelEmail(String errorMessage) {
+		lblEmailError.setText(errorMessage);
 	}
 
 }
