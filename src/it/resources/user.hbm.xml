@@ -1,0 +1,30 @@
+<hibernate-mapping package="edu.mikedev.app.task_manager_v2.data">
+    <!-- class name is the fully qualified name of the POJO class -->
+    <!-- table is the name of the database table which represents the Student -->
+    <class name="User" table="users">
+        <!-- Attribute id is mapped to the column student_id -->
+        <id name="id" type="integer">
+            <column name="id" />
+            <generator class="increment" />
+        </id>
+
+        <!-- Attribute name is mapped to the column student_name -->
+        <property name="username" type="string">
+            <column name="username" not-null="true" />
+        </property>
+
+        <property name="password" type="string">
+            <column name="password" not-null="true"/>
+        </property>
+
+        <property name="email" type="string">
+            <column name="email" not-null="true"/>
+        </property>
+
+        <set name="tasks" table="tasks" inverse="true" cascade="all">
+            <key column="id_user" not-null="true" />
+            <one-to-many class="Task"/>
+        </set>
+
+    </class>
+</hibernate-mapping>
