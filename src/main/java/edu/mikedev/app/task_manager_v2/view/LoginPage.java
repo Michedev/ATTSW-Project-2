@@ -7,6 +7,7 @@ import java.awt.Insets;
 import java.awt.Color;
 
 public class LoginPage extends JPanel {
+	private final JLabel lblLoginError;
 	private JTextField txtUsername;
 	private JTextField txtPassword;
 	public LoginPage() {
@@ -57,8 +58,8 @@ public class LoginPage extends JPanel {
 		gbc_txtPassword.gridy = 3;
 		add(txtPassword, gbc_txtPassword);
 		txtPassword.setColumns(10);
-		
-		JLabel lblLoginError = new JLabel("Error message");
+
+		lblLoginError = new JLabel("Error message");
 		lblLoginError.setOpaque(true);
 		lblLoginError.setName("lblLoginError");
 		lblLoginError.setForeground(Color.RED);
@@ -84,5 +85,17 @@ public class LoginPage extends JPanel {
 		gbc_btnRegister.gridx = 1;
 		gbc_btnRegister.gridy = 5;
 		add(btnRegister, gbc_btnRegister);
+	}
+
+	public String getUsername() {
+		return txtUsername.getText();
+	}
+
+	public Object getPassword() {
+		return txtPassword.getText();
+	}
+
+	public void setErrorLabelText(String errorMessage) {
+		lblLoginError.setText(errorMessage);
 	}
 }
