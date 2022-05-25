@@ -20,7 +20,7 @@ public class ModelIT {
     private static HibernateDBUtilsPostgre dbUtils;
     private SessionFactory sessionFactory;
     private Model model;
-
+    private final String LOGIN_ERROR_MESSAGE = "You must login by calling the login() method before calling this one.";
 
     @BeforeClass
     public static void setUpClass(){
@@ -153,6 +153,35 @@ public class ModelIT {
         Assert.assertEquals(expected.getSubtask2(), actual.getSubtask2());
         Assert.assertEquals(expected.getSubtask3(), actual.getSubtask3());
     }
+
+    @Test
+    public void testRegisterUser(){
+        User newUser = new User("NewUser", "pass", "email");
+
+        model.registerUser(newUser);
+
+        List<String> dbUsernames = dbUtils.getDBUsernames();
+        Assert.assertTrue(dbUsernames.contains(newUser.getUsername()));
+        Assert.assertEquals(dbUtils.users.size() + 1, dbUsernames.size());
+    }
+
+    @Test
+    public void testLogout(){
+        User user = dbUtils.users.iterator().next();
+        Task userTask  = user.getTasks().iterator().next();
+
+        try {
+            model.login(user.getUsername(), user.getPassword());
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
+
+        model.logout();
+
+        PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.getUserTask(userTask.getId()));
+        Assert.assertEquals(LOGIN_ERROR_MESSAGE, e.getMessage());
+    }
+
     @After
     public void closeSessionFactory(){
         sessionFactory.close();
