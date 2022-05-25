@@ -62,9 +62,9 @@ public class RegisterControllerTest {
 
     @Test
     public void testMissingEmail(){
-        when(registerPage.getEmail()).thenReturn("");
+        when(registerPage.getUsername()).thenReturn("ff");
         when(registerPage.getPassword()).thenReturn("aa");
-        when(registerPage.getEmail()).thenReturn("1");
+        when(registerPage.getEmail()).thenReturn("");
 
         registerController.onRegisterButtonClick();
 
