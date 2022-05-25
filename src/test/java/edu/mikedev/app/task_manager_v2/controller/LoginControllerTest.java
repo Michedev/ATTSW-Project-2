@@ -49,7 +49,7 @@ public class LoginControllerTest {
 
         loginController.onLoginButtonClick();
 
-        verify(loginPage, times(1)).setErrorLabelText("Wrong Username/Password");
+        verify(loginPage, times(1)).setErrorLabelText("Username/Password aren't registered");
     }
 
 }
