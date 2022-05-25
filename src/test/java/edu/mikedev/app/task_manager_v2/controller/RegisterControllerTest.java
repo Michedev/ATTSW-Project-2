@@ -72,4 +72,18 @@ public class RegisterControllerTest {
         verify(registerPage, times(1)).setErrorLabelEmail("Missing email");
     }
 
+    @Test
+    public void testMissingAll(){
+        when(registerPage.getUsername()).thenReturn("");
+        when(registerPage.getPassword()).thenReturn("");
+        when(registerPage.getEmail()).thenReturn("");
+
+        registerController.onRegisterButtonClick();
+
+        verify(mainController, times(0)).setViewController(any());
+        verify(registerPage, times(1)).setErrorLabelUsername("Missing username");
+        verify(registerPage, times(1)).setErrorLabelPassword("Missing password");
+        verify(registerPage, times(1)).setErrorLabelEmail("Missing email");
+
+    }
 }
