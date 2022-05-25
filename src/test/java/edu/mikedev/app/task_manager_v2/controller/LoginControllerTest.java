@@ -74,19 +74,27 @@ public class LoginControllerTest {
     }
 
     @Test
-    public void testLoginButtonWithCorrectUsernamePassword(){
+    public void testLoginButtonWithCorrectUsernamePassword() {
         when(loginPage.getUsername()).thenReturn("A");
         when(loginPage.getPassword()).thenReturn("B");
 
-        try{
+        try {
             when(model.login("A", "B")).thenReturn(new User("1", "2", "3"));
-        } catch (PermissionException e){
+        } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
 
         loginController.onLoginButtonClick();
 
         verify(mainController, times(1)).setViewController(any(UserTasksController.class));
+    }
+
+    @Test
+    public void testRegisterButtonClick(){
+
+        loginController.onRegisterButtonClick();
+
+        verify(mainController, times(1)).setViewController(any(RegisterController.class));
     }
 
 }

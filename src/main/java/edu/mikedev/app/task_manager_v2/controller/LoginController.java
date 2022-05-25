@@ -5,13 +5,14 @@ import edu.mikedev.app.task_manager_v2.data.User;
 import edu.mikedev.app.task_manager_v2.model.Model;
 import edu.mikedev.app.task_manager_v2.model.PermissionException;
 import edu.mikedev.app.task_manager_v2.view.LoginPage;
+import edu.mikedev.app.task_manager_v2.view.RegisterPage;
 import edu.mikedev.app.task_manager_v2.view.UserTasksList;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class LoginController {
+public class LoginController implements ViewController<LoginPage>{
     private final Model model;
     private final LoginPage loginPage;
     private final TaskManagerController managerController;
@@ -46,5 +47,21 @@ public class LoginController {
         UserTasksController controller = new UserTasksController(model, view, managerController);
 
         this.managerController.setViewController(controller);
+    }
+
+    @Override
+    public void addEvents(LoginPage view) {
+
+    }
+
+    @Override
+    public LoginPage getView() {
+        return loginPage;
+    }
+
+    public void onRegisterButtonClick() {
+        RegisterPage page = new RegisterPage();
+        RegisterController controller = new RegisterController(model, page, managerController);
+        managerController.setViewController(controller);
     }
 }
