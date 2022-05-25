@@ -16,6 +16,10 @@ import java.util.*;
 public class HibernateDBUtilsInMemory extends HibernateDBUtils {
 
     @Override
+    protected void initDBTables(Statement statement) throws SQLException{
+    }
+
+    @Override
     public SessionFactory buildSessionFactory() {
         Path testResourceDirectory = Paths.get("src", "test", "resources");
         File hibernateConfigFile = new File(testResourceDirectory.resolve("hibernate.inmemory.cfg.xml").toAbsolutePath().toString());

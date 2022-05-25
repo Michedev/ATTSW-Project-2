@@ -10,28 +10,36 @@ import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public abstract class HibernateDBUtils implements TestRule {
-    protected SessionFactory sessionFactory;
+public abstract class HibernateDBUtils {
 
     public List<User> users;
 
     public HibernateDBUtils(){
-        this.sessionFactory = buildSessionFactory();
-    }
-
-    public HibernateDBUtils(SessionFactory sessionFactory){
-        this.sessionFactory = sessionFactory;
     }
 
     public abstract SessionFactory buildSessionFactory();
 
-    public void initDBTables() throws SQLException {
+    protected abstract void initDBTables(Statement statement) throws SQLException;
+
+    public void initAndFillDBTables() throws SQLException {
         Connection connection = initDBConnection();
         Statement statement = connection.createStatement();
 
-        statement.execute("DELETE FROM tasks");
-        statement.execute("DELETE FROM users");
+        initDBTables(statement);
 
+        statement.execute("DELETE FROM Tasks");
+        statement.execute("DELETE FROM Users");
+
+        fillDBTables(statement);
+
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void fillDBTables(Statement statement) {
         Set<Task> taskSet1 = new HashSet<>();
         Task task1 = new Task("title1", "subtask1-1", "subtask2-1", "subtask3-1");
         Task task2 = new Task("title2", "subtask1-2", "subtask2-2", "subtask3-2");
@@ -85,13 +93,8 @@ public abstract class HibernateDBUtils implements TestRule {
         insertTask(statement, task6);
 
         users = Arrays.asList(user1, user2);
-
-        try {
-            connection.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
+
     protected abstract Connection initDBConnection() throws SQLException;
 
     protected Connection initDBConnection(String url, String username, String password) throws SQLException {
@@ -135,7 +138,7 @@ public abstract class HibernateDBUtils implements TestRule {
     }
     protected void insertUser(Statement statement, User u){
         try {
-            statement.execute("INSERT INTO users (id, username, password, email) " +
+            statement.execute("INSERT INTO Users (id, username, password, email) " +
                     String.format("VALUES (%d, '%s', '%s', '%s')", u.getId(), u.getUsername(), u.getPassword(), u.getEmail()));
         } catch (SQLException e) {
             e.printStackTrace();
@@ -145,7 +148,7 @@ public abstract class HibernateDBUtils implements TestRule {
     protected void insertTask(Statement statement, Task t){
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            statement.execute("INSERT INTO tasks (id, title, subtask1, subtask2, subtask3, ID_USER) " +
+            statement.execute("INSERT INTO Tasks (id, title, subtask1, subtask2, subtask3, ID_USER) " +
                     String.format("VALUES (%d, '%s', '%s', '%s', '%s', '%d'); ", t.getId(), t.getTitle(), t.getSubtask1(), t.getSubtask2(), t.getSubtask3(), t.getTaskOwner().getId()));
         } catch (SQLException e) {
             e.printStackTrace();
@@ -191,7 +194,7 @@ public abstract class HibernateDBUtils implements TestRule {
         try {
             Connection connection = initDBConnection();
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("select * from users where id = " + id);
+            ResultSet resultSet = statement.executeQuery("select * from Users where id = " + id);
             resultSet.next();
             user = getUserFromQuery(resultSet);
             connection.close();
@@ -216,7 +219,7 @@ public abstract class HibernateDBUtils implements TestRule {
         try {
             Connection connection = initDBConnection();
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("select * from tasks where id = " + id);
+            ResultSet resultSet = statement.executeQuery("select * from Tasks where id = " + id);
             resultSet.next();
             task = getTaskFromQuery(resultSet);
             connection.close();
@@ -231,7 +234,7 @@ public abstract class HibernateDBUtils implements TestRule {
         try {
             Connection connection = initDBConnection();
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("select * from tasks where id_user = " + userId);
+            ResultSet resultSet = statement.executeQuery("select * from Tasks where id_user = " + userId);
             while(resultSet.next()){
                 Task task = getTaskFromQuery(resultSet);
                 result.add(task);
@@ -243,21 +246,4 @@ public abstract class HibernateDBUtils implements TestRule {
         return result;
 
     }
-
-    public SessionFactory getSessionFactory() {
-        return sessionFactory;
-    }
-
-    @Override
-    public org.junit.runners.model.Statement apply(org.junit.runners.model.Statement base, Description description) {
-        return new org.junit.runners.model.Statement() {
-            @Override
-            public void evaluate() throws Throwable {
-                initDBConnection();
-                base.evaluate();
-                sessionFactory.close();
-            }
-        };
-    }
-
 }

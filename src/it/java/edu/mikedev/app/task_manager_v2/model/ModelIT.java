@@ -5,31 +5,30 @@ import edu.mikedev.app.task_manager_v2.utils.HibernateDBUtils;
 import edu.mikedev.app.task_manager_v2.utils.HibernateDBUtilsPostgre;
 import org.hibernate.SessionFactory;
 import org.junit.*;
-import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.containers.output.OutputFrame;
 
 import java.sql.SQLException;
 
 public class ModelIT {
 
-    @SuppressWarnings("rawtypes")
-    @ClassRule(order=0)
-    public static final PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:14.3")
-            .withUsername("root").withPassword("root").withDatabaseName("TaskManager");
-
-    public static HibernateDBUtils dbUtils;
+    @ClassRule
+    public final static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:14.3-alpine")
+            .withDatabaseName("test").withUsername("root").withPassword("root");
+    private static HibernateDBUtilsPostgre dbUtils;
     private SessionFactory sessionFactory;
     private Model model;
 
+
     @BeforeClass
-    public void setUpClass(){
-        dbUtils = new HibernateDBUtilsPostgre();
+    public static void setUpClass(){
+        dbUtils = new HibernateDBUtilsPostgre(postgreSQLContainer.getContainerIpAddress(), postgreSQLContainer.getMappedPort(5432), "test");
     }
 
     @Before
     public void setUp(){
         try {
-            dbUtils.initDBTables();
+            dbUtils.initAndFillDBTables();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -52,6 +51,18 @@ public class ModelIT {
         Assert.assertEquals(expectedUser.getUsername(), loggedUser.getUsername());
         Assert.assertEquals(expectedUser.getPassword(), loggedUser.getPassword());
         Assert.assertEquals(expectedUser.getEmail(), loggedUser.getEmail());
+    }
+
+    @Test
+    public void testAddTask(){
+        User user = dbUtils.users.iterator().next();
+
+        try {
+            model.login(user.getUsername(), user.getPassword());
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
+
     }
 
     @After

@@ -36,7 +36,7 @@ public class HibernateUserTaskRepositoryTest {
     @Before
     public void setUp(){
         try {
-            dbUtils.initDBTables();
+            dbUtils.initAndFillDBTables();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
