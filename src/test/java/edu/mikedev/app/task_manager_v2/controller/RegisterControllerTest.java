@@ -40,7 +40,7 @@ public class RegisterControllerTest {
     public void testMissingUsername(){
         when(registerPage.getUsername()).thenReturn("");
         when(registerPage.getPassword()).thenReturn("aa");
-        when(registerPage.getEmail()).thenReturn("1");
+        when(registerPage.getEmail()).thenReturn("email@email.it");
         
         registerController.onRegisterButtonClick();
         
@@ -52,7 +52,7 @@ public class RegisterControllerTest {
     public void testMissingPassword(){
         when(registerPage.getUsername()).thenReturn("ff");
         when(registerPage.getPassword()).thenReturn("");
-        when(registerPage.getEmail()).thenReturn("1");
+        when(registerPage.getEmail()).thenReturn("email@email.it");
 
         registerController.onRegisterButtonClick();
 
@@ -84,6 +84,18 @@ public class RegisterControllerTest {
         verify(registerPage, times(1)).setErrorLabelUsername("Missing username");
         verify(registerPage, times(1)).setErrorLabelPassword("Missing password");
         verify(registerPage, times(1)).setErrorLabelEmail("Missing email");
+    }
+
+    @Test
+    public void testWrongFormattedEmail(){
+        when(registerPage.getUsername()).thenReturn("ff");
+        when(registerPage.getPassword()).thenReturn("aa");
+        when(registerPage.getEmail()).thenReturn("dddd");
+
+        registerController.onRegisterButtonClick();
+
+        verify(mainController, times(0)).setViewController(any());
+        verify(registerPage, times(1)).setErrorLabelEmail("Email should have the format {username}@{domanin}.{primarydomain}");
 
     }
 }
