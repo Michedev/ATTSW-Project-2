@@ -8,6 +8,7 @@ import org.junit.*;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.sql.SQLException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -122,6 +123,35 @@ public class ModelIT {
         List<String> dbTaskTitles = dbUtils.getDBTaskTitles();
         Assert.assertFalse(dbTaskTitles.contains(oldTitle));
         Assert.assertTrue(dbTaskTitles.contains(newTitle));
+    }
+
+    @Test
+    public void testGetTaskById(){
+        User user = dbUtils.users.iterator().next();
+
+        try {
+            model.login(user.getUsername(), user.getPassword());
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
+
+        Iterator<Task> taskIterator = user.getTasks().iterator();
+        taskIterator.next();
+        Task expected = taskIterator.next();
+
+        Task actual = null;
+        try {
+            actual = model.getUserTask(expected.getId());
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
+
+        Assert.assertNotNull(actual);
+        Assert.assertEquals(expected.getId(), actual.getId());
+        Assert.assertEquals(expected.getTitle(), actual.getTitle());
+        Assert.assertEquals(expected.getSubtask1(), actual.getSubtask1());
+        Assert.assertEquals(expected.getSubtask2(), actual.getSubtask2());
+        Assert.assertEquals(expected.getSubtask3(), actual.getSubtask3());
     }
     @After
     public void closeSessionFactory(){
