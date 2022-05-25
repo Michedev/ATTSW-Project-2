@@ -98,7 +98,31 @@ public class ModelIT {
         Assert.assertFalse(dbUtils.getDBTaskTitles().contains(toRemove.getTitle()));
     }
 
+    @Test
+    public void testUpdateTask(){
+        User user = dbUtils.users.iterator().next();
 
+        try {
+            model.login(user.getUsername(), user.getPassword());
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
+
+        Task toUpdate = user.getTasks().iterator().next();
+        String oldTitle = toUpdate.getTitle();
+        String newTitle = "NewTitle";
+        toUpdate.setTitle(newTitle);
+
+        try {
+            model.updateTask(toUpdate);
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
+
+        List<String> dbTaskTitles = dbUtils.getDBTaskTitles();
+        Assert.assertFalse(dbTaskTitles.contains(oldTitle));
+        Assert.assertTrue(dbTaskTitles.contains(newTitle));
+    }
     @After
     public void closeSessionFactory(){
         sessionFactory.close();
