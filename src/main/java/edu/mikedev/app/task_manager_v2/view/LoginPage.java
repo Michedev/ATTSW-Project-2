@@ -5,9 +5,12 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.Color;
+import java.awt.event.ActionListener;
 
 public class LoginPage extends JPanel {
 	private final JLabel lblLoginError;
+	private final JButton btnLogin;
+	private final JButton btnRegister;
 	private JTextField txtUsername;
 	private JTextField txtPassword;
 	public LoginPage() {
@@ -70,16 +73,16 @@ public class LoginPage extends JPanel {
 		gbc_lblLoginError.gridx = 0;
 		gbc_lblLoginError.gridy = 4;
 		add(lblLoginError, gbc_lblLoginError);
-		
-		JButton btnLogin = new JButton("Login");
+
+		btnLogin = new JButton("Login");
 		btnLogin.setName("btnLogin");
 		GridBagConstraints gbc_btnLogin = new GridBagConstraints();
 		gbc_btnLogin.insets = new Insets(0, 0, 0, 5);
 		gbc_btnLogin.gridx = 0;
 		gbc_btnLogin.gridy = 5;
 		add(btnLogin, gbc_btnLogin);
-		
-		JButton btnRegister = new JButton("Register");
+
+		btnRegister = new JButton("Register");
 		btnRegister.setName("btnRegister");
 		GridBagConstraints gbc_btnRegister = new GridBagConstraints();
 		gbc_btnRegister.gridx = 1;
@@ -98,4 +101,13 @@ public class LoginPage extends JPanel {
 	public void setErrorLabelText(String errorMessage) {
 		lblLoginError.setText(errorMessage);
 	}
+
+	public void addActionListenerBtnLogin(ActionListener l){
+		btnLogin.addActionListener(l);
+	}
+
+	public void addActionListenerBtnRegister(ActionListener l){
+		btnRegister.addActionListener(l);
+	}
+
 }

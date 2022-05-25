@@ -51,7 +51,8 @@ public class LoginController implements ViewController<LoginPage>{
 
     @Override
     public void addEvents(LoginPage view) {
-
+        view.addActionListenerBtnLogin((e) -> this.onLoginButtonClick());
+        view.addActionListenerBtnRegister((e) -> this.onRegisterButtonClick());
     }
 
     @Override

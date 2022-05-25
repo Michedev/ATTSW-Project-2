@@ -91,10 +91,18 @@ public class LoginControllerTest {
 
     @Test
     public void testRegisterButtonClick(){
-
         loginController.onRegisterButtonClick();
 
         verify(mainController, times(1)).setViewController(any(RegisterController.class));
     }
+
+    @Test
+    public void testAddEvents(){
+        loginController.addEvents(loginPage);
+
+        verify(loginPage).addActionListenerBtnLogin(any());
+        verify(loginPage).addActionListenerBtnRegister(any());
+    }
+
 
 }
