@@ -3,6 +3,8 @@ package edu.mikedev.app.task_manager_v2.controller;
 import edu.mikedev.app.task_manager_v2.model.Model;
 import edu.mikedev.app.task_manager_v2.view.RegisterPage;
 
+import java.util.regex.Pattern;
+
 public class RegisterController implements ViewController<RegisterPage> {
     private final Model model;
     private final RegisterPage page;
@@ -38,5 +40,13 @@ public class RegisterController implements ViewController<RegisterPage> {
             page.setErrorLabelEmail("Missing email");
         }
 
+        Pattern emailPattern = Pattern.compile("\\w+@\\w+\\.\\w+$");
+        if(!emailPattern.matcher(email).find()){
+            page.setErrorLabelEmail("Email should have the format {username}@{domanin}.{primarydomain}");
+        }
+        Pattern usernamePattern = Pattern.compile("\\w+$");
+        if(!usernamePattern.matcher(username).find()){
+            page.setErrorLabelUsername("Username must contain only alphanumeric characters");
+        }
     }
 }

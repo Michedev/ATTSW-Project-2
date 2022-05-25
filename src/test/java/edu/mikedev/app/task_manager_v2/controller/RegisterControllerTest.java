@@ -98,4 +98,19 @@ public class RegisterControllerTest {
         verify(registerPage, times(1)).setErrorLabelEmail("Email should have the format {username}@{domanin}.{primarydomain}");
 
     }
+
+    @Test
+    public void testUsernameWithNonalphanumericCharacters(){
+        when(registerPage.getUsername()).thenReturn("ff4&&**");
+        when(registerPage.getPassword()).thenReturn("aa");
+        when(registerPage.getEmail()).thenReturn("email@email.it");
+
+        registerController.onRegisterButtonClick();
+
+        verify(mainController, times(0)).setViewController(any());
+        verify(registerPage, times(1))
+                .setErrorLabelUsername("Username must contain only alphanumeric characters");
+
+    }
+
 }
