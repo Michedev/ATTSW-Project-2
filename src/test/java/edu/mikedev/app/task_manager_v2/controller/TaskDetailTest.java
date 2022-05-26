@@ -14,6 +14,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.mockito.Mockito.*;
 
 public class TaskDetailTest {
@@ -60,7 +63,17 @@ public class TaskDetailTest {
     public void testClickDeleteButton(){
         Task task = new Task("vbnm", "5", "6", "7");
         when(view.getTask()).thenReturn(task);
-
+        List<Task> expected = Arrays.asList(
+                new Task("RR", "W", "Q", "Y"),
+                new Task("QQ", "1", "U", "C"),
+                new Task("DD", "2", "L", "V"),
+                new Task("XX", "7", "W", "M")
+        );
+        try {
+            when(model.getLoggedUserTasks()).thenReturn(expected);
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
         taskDetailController.onClickDeleteButton();
 
         try {
@@ -68,7 +81,14 @@ public class TaskDetailTest {
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
-        verify(mainController).setViewController(any(UserTasksController.class));
+
+        ArgumentCaptor<UserTasksController> captor = ArgumentCaptor.forClass(UserTasksController.class);
+        verify(mainController).setViewController(captor.capture());
+
+        UserTasksController actual = captor.getValue();
+        List<Task> userTasksControllers = actual.getView().getTasks();
+
+        Assert.assertArrayEquals(expected.toArray(), userTasksControllers.toArray());
     }
 
 }
