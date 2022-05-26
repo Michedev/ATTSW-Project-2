@@ -3,7 +3,6 @@ package edu.mikedev.app.task_manager_v2.controller;
 import edu.mikedev.app.task_manager_v2.data.Task;
 import edu.mikedev.app.task_manager_v2.model.Model;
 import edu.mikedev.app.task_manager_v2.model.PermissionException;
-import edu.mikedev.app.task_manager_v2.view.LoginPage;
 import edu.mikedev.app.task_manager_v2.view.NewUpdateTask;
 import org.junit.After;
 import org.junit.Before;
