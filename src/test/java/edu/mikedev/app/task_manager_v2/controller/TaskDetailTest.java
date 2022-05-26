@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
@@ -95,10 +96,24 @@ public class TaskDetailTest {
 
     @Test
     public void testAddEvents(){
+        taskDetailController = spy(taskDetailController);
+        ArgumentCaptor<ActionListener> captorUpdate = ArgumentCaptor.forClass(ActionListener.class);
+        ArgumentCaptor<ActionListener> captorDelete = ArgumentCaptor.forClass(ActionListener.class);
+
+        doNothing().when(taskDetailController).onClickUpdateButton();
+        doNothing().when(taskDetailController).onClickDeleteButton();
+
         taskDetailController.addEvents();
 
-        verify(view).addActionListenerUpdateButton(any(ActionListener.class));
-        verify(view).addActionListenerDeleteButton(any(ActionListener.class));
+        verify(view).addActionListenerUpdateButton(captorUpdate.capture());
+        verify(view).addActionListenerDeleteButton(captorDelete.capture());
+        ActionListener listenerUpdate = captorUpdate.getValue();
+        ActionListener listenerDelete = captorDelete.getValue();
+        listenerUpdate.actionPerformed(null);
+        listenerDelete.actionPerformed(null);
+
+        verify(taskDetailController).onClickUpdateButton();
+        verify(taskDetailController).onClickDeleteButton();
     }
 
 }
