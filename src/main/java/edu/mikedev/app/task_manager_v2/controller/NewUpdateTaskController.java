@@ -53,11 +53,25 @@ public class NewUpdateTaskController implements ViewController<NewUpdateTask> {
         if(anyError){
             return;
         }
-        Task newTask = new Task(taskTitle, taskSubtask1, taskSubtask2, taskSubtask3);
-        try {
-            model.addUserTask(newTask);
-        } catch (PermissionException e) {
-            throw new RuntimeException(e);
+        Task taskToUpdate = view.getTaskToUpdate();
+        if(taskToUpdate == null){
+            Task newTask = new Task(taskTitle, taskSubtask1, taskSubtask2, taskSubtask3);
+            try {
+                model.addUserTask(newTask);
+            } catch (PermissionException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            taskToUpdate.setTitle(taskTitle);
+            taskToUpdate.setSubtask1(taskSubtask1);
+            taskToUpdate.setSubtask2(taskSubtask2);
+            taskToUpdate.setSubtask3(taskSubtask3);
+
+            try {
+                model.updateTask(taskToUpdate);
+            } catch (PermissionException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         UserTasksList view = null;
