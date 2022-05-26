@@ -23,7 +23,7 @@ public class RegisterControllerTest {
     @Mock
     private Model model;
     @Mock
-    private RegisterPage registerPage;
+    private RegisterPage view;
     @Mock
     private TaskManagerController mainController;
     @InjectMocks
@@ -43,77 +43,77 @@ public class RegisterControllerTest {
     
     @Test
     public void testMissingUsername(){
-        when(registerPage.getUsername()).thenReturn("");
-        when(registerPage.getPassword()).thenReturn("aa");
-        when(registerPage.getEmail()).thenReturn("email@email.it");
+        when(view.getUsername()).thenReturn("");
+        when(view.getPassword()).thenReturn("aa");
+        when(view.getEmail()).thenReturn("email@email.it");
         
         registerController.onRegisterButtonClick();
         
         verify(mainController, times(0)).setViewController(any());
-        verify(registerPage, times(1)).setErrorLabelUsername("Missing username");
+        verify(view, times(1)).setErrorLabelUsername("Missing username");
     }
 
     @Test
     public void testMissingPassword(){
-        when(registerPage.getUsername()).thenReturn("ff");
-        when(registerPage.getPassword()).thenReturn("");
-        when(registerPage.getEmail()).thenReturn("email@email.it");
+        when(view.getUsername()).thenReturn("ff");
+        when(view.getPassword()).thenReturn("");
+        when(view.getEmail()).thenReturn("email@email.it");
 
         registerController.onRegisterButtonClick();
 
         verify(mainController, times(0)).setViewController(any());
-        verify(registerPage, times(1)).setErrorLabelPassword("Missing password");
+        verify(view, times(1)).setErrorLabelPassword("Missing password");
     }
 
     @Test
     public void testMissingEmail(){
-        when(registerPage.getUsername()).thenReturn("ff");
-        when(registerPage.getPassword()).thenReturn("aa");
-        when(registerPage.getEmail()).thenReturn("");
+        when(view.getUsername()).thenReturn("ff");
+        when(view.getPassword()).thenReturn("aa");
+        when(view.getEmail()).thenReturn("");
 
         registerController.onRegisterButtonClick();
 
         verify(mainController, times(0)).setViewController(any());
-        verify(registerPage, times(1)).setErrorLabelEmail("Missing email");
+        verify(view, times(1)).setErrorLabelEmail("Missing email");
     }
 
     @Test
     public void testMissingAll(){
-        when(registerPage.getUsername()).thenReturn("");
-        when(registerPage.getPassword()).thenReturn("");
-        when(registerPage.getEmail()).thenReturn("");
+        when(view.getUsername()).thenReturn("");
+        when(view.getPassword()).thenReturn("");
+        when(view.getEmail()).thenReturn("");
 
         registerController.onRegisterButtonClick();
 
         verify(mainController, times(0)).setViewController(any());
-        verify(registerPage, times(1)).setErrorLabelUsername("Missing username");
-        verify(registerPage, times(1)).setErrorLabelPassword("Missing password");
-        verify(registerPage, times(1)).setErrorLabelEmail("Missing email");
+        verify(view, times(1)).setErrorLabelUsername("Missing username");
+        verify(view, times(1)).setErrorLabelPassword("Missing password");
+        verify(view, times(1)).setErrorLabelEmail("Missing email");
     }
 
     @Test
     public void testWrongFormattedEmail(){
-        when(registerPage.getUsername()).thenReturn("ff");
-        when(registerPage.getPassword()).thenReturn("aa");
-        when(registerPage.getEmail()).thenReturn("dddd");
+        when(view.getUsername()).thenReturn("ff");
+        when(view.getPassword()).thenReturn("aa");
+        when(view.getEmail()).thenReturn("dddd");
 
         registerController.onRegisterButtonClick();
 
         verify(mainController, times(0)).setViewController(any());
-        verify(registerPage, times(1)).setErrorLabelEmail("Email should have the format {username}@{domanin}.{primarydomain}");
+        verify(view, times(1)).setErrorLabelEmail("Email should have the format {username}@{domanin}.{primarydomain}");
 
     }
 
     @Test
     public void testUsernameWithNonalphanumericCharacters(){
-        when(registerPage.getUsername()).thenReturn("ff4&&**");
-        when(registerPage.getPassword()).thenReturn("aa");
-        when(registerPage.getEmail()).thenReturn("email@email.it");
+        when(view.getUsername()).thenReturn("ff4&&**");
+        when(view.getPassword()).thenReturn("aa");
+        when(view.getEmail()).thenReturn("email@email.it");
 
         registerController.onRegisterButtonClick();
 
         verify(mainController, times(0)).setViewController(any());
-        verify(registerPage, times(1))
+        verify(view, times(1))
                 .setErrorLabelUsername("Username must contain only alphanumeric characters");
 
     }
@@ -123,9 +123,9 @@ public class RegisterControllerTest {
         String registrationUsername = "username";
         String registrationPassword = "aa";
         String registrationEmail = "email@email.it";
-        when(registerPage.getUsername()).thenReturn(registrationUsername);
-        when(registerPage.getPassword()).thenReturn(registrationPassword);
-        when(registerPage.getEmail()).thenReturn(registrationEmail);
+        when(view.getUsername()).thenReturn(registrationUsername);
+        when(view.getPassword()).thenReturn(registrationPassword);
+        when(view.getEmail()).thenReturn(registrationEmail);
 
         registerController.onRegisterButtonClick();
 
@@ -145,9 +145,18 @@ public class RegisterControllerTest {
 
     @Test
     public void testAddBindings(){
+        registerController = spy(registerController);
+        ArgumentCaptor<ActionListener> captor = ArgumentCaptor.forClass(ActionListener.class);
+
+        doNothing().when(registerController).onRegisterButtonClick();
+
         registerController.addEvents();
 
-        verify(registerPage, times(1)).addActionListenerConfirmBtn(any(ActionListener.class));
+        verify(view).addActionListenerConfirmBtn(captor.capture());
+        ActionListener listener = captor.getValue();
+        listener.actionPerformed(null);
+
+        verify(registerController).onRegisterButtonClick();
     }
 
 }
