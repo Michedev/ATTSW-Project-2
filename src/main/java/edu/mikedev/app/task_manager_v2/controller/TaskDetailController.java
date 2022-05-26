@@ -22,7 +22,8 @@ public class TaskDetailController implements ViewController<TaskDetail> {
     }
     @Override
     public void addEvents() {
-
+        getView().addActionListenerDeleteButton((e) -> onClickDeleteButton());
+        getView().addActionListenerUpdateButton((e) -> onClickUpdateButton());
     }
 
     @Override

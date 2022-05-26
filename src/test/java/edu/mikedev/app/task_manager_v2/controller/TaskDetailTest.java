@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
 
@@ -90,6 +91,14 @@ public class TaskDetailTest {
         List<Task> userTasksControllers = actual.getView().getTasks();
 
         Assert.assertArrayEquals(expected.toArray(), userTasksControllers.toArray());
+    }
+
+    @Test
+    public void testAddEvents(){
+        taskDetailController.addEvents();
+
+        verify(view).addActionListenerUpdateButton(any(ActionListener.class));
+        verify(view).addActionListenerDeleteButton(any(ActionListener.class));
     }
 
 }

@@ -7,6 +7,7 @@ import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.event.ActionListener;
 import javax.swing.JButton;
 
 public class TaskDetail extends JPanel {
@@ -79,5 +80,13 @@ public class TaskDetail extends JPanel {
 
 	public Task getTask() {
 		return task;
+	}
+
+	public void addActionListenerUpdateButton(ActionListener actionListener) {
+		btnUpdate.addActionListener(actionListener);
+	}
+
+	public void addActionListenerDeleteButton(ActionListener actionListener) {
+		btnDelete.addActionListener(actionListener);
 	}
 }
