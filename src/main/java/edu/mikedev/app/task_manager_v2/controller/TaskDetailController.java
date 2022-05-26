@@ -33,4 +33,8 @@ public class TaskDetailController implements ViewController<TaskDetail> {
         NewUpdateTaskController viewController = new NewUpdateTaskController(model, view, managerController);
         managerController.setViewController(viewController);
     }
+
+    public void onClickDeleteButton() {
+
+    }
 }
