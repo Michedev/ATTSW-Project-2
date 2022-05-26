@@ -19,7 +19,8 @@ public class RegisterController implements ViewController<RegisterPage> {
     }
 
     @Override
-    public void addEvents(RegisterPage view) {
+    public void addEvents() {
+        RegisterPage view = getView();
         view.addActionListenerConfirmBtn((e) -> onRegisterButtonClick());
     }
 

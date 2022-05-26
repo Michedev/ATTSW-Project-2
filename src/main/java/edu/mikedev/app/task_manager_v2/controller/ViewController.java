@@ -4,6 +4,6 @@ import javax.swing.*;
 
 public interface ViewController<T extends JPanel> {
 
-    void addEvents(T view);
+    void addEvents();
     T getView();
 }

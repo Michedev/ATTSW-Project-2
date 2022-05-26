@@ -15,7 +15,7 @@ public class TaskDetailController implements ViewController<TaskDetail> {
         this.managerController = managerController;
     }
     @Override
-    public void addEvents(TaskDetail view) {
+    public void addEvents() {
 
     }
 

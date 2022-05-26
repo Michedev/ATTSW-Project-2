@@ -17,7 +17,7 @@ public class UserTasksController implements ViewController<UserTasksList>{
     }
 
     @Override
-    public void addEvents(UserTasksList view) {
+    public void addEvents() {
 
     }
 
@@ -26,7 +26,7 @@ public class UserTasksController implements ViewController<UserTasksList>{
         return view;
     }
 
-    public void onClickDetailPage(Task task) {
+    public void onClickDetailButton(Task task) {
         TaskDetail view = new TaskDetail(task);
         TaskDetailController viewController = new TaskDetailController(model, view, managerController);
         managerController.setViewController(viewController);
