@@ -6,6 +6,8 @@ import edu.mikedev.app.task_manager_v2.view.NewUpdateTask;
 import edu.mikedev.app.task_manager_v2.view.TaskDetail;
 import edu.mikedev.app.task_manager_v2.view.UserTasksList;
 
+import java.util.List;
+
 public class UserTasksController implements ViewController<UserTasksList>{
     private final TaskManagerController managerController;
     private final UserTasksList view;
@@ -19,7 +21,11 @@ public class UserTasksController implements ViewController<UserTasksList>{
 
     @Override
     public void addEvents() {
-
+        List<Task> tasks = view.getTasks();
+        for (int i = 0; i < tasks.size(); i++) {
+            final Task task = tasks.get(i);
+            view.addActionListenerTaskDetail(i, (e) -> onClickDetailButton(task));
+        }
     }
 
     @Override

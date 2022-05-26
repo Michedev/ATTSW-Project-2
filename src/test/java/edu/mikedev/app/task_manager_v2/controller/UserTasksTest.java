@@ -12,9 +12,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.awt.event.ActionListener;
+import java.util.Arrays;
+import java.util.List;
+
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 public class UserTasksTest {
 
@@ -62,5 +65,17 @@ public class UserTasksTest {
         userTasksController.onClickNewTaskButton();
 
         verify(mainController, times(1)).setViewController(any(NewUpdateTaskController.class));
+    }
+
+    @Test
+    public void testAddEvents(){
+        List<Task> taskList = Arrays.asList(new Task("12345", "a", "b", "c"),
+                                            new Task("qwerty", "g", "h", "j"),
+                                            new Task("uu", "o", "p", "Q"));
+        when(userTasksList.getTasks()).thenReturn(taskList);
+
+        userTasksController.addEvents();
+
+        verify(userTasksList, times(taskList.size())).addActionListenerTaskDetail(anyInt(), any(ActionListener.class));
     }
 }

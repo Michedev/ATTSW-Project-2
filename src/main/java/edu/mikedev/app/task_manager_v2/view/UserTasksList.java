@@ -9,17 +9,25 @@ import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
 import javax.swing.JButton;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserTasksList extends JPanel {
+	private final List<Task> tasks;
+	private List<JButton> buttons;
+
 	public UserTasksList(List<Task> tasks) {
+		this.tasks = tasks;
+
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0, 0};
 		gridBagLayout.rowHeights = new int[]{0, 0, 0};
 		gridBagLayout.columnWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
 		gridBagLayout.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
-		
+		buttons = new ArrayList<>(tasks.size());
 		for(int i = 0; i < tasks.size(); i++) {
 			JLabel lblTitleTask = new JLabel(tasks.get(i).getTitle());
 			GridBagConstraints gbc_lblTask = new GridBagConstraints();
@@ -36,6 +44,7 @@ public class UserTasksList extends JPanel {
 			gbc_btnDetail.gridy = i;
 			btnDetailTask.setName("btnDetailTask" + (i+1));
 			add(btnDetailTask, gbc_btnDetail);
+			buttons.set(i, btnDetailTask);
 			}
 	
 		JButton btnNew = new JButton("New");
@@ -46,5 +55,18 @@ public class UserTasksList extends JPanel {
 		gbc_btnNew.gridy = tasks.size();
 		btnNew.setName("btnNew");
 		add(btnNew, gbc_btnNew);
+	}
+
+	public List<Task> getTasks() {
+		return tasks;
+	}
+
+	public List<JButton> getTaskJButtons(){
+		return buttons;
+	}
+
+	public void addActionListenerTaskDetail(int i, ActionListener listener) {
+		JButton button = buttons.get(i);
+		button.addActionListener(listener);
 	}
 }
