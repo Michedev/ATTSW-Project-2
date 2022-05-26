@@ -124,6 +124,7 @@ public class NewUpdateTaskTest {
         Task task = new Task(taskTitle, subtask1, subtask2, subtask3);
         InOrder inOrder = inOrder(model, mainController);
         inOrder.verify(model).addUserTask(task);
+        inOrder.verify(model).getLoggedUserTasks();
         inOrder.verify(mainController).setViewController(any(UserTasksController.class));
     }
 }
