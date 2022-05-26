@@ -145,7 +145,7 @@ public class RegisterControllerTest {
 
     @Test
     public void testAddBindings(){
-        registerController.addEvents(registerPage);
+        registerController.addEvents();
 
         verify(registerPage, times(1)).addActionListenerConfirmBtn(any(ActionListener.class));
     }

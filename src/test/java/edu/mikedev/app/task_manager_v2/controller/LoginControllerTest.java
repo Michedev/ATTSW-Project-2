@@ -98,7 +98,7 @@ public class LoginControllerTest {
 
     @Test
     public void testAddEvents(){
-        loginController.addEvents(loginPage);
+        loginController.addEvents();
 
         verify(loginPage).addActionListenerBtnLogin(any());
         verify(loginPage).addActionListenerBtnRegister(any());
