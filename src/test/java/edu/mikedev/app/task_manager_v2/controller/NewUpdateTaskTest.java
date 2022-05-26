@@ -8,10 +8,10 @@ import edu.mikedev.app.task_manager_v2.view.NewUpdateTask;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InOrder;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import static org.mockito.Mockito.*;
 
@@ -154,5 +154,19 @@ public class NewUpdateTaskTest {
         inOrder.verify(model).updateTask(updatedTask);
         inOrder.verify(model).getLoggedUserTasks();
         inOrder.verify(mainController).setViewController(any(UserTasksController.class));
+    }
+
+    @Test
+    public void testAddEvents(){
+        newUpdateTaskController = spy(newUpdateTaskController);
+        ArgumentCaptor<ActionListener> captor = ArgumentCaptor.forClass(ActionListener.class);
+        doNothing().when(newUpdateTaskController).onClickMakeButton();
+
+        newUpdateTaskController.addEvents();
+
+        verify(view).addActionListenerMakeButton(captor.capture());
+        ActionListener listener = captor.getValue();
+        listener.actionPerformed(new ActionEvent("", 0, ""));
+        verify(newUpdateTaskController).onClickMakeButton();
     }
 }

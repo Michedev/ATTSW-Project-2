@@ -11,6 +11,7 @@ import edu.mikedev.app.task_manager_v2.data.Task;
 import java.awt.Insets;
 import javax.swing.JButton;
 import java.awt.Color;
+import java.awt.event.ActionListener;
 
 public class NewUpdateTask extends JPanel {
 	private JTextField txtTaskTitle;
@@ -197,4 +198,7 @@ public class NewUpdateTask extends JPanel {
 	}
 
 
+	public void addActionListenerMakeButton(ActionListener actionListener) {
+		btnMake.addActionListener(actionListener);
+	}
 }

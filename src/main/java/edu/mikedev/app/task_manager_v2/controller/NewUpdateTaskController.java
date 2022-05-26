@@ -20,7 +20,7 @@ public class NewUpdateTaskController implements ViewController<NewUpdateTask> {
 
     @Override
     public void addEvents() {
-
+        view.addActionListenerMakeButton((e) -> onClickMakeButton());
     }
 
     @Override
@@ -55,23 +55,9 @@ public class NewUpdateTaskController implements ViewController<NewUpdateTask> {
         }
         Task taskToUpdate = view.getTaskToUpdate();
         if(taskToUpdate == null){
-            Task newTask = new Task(taskTitle, taskSubtask1, taskSubtask2, taskSubtask3);
-            try {
-                model.addUserTask(newTask);
-            } catch (PermissionException e) {
-                throw new RuntimeException(e);
-            }
+            addNewTask(taskTitle, taskSubtask1, taskSubtask2, taskSubtask3);
         } else {
-            taskToUpdate.setTitle(taskTitle);
-            taskToUpdate.setSubtask1(taskSubtask1);
-            taskToUpdate.setSubtask2(taskSubtask2);
-            taskToUpdate.setSubtask3(taskSubtask3);
-
-            try {
-                model.updateTask(taskToUpdate);
-            } catch (PermissionException e) {
-                throw new RuntimeException(e);
-            }
+            updateTask(taskTitle, taskSubtask1, taskSubtask2, taskSubtask3, taskToUpdate);
         }
 
         UserTasksList view = null;
@@ -82,5 +68,27 @@ public class NewUpdateTaskController implements ViewController<NewUpdateTask> {
         }
         UserTasksController viewController = new UserTasksController(model, view, managerController);
         managerController.setViewController(viewController);
+    }
+
+    private void updateTask(String taskTitle, String taskSubtask1, String taskSubtask2, String taskSubtask3, Task taskToUpdate) {
+        taskToUpdate.setTitle(taskTitle);
+        taskToUpdate.setSubtask1(taskSubtask1);
+        taskToUpdate.setSubtask2(taskSubtask2);
+        taskToUpdate.setSubtask3(taskSubtask3);
+
+        try {
+            model.updateTask(taskToUpdate);
+        } catch (PermissionException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void addNewTask(String taskTitle, String taskSubtask1, String taskSubtask2, String taskSubtask3) {
+        Task newTask = new Task(taskTitle, taskSubtask1, taskSubtask2, taskSubtask3);
+        try {
+            model.addUserTask(newTask);
+        } catch (PermissionException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
