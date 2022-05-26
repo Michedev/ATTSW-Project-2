@@ -38,7 +38,7 @@ public class HibernateUserTaskRepository implements UserTaskRepository {
 
     @Override
     public List<Task> getUserTasks(int userId) {
-        return session.createQuery(String.format("SELECT t FROM Task t WHERE ID_USER = %d", userId), Task.class).getResultList();
+        return session.createQuery(String.format("SELECT t FROM Task t WHERE ID_USER = %d ORDER BY ID", userId), Task.class).getResultList();
     }
 
     @Override
