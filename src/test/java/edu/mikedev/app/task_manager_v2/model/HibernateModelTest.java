@@ -10,6 +10,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.awt.*;
+import java.util.Arrays;
 import java.util.function.Function;
 import java.util.List;
 
@@ -98,6 +99,38 @@ public class HibernateModelTest {
 
         Assert.assertEquals(userTask, actualTask);
         verify(repository, times(1)).getTaskById(10);
+    }
+
+    @Test
+    public void testGetUsertasksWhenNotLogged(){
+        PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.getLoggedUserTasks());
+        Assert.assertEquals(LOGIN_ERROR_MESSAGE, e.getMessage());
+        verify(repository, never()).getUserTasks(anyInt());
+    }
+
+    @Test
+    public void testGetUserTasks(){
+        List<Task> taskList = Arrays.asList(
+          new Task("QWERTY", "F", "G", "H"),
+          new Task("AAA", "B", "C", "D"),
+          new Task("111", "#", "$", "^")
+        );
+        User mockedUser = new User("AAAA", "CCC", "E");
+        int userId = 10043;
+        mockedUser.setId(userId);
+        when(repository.getUserByUsernamePassword(USERNAME, PASSWORD)).thenReturn(mockedUser);
+        when(repository.getUserTasks(userId)).thenReturn(taskList);
+        try{
+            model.login(USERNAME, PASSWORD);
+        } catch (PermissionException e){
+            Assert.fail(e.getMessage());
+        }
+
+        List<Task> loggedUserTasks = model.getLoggedUserTasks();
+
+        Assert.assertNotNull(loggedUserTasks);
+        Assert.assertArrayEquals(taskList.toArray(), loggedUserTasks.toArray());
+        verify(repository).getUserTasks(userId);
     }
 
     private Task getUserTask() {
