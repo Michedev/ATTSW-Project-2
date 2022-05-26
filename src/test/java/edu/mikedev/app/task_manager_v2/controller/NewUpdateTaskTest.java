@@ -126,5 +126,33 @@ public class NewUpdateTaskTest {
         inOrder.verify(model).addUserTask(task);
         inOrder.verify(model).getLoggedUserTasks();
         inOrder.verify(mainController).setViewController(any(UserTasksController.class));
+
+        verify(model, never()).updateTask(any());
+    }
+
+    @Test
+    public void testUpdateTask() throws PermissionException {
+        String subtask1 = "R";
+        String subtask2 = "T";
+        String subtask3 = "Y";
+        Task toUpdate = new Task("AAA", subtask1, subtask2, subtask3);
+        toUpdate.setId(100);
+        when(view.getTaskToUpdate()).thenReturn(toUpdate);
+
+        String newTaskTitle = "TTT";
+
+        when(view.getTaskTitle()).thenReturn(newTaskTitle);
+        when(view.getTaskSubtask1()).thenReturn(subtask1);
+        when(view.getTaskSubtask2()).thenReturn(subtask2);
+        when(view.getTaskSubtask3()).thenReturn(subtask3);
+
+        newUpdateTaskController.onClickMakeButton();
+
+        Task updatedTask = new Task(newTaskTitle, subtask1, subtask2, subtask3);
+
+        InOrder inOrder = inOrder(model, mainController);
+        inOrder.verify(model).updateTask(updatedTask);
+        inOrder.verify(model).getLoggedUserTasks();
+        inOrder.verify(mainController).setViewController(any(UserTasksController.class));
     }
 }
