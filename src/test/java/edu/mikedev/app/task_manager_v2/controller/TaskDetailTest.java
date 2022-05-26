@@ -74,6 +74,7 @@ public class TaskDetailTest {
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
+
         taskDetailController.onClickDeleteButton();
 
         try {
