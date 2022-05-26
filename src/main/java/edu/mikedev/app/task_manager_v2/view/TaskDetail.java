@@ -11,6 +11,10 @@ import javax.swing.JButton;
 
 public class TaskDetail extends JPanel {
 
+	private final JButton btnDelete;
+	private final JButton btnUpdate;
+	private final Task task;
+
 	public TaskDetail(Task task) {
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0, 0};
@@ -54,22 +58,26 @@ public class TaskDetail extends JPanel {
 		gbc_lblSubtask3.gridx = 0;
 		gbc_lblSubtask3.gridy = 4;
 		add(lblSubtask3, gbc_lblSubtask3);
-		
-		JButton btnUpdate = new JButton("Update");
+
+		btnUpdate = new JButton("Update");
 		btnUpdate.setName("btnUpdate");
 		GridBagConstraints gbc_btnUpdate = new GridBagConstraints();
 		gbc_btnUpdate.insets = new Insets(0, 0, 0, 5);
 		gbc_btnUpdate.gridx = 0;
 		gbc_btnUpdate.gridy = 6;
 		add(btnUpdate, gbc_btnUpdate);
-		
-		JButton btnDelete = new JButton("Delete");
+
+		btnDelete = new JButton("Delete");
 		btnDelete.setName("btnDelete");
 		GridBagConstraints gbc_btnDelete = new GridBagConstraints();
 		gbc_btnDelete.gridx = 1;
 		gbc_btnDelete.gridy = 6;
 		add(btnDelete, gbc_btnDelete);
 
+		this.task = task;
 	}
 
+	public Task getTask() {
+		return task;
+	}
 }

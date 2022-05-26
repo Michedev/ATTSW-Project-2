@@ -1,5 +1,6 @@
 package edu.mikedev.app.task_manager_v2.controller;
 
+import edu.mikedev.app.task_manager_v2.data.Task;
 import edu.mikedev.app.task_manager_v2.model.Model;
 import edu.mikedev.app.task_manager_v2.view.UserTasksList;
 
@@ -22,5 +23,9 @@ public class UserTasksController implements ViewController<UserTasksList>{
     @Override
     public UserTasksList getView() {
         return view;
+    }
+
+    public void onClickDetailPage(Task task) {
+
     }
 }
