@@ -86,7 +86,8 @@ public class LoginControllerTest {
 
         loginController.onLoginButtonClick();
 
-        verify(mainController, times(1)).setViewController(any(UserTasksController.class));
+        verify(mainController).setViewController(any(UserTasksController.class));
+
     }
 
     @Test
