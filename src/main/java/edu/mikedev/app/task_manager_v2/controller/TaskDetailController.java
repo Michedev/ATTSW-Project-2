@@ -35,6 +35,5 @@ public class TaskDetailController implements ViewController<TaskDetail> {
     }
 
     public void onClickDeleteButton() {
-
     }
 }

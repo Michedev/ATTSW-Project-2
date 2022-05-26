@@ -13,8 +13,10 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class HibernateUserTaskRepositoryTest {
 
@@ -153,6 +155,18 @@ public class HibernateUserTaskRepositoryTest {
         Assert.assertEquals(expected.getSubtask1(), actual.getSubtask1());
         Assert.assertEquals(expected.getSubtask2(), actual.getSubtask2());
         Assert.assertEquals(expected.getSubtask3(), actual.getSubtask3());
+    }
+
+    @Test
+    public void testGetUserTasks(){
+        User user = dbUtils.users.get(0);
+        List<Task> expectedTasks = user.getTasks().stream()
+                                    .sorted(Comparator.comparingInt(Task::getId))
+                                    .collect(Collectors.toList());
+        List<Task> actualTasks = hibernateUserTaskRepository.getUserTasks(user.getId());
+
+        Assert.assertNotNull(actualTasks);
+        Assert.assertArrayEquals(expectedTasks.toArray(), actualTasks.toArray());
     }
 
     @After
