@@ -57,4 +57,10 @@ public class UserTasksTest {
         Assert.assertEquals(detailTask.getSubtask3(), actualDetailTask.getSubtask3());
     }
 
+    @Test
+    public void testClickNewTaskButton(){
+        userTasksController.onClickNewTaskButton();
+
+        verify(mainController, times(1)).setViewController(any(NewUpdateTaskController.class));
+    }
 }
