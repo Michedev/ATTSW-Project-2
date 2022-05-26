@@ -8,9 +8,12 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import java.awt.event.ActionListener;
 
 import static org.mockito.Mockito.*;
 
@@ -20,7 +23,7 @@ public class LoginControllerTest {
     @Mock
     private Model model;
     @Mock
-    private LoginPage loginPage;
+    private LoginPage view;
     @Mock
     private TaskManagerController mainController;
     @InjectMocks
@@ -40,12 +43,12 @@ public class LoginControllerTest {
 
     @Test
     public void testLoginButtonWithoutUsernamePassword(){
-        when(loginPage.getUsername()).thenReturn("");
-        when(loginPage.getPassword()).thenReturn("");
+        when(view.getUsername()).thenReturn("");
+        when(view.getPassword()).thenReturn("");
 
         loginController.onLoginButtonClick();
 
-        verify(loginPage, times(1)).setErrorLabelText("Missing Username/Password");
+        verify(view, times(1)).setErrorLabelText("Missing Username/Password");
         try {
             verify(model, times(0)).login(anyString(), anyString());
         } catch (PermissionException e) {
@@ -55,8 +58,8 @@ public class LoginControllerTest {
 
     @Test
     public void testLoginButtonWithNotexistingUsernamePassword(){
-        when(loginPage.getUsername()).thenReturn("MissingUsername");
-        when(loginPage.getPassword()).thenReturn("MissingPassword");
+        when(view.getUsername()).thenReturn("MissingUsername");
+        when(view.getPassword()).thenReturn("MissingPassword");
         try {
             when(model.login(anyString(), anyString())).thenReturn(null);
         } catch (PermissionException e) {
@@ -70,13 +73,13 @@ public class LoginControllerTest {
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
-        verify(loginPage, times(1)).setErrorLabelText("Username/Password aren't registered");
+        verify(view, times(1)).setErrorLabelText("Username/Password aren't registered");
     }
 
     @Test
     public void testLoginButtonWithCorrectUsernamePassword() {
-        when(loginPage.getUsername()).thenReturn("A");
-        when(loginPage.getPassword()).thenReturn("B");
+        when(view.getUsername()).thenReturn("A");
+        when(view.getPassword()).thenReturn("B");
 
         try {
             when(model.login("A", "B")).thenReturn(new User("1", "2", "3"));
@@ -99,10 +102,25 @@ public class LoginControllerTest {
 
     @Test
     public void testAddEvents(){
+
+        loginController = spy(loginController);
+        ArgumentCaptor<ActionListener> captorLogin = ArgumentCaptor.forClass(ActionListener.class);
+        ArgumentCaptor<ActionListener> captorRegister = ArgumentCaptor.forClass(ActionListener.class);
+
+        doNothing().when(loginController).onRegisterButtonClick();
+        doNothing().when(loginController).onLoginButtonClick();
+
         loginController.addEvents();
 
-        verify(loginPage).addActionListenerBtnLogin(any());
-        verify(loginPage).addActionListenerBtnRegister(any());
+        verify(view).addActionListenerBtnLogin(captorLogin.capture());
+        verify(view).addActionListenerBtnRegister(captorRegister.capture());
+        ActionListener listenerLogin = captorLogin.getValue();
+        ActionListener listenerRegister = captorRegister.getValue();
+        listenerLogin.actionPerformed(null);
+        listenerRegister.actionPerformed(null);
+
+        verify(loginController).onLoginButtonClick();
+        verify(loginController).onRegisterButtonClick();
     }
 
 
