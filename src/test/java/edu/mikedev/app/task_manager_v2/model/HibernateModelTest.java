@@ -126,7 +126,12 @@ public class HibernateModelTest {
             Assert.fail(e.getMessage());
         }
 
-        List<Task> loggedUserTasks = model.getLoggedUserTasks();
+        List<Task> loggedUserTasks = null;
+        try {
+            loggedUserTasks = model.getLoggedUserTasks();
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
 
         Assert.assertNotNull(loggedUserTasks);
         Assert.assertArrayEquals(taskList.toArray(), loggedUserTasks.toArray());

@@ -109,7 +109,11 @@ public class Model {
         this.logged = null;
     }
 
-    public List<Task> getLoggedUserTasks() {
-        return null;
+    public List<Task> getLoggedUserTasks() throws PermissionException {
+        if(this.logged == null){
+            throw new PermissionException(LOGIN_ERROR_MESSAGE);
+        }
+        return transactionManager.doInTransaction(repository -> repository.getUserTasks(logged.getId()));
+
     }
 }
