@@ -1,5 +1,7 @@
 package edu.mikedev.app.task_manager_v2.data;
 
+import java.util.Objects;
+
 public class Task {
 	
 	private int id;
@@ -66,5 +68,17 @@ public class Task {
 	public void setTaskOwner(User taskOwner) {
 		this.taskOwner = taskOwner;
 	}
-	
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Task task = (Task) o;
+		return Objects.equals(title, task.title) && Objects.equals(subtask1, task.subtask1) && Objects.equals(subtask2, task.subtask2) && Objects.equals(subtask3, task.subtask3);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(title, subtask1, subtask2, subtask3);
+	}
 }

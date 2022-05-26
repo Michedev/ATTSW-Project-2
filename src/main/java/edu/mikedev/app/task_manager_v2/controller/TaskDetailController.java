@@ -1,6 +1,8 @@
 package edu.mikedev.app.task_manager_v2.controller;
 
+import edu.mikedev.app.task_manager_v2.data.Task;
 import edu.mikedev.app.task_manager_v2.model.Model;
+import edu.mikedev.app.task_manager_v2.view.NewUpdateTask;
 import edu.mikedev.app.task_manager_v2.view.TaskDetail;
 
 public class TaskDetailController implements ViewController<TaskDetail> {
@@ -22,5 +24,13 @@ public class TaskDetailController implements ViewController<TaskDetail> {
     @Override
     public TaskDetail getView() {
         return taskDetail;
+    }
+
+    public void onClickUpdateButton() {
+        Task task = taskDetail.getTask();
+        NewUpdateTask view = new NewUpdateTask();
+        view.setUpdateMode(task);
+        NewUpdateTaskController viewController = new NewUpdateTaskController(model, view, managerController);
+        managerController.setViewController(viewController);
     }
 }

@@ -17,7 +17,8 @@ public class NewUpdateTask extends JPanel {
 	private JTextField txtStep2;
 	private JTextField txtStep3;
 	private JButton btnMake;
-	
+	private Task taskToUpdate;
+
 	public NewUpdateTask() {
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0};
@@ -111,6 +112,10 @@ public class NewUpdateTask extends JPanel {
 		txtStep2.setText(task.getSubtask2());
 		txtStep3.setText(task.getSubtask3());
 		btnMake.setText("Update");
+		taskToUpdate =  task;
 	}
 
+	public Task getTaskToUpdate() {
+		return taskToUpdate;
+	}
 }
