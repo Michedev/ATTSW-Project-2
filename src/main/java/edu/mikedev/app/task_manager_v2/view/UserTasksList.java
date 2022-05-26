@@ -16,6 +16,7 @@ import java.util.List;
 
 public class UserTasksList extends JPanel {
 	private final List<Task> tasks;
+	private final JButton btnNew;
 	private List<JButton> buttons;
 
 	public UserTasksList(List<Task> tasks) {
@@ -27,7 +28,7 @@ public class UserTasksList extends JPanel {
 		gridBagLayout.columnWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
 		gridBagLayout.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
-		buttons = new ArrayList<>(tasks.size());
+		buttons = new ArrayList<>();
 		for(int i = 0; i < tasks.size(); i++) {
 			JLabel lblTitleTask = new JLabel(tasks.get(i).getTitle());
 			GridBagConstraints gbc_lblTask = new GridBagConstraints();
@@ -44,10 +45,10 @@ public class UserTasksList extends JPanel {
 			gbc_btnDetail.gridy = i;
 			btnDetailTask.setName("btnDetailTask" + (i+1));
 			add(btnDetailTask, gbc_btnDetail);
-			buttons.set(i, btnDetailTask);
-			}
-	
-		JButton btnNew = new JButton("New");
+			buttons.add(btnDetailTask);
+		}
+
+		btnNew = new JButton("New");
 		GridBagConstraints gbc_btnNew = new GridBagConstraints();
 		gbc_btnNew.gridwidth = 2;
 		gbc_btnNew.insets = new Insets(0, 0, 0, 5);
