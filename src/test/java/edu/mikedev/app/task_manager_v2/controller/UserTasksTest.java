@@ -58,5 +58,4 @@ public class UserTasksTest {
         Assert.assertEquals(detailTask.getSubtask3(), actualDetailTask.getSubtask3());
     }
 
-
 }
