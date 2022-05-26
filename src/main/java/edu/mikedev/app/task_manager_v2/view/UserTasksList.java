@@ -70,4 +70,8 @@ public class UserTasksList extends JPanel {
 		JButton button = buttons.get(i);
 		button.addActionListener(listener);
 	}
+
+	public void addActionListenerNewButton(ActionListener listener) {
+		btnNew.addActionListener(listener);
+	}
 }

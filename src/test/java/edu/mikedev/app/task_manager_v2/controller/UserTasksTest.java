@@ -24,7 +24,7 @@ public class UserTasksTest {
     @Mock
     private Model model;
     @Mock
-    private UserTasksList userTasksList;
+    private UserTasksList view;
     @Mock
     private TaskManagerController mainController;
     @InjectMocks
@@ -72,10 +72,28 @@ public class UserTasksTest {
         List<Task> taskList = Arrays.asList(new Task("12345", "a", "b", "c"),
                                             new Task("qwerty", "g", "h", "j"),
                                             new Task("uu", "o", "p", "Q"));
-        when(userTasksList.getTasks()).thenReturn(taskList);
+        when(view.getTasks()).thenReturn(taskList);
+        ArgumentCaptor<ActionListener> captorTasksDetails = ArgumentCaptor.forClass(ActionListener.class);
+        ArgumentCaptor<ActionListener> captorNewTask = ArgumentCaptor.forClass(ActionListener.class);
+
+        userTasksController = spy(userTasksController);
+        doNothing().when(userTasksController).onClickNewTaskButton();
+        doNothing().when(userTasksController).onClickDetailButton(any());
 
         userTasksController.addEvents();
 
-        verify(userTasksList, times(taskList.size())).addActionListenerTaskDetail(anyInt(), any(ActionListener.class));
+        verify(view, times(taskList.size())).addActionListenerTaskDetail(anyInt(), captorTasksDetails.capture());
+        verify(view).addActionListenerNewButton(captorNewTask.capture());
+        List<ActionListener> detailListeners = captorTasksDetails.getAllValues();
+        for (ActionListener l :
+                detailListeners) {
+            l.actionPerformed(null);
+        }
+        ActionListener newBtnListener = captorNewTask.getValue();
+        newBtnListener.actionPerformed(null);
+
+        Assert.assertEquals(taskList.size(), detailListeners.size());
+        verify(userTasksController, times(detailListeners.size())).onClickDetailButton(any(Task.class));
+        verify(userTasksController).onClickNewTaskButton();
     }
 }

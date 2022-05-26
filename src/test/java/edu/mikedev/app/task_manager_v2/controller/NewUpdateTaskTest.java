@@ -165,7 +165,7 @@ public class NewUpdateTaskTest {
 
         verify(view).addActionListenerMakeButton(captor.capture());
         ActionListener listener = captor.getValue();
-        listener.actionPerformed(new ActionEvent("", 0, ""));
+        listener.actionPerformed(null);
         verify(newUpdateTaskController).onClickMakeButton();
     }
 }

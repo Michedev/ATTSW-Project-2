@@ -26,6 +26,7 @@ public class UserTasksController implements ViewController<UserTasksList>{
             final Task task = tasks.get(i);
             view.addActionListenerTaskDetail(i, (e) -> onClickDetailButton(task));
         }
+        view.addActionListenerNewButton((e) -> onClickNewTaskButton());
     }
 
     @Override
