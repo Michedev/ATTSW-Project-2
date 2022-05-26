@@ -2,7 +2,6 @@ package edu.mikedev.app.task_manager_v2.controller;
 
 import edu.mikedev.app.task_manager_v2.data.User;
 import edu.mikedev.app.task_manager_v2.model.Model;
-import edu.mikedev.app.task_manager_v2.view.LoginPage;
 import edu.mikedev.app.task_manager_v2.view.RegisterPage;
 import org.junit.After;
 import org.junit.Assert;
@@ -13,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.awt.event.ActionListener;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
@@ -141,6 +141,13 @@ public class RegisterControllerTest {
         Assert.assertEquals(registrationUsername, capturedUser.getUsername());
         Assert.assertEquals(registrationPassword, capturedUser.getPassword());
         Assert.assertEquals(registrationEmail, capturedUser.getEmail());
+    }
+
+    @Test
+    public void testAddBindings(){
+        registerController.addEvents(registerPage);
+
+        verify(registerPage, times(1)).addActionListenerConfirmBtn(any(ActionListener.class));
     }
 
 }

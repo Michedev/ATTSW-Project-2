@@ -7,12 +7,14 @@ import java.awt.GridBagConstraints;
 import javax.swing.JTextField;
 import java.awt.Insets;
 import java.awt.Color;
+import java.awt.event.ActionListener;
 import javax.swing.JButton;
 
 public class RegisterPage extends JPanel {
 	private final JLabel lblPasswordError;
 	private final JLabel lblUsernameError;
 	private final JLabel lblEmailError;
+	private final JButton btnConfirm;
 	private JTextField txtUsername;
 	private JTextField txtPassword;
 	private JTextField txtEmail;
@@ -108,8 +110,8 @@ public class RegisterPage extends JPanel {
 		gbc_lblEmailError.gridx = 0;
 		gbc_lblEmailError.gridy = 8;
 		add(lblEmailError, gbc_lblEmailError);
-		
-		JButton btnConfirm = new JButton("Confirm");
+
+		btnConfirm = new JButton("Confirm");
 		btnConfirm.setName("btnConfirm");
 		GridBagConstraints gbc_btnConfirm = new GridBagConstraints();
 		gbc_btnConfirm.gridx = 0;
@@ -141,4 +143,7 @@ public class RegisterPage extends JPanel {
 		lblEmailError.setText(errorMessage);
 	}
 
+	public void addActionListenerConfirmBtn(ActionListener actionListener) {
+		btnConfirm.addActionListener(actionListener);
+	}
 }

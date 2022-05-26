@@ -20,7 +20,7 @@ public class RegisterController implements ViewController<RegisterPage> {
 
     @Override
     public void addEvents(RegisterPage view) {
-
+        view.addActionListenerConfirmBtn((e) -> onRegisterButtonClick());
     }
 
     @Override
