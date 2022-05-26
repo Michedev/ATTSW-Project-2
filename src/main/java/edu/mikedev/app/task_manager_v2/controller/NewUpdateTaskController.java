@@ -24,4 +24,24 @@ public class NewUpdateTaskController implements ViewController<NewUpdateTask> {
     public NewUpdateTask getView() {
         return view;
     }
+
+    public void onClickMakeButton() {
+        String taskTitle = view.getTaskTitle();
+        String taskSubtask1 = view.getTaskSubtask1();
+        String taskSubtask2 = view.getTaskSubtask2();
+        String taskSubtask3 = view.getTaskSubtask3();
+
+        if(taskTitle.isEmpty()){
+            view.setTitleErrorLabelText("Missing title");
+        }
+        if(taskSubtask1.isEmpty()){
+            view.setStep1ErrorLabelText("Missing subtask 1");
+        }
+        if(taskSubtask2.isEmpty()){
+            view.setStep2ErrorLabelText("Missing subtask 2");
+        }
+        if(taskSubtask3.isEmpty()){
+            view.setStep3ErrorLabelText("Missing subtask 3");
+        }
+    }
 }

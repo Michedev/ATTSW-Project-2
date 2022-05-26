@@ -179,4 +179,22 @@ public class NewUpdateTask extends JPanel {
 	public String getTaskSubtask3(){
 		return txtStep3.getText();
 	}
+
+	public void setTitleErrorLabelText(String text) {
+		lblTitleErrorLabel.setText(text);
+	}
+
+	public void setStep1ErrorLabelText(String text) {
+		lblStep1ErrorLabel.setText(text);
+	}
+
+	public void setStep2ErrorLabelText(String text) {
+		lblStep2ErrorLabel.setText(text);
+	}
+
+	public void setStep3ErrorLabelText(String text) {
+		lblStep3ErrorLabel.setText(text);
+	}
+
+
 }
