@@ -92,6 +92,7 @@
 						<configuration>
 							<sources>
 								<source>src/it/java</source>
+								<source>src/bdd/java</source>
 							</sources>
 						</configuration>
 					</execution>
@@ -105,6 +106,7 @@
 							<resources>
 								<resource>
 									<directory>src/it/resources</directory>
+									<directory>src/bdd/resources</directory>
 								</resource>
 							</resources>
 						</configuration>
@@ -121,10 +123,21 @@
 							<goal>integration-test</goal>
 							<goal>verify</goal>
 						</goals>
+					</execution>
+					<execution>
+						<id>E2E-test</id>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
 						<configuration>
 							<includes>
-								<include>**/ControllerIT.java</include>
+								<include>src/bdd/**/*.java</include>
 							</includes>
+							<excludes>
+								<exclude>src/it/**</exclude>
+								<exclude>src/test/**</exclude>
+							</excludes>
 						</configuration>
 					</execution>
 				</executions>
