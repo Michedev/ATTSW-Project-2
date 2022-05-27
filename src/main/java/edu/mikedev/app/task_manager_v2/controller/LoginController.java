@@ -41,7 +41,12 @@ public class LoginController implements ViewController<LoginPage>{
             return;
         }
 
-        List<Task> tasks = userLogged.getTasks().stream().sorted(Comparator.comparingInt(Task::getId)).collect(Collectors.toList());
+        List<Task> tasks = null;
+        try {
+            tasks = model.getLoggedUserTasks();
+        } catch (PermissionException e) {
+            throw new RuntimeException(e);
+        }
         UserTasksList view = new UserTasksList(tasks);
 
         UserTasksController controller = new UserTasksController(model, view, managerController);

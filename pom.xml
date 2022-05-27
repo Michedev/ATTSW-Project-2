@@ -149,7 +149,7 @@
 						<configuration>
 							<skipTests>${skipE2ETests}</skipTests>
 							<includes>
-								<include>src/bdd/**/*E2E.java</include>
+								<include>**/*E2E.java</include>
 							</includes>
 							<excludes>
 								<exclude>src/it/**</exclude>
