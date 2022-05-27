@@ -3,16 +3,14 @@ package edu.mikedev.app.task_manager_v2.model;
 import edu.mikedev.app.task_manager_v2.controller.TaskManagerController;
 import edu.mikedev.app.task_manager_v2.data.Task;
 import edu.mikedev.app.task_manager_v2.data.User;
-import edu.mikedev.app.task_manager_v2.view.LoginPage;
-import edu.mikedev.app.task_manager_v2.view.NewUpdateTask;
-import edu.mikedev.app.task_manager_v2.view.RegisterPage;
-import edu.mikedev.app.task_manager_v2.view.TaskDetail;
+import edu.mikedev.app.task_manager_v2.view.*;
 import org.apache.commons.lang3.tuple.Pair;
 import org.assertj.swing.annotation.GUITest;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
 import org.assertj.swing.junit.runner.GUITestRunner;
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
+import org.codehaus.plexus.util.cli.Arg;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -189,8 +187,23 @@ public class ControllerIT extends AssertJSwingJUnitTestCase {
 
     @Test
     @GUITest
-    public void testDeleteTask(){
+    public void testDeleteTask() throws PermissionException {
+        Pair<Task, Task> tasks = doLogin();
 
+        Task task2 = tasks.getRight();
+
+        window.button("btnDetailTask2").click();
+        window.button("btnDelete").click();
+
+        Assert.assertTrue(jframe.getContentPane() instanceof UserTasksList);
+
+        ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
+
+        verify(mockedModel).deleteTask(captor.capture());
+
+        Task deletedTask = captor.getValue();
+
+        Assert.assertEquals(task2, deletedTask);
     }
 
     private Pair<Task, Task> doLogin() throws PermissionException {
