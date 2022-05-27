@@ -159,7 +159,26 @@ public class UXSteps {
         Assert.assertFalse(taskList.stream().anyMatch(t -> t.getTitle().equals(deletedTask.getTitle())));
     }
 
-    @
+    @Given("the update page of the first task")
+    public void givenTheUpdatePageOfTheFirstTask(){
+        doLogin();
+
+        window.button("btnDetailTask1").click();
+        window.button("btnUpdate").click();
+    }
+
+    @When("I update the title with \"$newTitle\"")
+    public void whenIUpdateTheTitle(String newTitle){
+        window.textBox("txtTaskTitle").deleteText().enterText(newTitle);
+
+        window.button("btnMake").click();
+    }
+
+    @Then("the first task has the title \"$taskTitle\"")
+    public void thenTheFirstTaskHasTheTitle(String taskTitle){
+        window.label("lblTitleTask1").requireText(taskTitle);
+        Assert.assertTrue(dbUtils.getDBTaskTitles().contains(taskTitle));
+    }
 
     private void doLogin() {
         window.textBox("txtUsername").enterText(username);
