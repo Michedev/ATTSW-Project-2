@@ -35,5 +35,5 @@ When I delete the first task
 And I add a new task with title "Shopping" and subtasks "Bread", "Water", "Potatoes"
 And I update the second task with the new title "Updated title 23"
 Then the first task should not exists
-And it should exists a new task with title "Shopping" and subtasks "Bread", "Water", Potatoes"
+And it should exists a task with title "Shopping" and subtasks "Bread", "Water", "Potatoes"
 And the second task should have the title "Updated title 23"

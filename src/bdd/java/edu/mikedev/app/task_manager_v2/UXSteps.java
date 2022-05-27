@@ -180,6 +180,43 @@ public class UXSteps {
         Assert.assertTrue(dbUtils.getDBTaskTitles().contains(taskTitle));
     }
 
+    @Given("a logged user")
+    public void givenALoggedUser(){
+        doLogin();
+    }
+
+    @When("I delete the first task")
+    public void whenIDeleteTheFirstTask(){
+        window.button("btnDetailTask1").click();
+        deletedTask = ((TaskDetail) jframe.getContentPane()).getTask();
+        window.button("btnDelete").click();
+    }
+
+    @When("I update the second task with the new title \"$newTitle\"")
+    public void whenIUpdateTheSecondTask(String newTitle){
+        window.button("btnDetailTask2").click();
+        window.button("btnUpdate").click();
+
+        window.textBox("txtTaskTitle").deleteText().enterText(newTitle);
+        window.button("btnMake").click();
+    }
+
+    @Then("the first task should not exists")
+    public void thenTheFirstTaskShouldNotExists(){
+        Assert.assertNotNull(deletedTask);
+
+        Assert.assertFalse(dbUtils.getDBTaskTitles().contains(deletedTask.getTitle()));
+        List<Task> tasks = ((UserTasksList) jframe.getContentPane()).getTasks();
+        Assert.assertFalse(tasks.stream().anyMatch(t -> t.getTitle().equals(deletedTask.getTitle())));
+    }
+
+    @Then("the second task should have the title \"title\"")
+    public void thenTheSecondTaskShouldHaveThetitle(String title){
+        window.label("lblTitleTask2").requireText(title);
+
+        Assert.assertTrue(dbUtils.getDBTaskTitles().contains(title));
+    }
+
     private void doLogin() {
         window.textBox("txtUsername").enterText(username);
         window.textBox("txtPassword").enterText(password);
