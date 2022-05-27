@@ -129,6 +129,16 @@
 							<goal>integration-test</goal>
 							<goal>verify</goal>
 						</goals>
+						<configuration>
+							<skipTests>${skipIntegrationTests}</skipTests>
+							<includes>
+								<include>src/it/**/*.java</include>
+							</includes>
+							<excludes>
+								<exclude>src/bdd/**</exclude>
+								<exclude>src/test/**</exclude>
+							</excludes>
+						</configuration>
 					</execution>
 					<execution>
 						<id>E2E-test</id>
@@ -137,6 +147,7 @@
 							<goal>verify</goal>
 						</goals>
 						<configuration>
+							<skipTests>${skipE2ETests}</skipTests>
 							<includes>
 								<include>src/bdd/**/*E2E.java</include>
 							</includes>
