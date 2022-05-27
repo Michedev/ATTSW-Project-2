@@ -19,6 +19,8 @@ public class TaskManagerControllerTest {
 
     @Mock
     private JFrame jFrame;
+    @Mock
+    private Model model;
     @InjectMocks
     private TaskManagerController mainController;
     private AutoCloseable autoCloseable;
@@ -37,7 +39,11 @@ public class TaskManagerControllerTest {
 
     @Test
     public void testInitApplication(){
+        mainController = spy(mainController);
         mainController.initApplication();
+
+        verify(mainController).setViewController(any(LoginController.class));
+        verify(jFrame).setContentPane(any(LoginPage.class));
     }
 
     @Test
