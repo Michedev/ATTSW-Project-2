@@ -138,22 +138,7 @@ public class ControllerIT extends AssertJSwingJUnitTestCase {
     @Test
     @GUITest
     public void testGoTONewTaskPage() throws PermissionException {
-        Set<Task> tasks = new HashSet<>();
-        Task task1 = new Task("A", "B", "C", "D");
-        task1.setId(1);
-        Task task2 = new Task("123", "1", "2", "3");
-        task2.setId(2);
-        tasks.add(task1);
-        tasks.add(task2);
-
-        String username = "user123";
-        String password = "pass123";
-        User newUser = new User(username, password, "email@email.it", tasks);
-        when(mockedModel.login(username, password)).thenReturn(newUser);
-
-        window.textBox("txtUsername").enterText(username);
-        window.textBox("txtPassword").enterText(password);
-        window.button("btnLogin").click();
+        doLogin();
 
         window.button("btnNew").click();
 
@@ -163,22 +148,7 @@ public class ControllerIT extends AssertJSwingJUnitTestCase {
     @Test
     @GUITest
     public void testNewTask() throws PermissionException {
-        Set<Task> tasks = new HashSet<>();
-        Task task1 = new Task("A", "B", "C", "D");
-        task1.setId(1);
-        Task task2 = new Task("123", "1", "2", "3");
-        task2.setId(2);
-        tasks.add(task1);
-        tasks.add(task2);
-
-        String username = "user123";
-        String password = "pass123";
-        User newUser = new User(username, password, "email@email.it", tasks);
-        when(mockedModel.login(username, password)).thenReturn(newUser);
-
-        window.textBox("txtUsername").enterText(username);
-        window.textBox("txtPassword").enterText(password);
-        window.button("btnLogin").click();
+        doLogin();
 
         window.button("btnNew").click();
 
@@ -202,6 +172,25 @@ public class ControllerIT extends AssertJSwingJUnitTestCase {
         Assert.assertEquals(newTaskSubtask1, addedTask.getSubtask1());
         Assert.assertEquals(newTaskSubtask2, addedTask.getSubtask2());
         Assert.assertEquals(newTaskSubtask3, addedTask.getSubtask3());
+    }
+
+    private void doLogin() throws PermissionException {
+        Set<Task> tasks = new HashSet<>();
+        Task task1 = new Task("A", "B", "C", "D");
+        task1.setId(1);
+        Task task2 = new Task("123", "1", "2", "3");
+        task2.setId(2);
+        tasks.add(task1);
+        tasks.add(task2);
+
+        String username = "user123";
+        String password = "pass123";
+        User newUser = new User(username, password, "email@email.it", tasks);
+        when(mockedModel.login(username, password)).thenReturn(newUser);
+
+        window.textBox("txtUsername").enterText(username);
+        window.textBox("txtPassword").enterText(password);
+        window.button("btnLogin").click();
     }
 
 }
