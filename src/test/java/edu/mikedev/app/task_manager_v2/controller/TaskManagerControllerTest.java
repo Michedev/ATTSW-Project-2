@@ -13,8 +13,7 @@ import org.mockito.MockitoAnnotations;
 import javax.swing.*;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 public class TaskManagerControllerTest {
 
@@ -44,6 +43,7 @@ public class TaskManagerControllerTest {
     @Test
     public void testSetViewController(){
         RegisterController viewController = mock(RegisterController.class);
+        when(viewController.getView()).thenReturn(mock(RegisterPage.class));
 
         mainController.setViewController(viewController);
 

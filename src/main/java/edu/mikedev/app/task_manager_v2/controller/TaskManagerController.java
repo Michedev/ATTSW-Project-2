@@ -13,7 +13,8 @@ public class TaskManagerController {
     }
 
     public void setViewController(ViewController<?> controller) {
-
+        window.setContentPane(controller.getView());
+        controller.addEvents();
     }
 
     public void initApplication() {
