@@ -18,6 +18,7 @@ public class TaskManagerController {
     public void setViewController(ViewController<?> controller) {
         window.setContentPane(controller.getView());
         controller.addEvents();
+        window.pack();
     }
 
     public void initApplication() {

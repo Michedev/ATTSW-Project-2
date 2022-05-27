@@ -121,6 +121,11 @@
 							<goal>integration-test</goal>
 							<goal>verify</goal>
 						</goals>
+						<configuration>
+							<includes>
+								<include>**/ControllerIT.java</include>
+							</includes>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>

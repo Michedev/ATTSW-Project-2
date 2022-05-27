@@ -55,5 +55,6 @@ public class TaskManagerControllerTest {
 
         verify(jFrame).setContentPane(any(RegisterPage.class));
         verify(viewController).addEvents();
+        verify(jFrame).pack();
     }
 }
