@@ -113,6 +113,10 @@ public class UXSteps {
 
     @When("I add a new task with title \"$title\" and subtasks \"$subtask1\", \"$subtask2\", \"$subtask3\"")
     public void whenAddNewTask(String title, String subtask1, String subtask2, String subtask3){
+        if(jframe.getContentPane() instanceof UserTasksList){
+            window.button("btnNew").click();
+        }
+
         window.textBox("txtTaskTitle").enterText(title);
         window.textBox("txtStep1").enterText(subtask1);
         window.textBox("txtStep2").enterText(subtask2);
@@ -125,15 +129,11 @@ public class UXSteps {
     public void thenShouldExistsATask(String title, String subtask1, String subtask2, String subtask3){
         List<Task> userTasks = dbUtils.getUserTasks(idUser);
         Task task = userTasks.stream().filter(t -> t.getTitle().equals(title)).findFirst().get();
-        String labelName = window.label(JLabelMatcher.withText(title)).target().getName();
-        window.button("btnDetailTask" + labelName.charAt(labelName.length()-1)).click();
 
-        window.label("lblTaskTitle").requireText(title);
-        window.label("lblSubtask1").requireText(subtask1);
-        window.label("lblSubtask2").requireText(subtask2);
-        window.label("lblSubtask3").requireText(subtask3);
-
-        Assert.assertTrue(dbUtils.getDBTaskTitles().contains(title));
+        Assert.assertEquals(title, task.getTitle());
+        Assert.assertEquals(subtask1, task.getSubtask1());
+        Assert.assertEquals(subtask2, task.getSubtask2());
+        Assert.assertEquals(subtask3, task.getSubtask3());
     }
 
     @Given("the page of the first task")
@@ -210,7 +210,7 @@ public class UXSteps {
         Assert.assertFalse(tasks.stream().anyMatch(t -> t.getTitle().equals(deletedTask.getTitle())));
     }
 
-    @Then("the second task should have the title \"title\"")
+    @Then("the second task should have the title \"$title\"")
     public void thenTheSecondTaskShouldHaveThetitle(String title){
         window.label("lblTitleTask2").requireText(title);
 
