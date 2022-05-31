@@ -175,8 +175,8 @@ public class GUISteps {
     public void thenItShouldShowAnErrorMessage(){
         List<Task> actualTasks = ((UserTasksList) jframe.getContentPane()).getTasks();
         Assert.assertEquals(2, actualTasks.size());
-        window.label("lblError").requireVisible()
-                .requireText("The task with id 1 doesn't exists anymore");
+        window.label(JLabelMatcher.withName("lblError")).requireVisible()
+                .requireText("The task with id 1 is missing");
     }
 
     private void doLogin() {
