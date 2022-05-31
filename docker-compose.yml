@@ -1,0 +1,39 @@
+version: '2.1'
+
+services:
+  app-task-manager:
+    image: ubuntu:20.04
+    container_name: app-task-manager
+    build:
+      context: .
+      dockerfile: ./AppDockerfile
+    networks:
+      - my-network
+    environment:
+      DISPLAY: $DISPLAY
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    depends_on:
+      postgres-task-manager:
+        condition: service_healthy
+  postgres-task-manager:
+    image: postgres:14.1-alpine
+    container_name: postgres-task-manager
+    ports:
+      - 5432:5432
+    networks:
+      - my-network
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: test
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready --username=root -p 5432 -d test"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  my-network:
+    driver: bridge
+

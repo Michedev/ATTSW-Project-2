@@ -3,6 +3,7 @@ package edu.mikedev.app.task_manager_v2.model;
 import edu.mikedev.app.task_manager_v2.data.Task;
 import edu.mikedev.app.task_manager_v2.data.User;
 
+import javax.inject.Inject;
 import java.util.List;
 import java.util.Objects;
 
@@ -12,6 +13,7 @@ public class Model {
     private static final String TASK_OWNER_ERROR_MESSAGE = "The task owner is not the logged user";
     private User logged;
 
+    @Inject
     public Model(TransactionManager transactionManager) {
         this.transactionManager = transactionManager;
     }
