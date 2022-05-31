@@ -55,6 +55,8 @@ public class TaskDetailController implements ViewController<TaskDetail> {
         UserTasksList view = new UserTasksList(loggedUserTasks);
         UserTasksController userTasksController = new UserTasksController(model, view, managerController);
         managerController.setViewController(userTasksController);
-        view.setErrorMessage(String.format("The task with id %d is missing", missingId));
+        if(missingId != -1){
+            view.setErrorMessage(String.format("The task with id %d is missing", missingId));
+        }
     }
 }
