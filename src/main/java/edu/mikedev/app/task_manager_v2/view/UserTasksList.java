@@ -79,4 +79,9 @@ public class UserTasksList extends JPanel {
 
 	public void addActionListenerNewButton(ActionListener listener) {
 		btnNew.addActionListener(listener);
-	}}
+	}
+
+	public void setErrorMessage(String message) {
+		lblError.setText(message);
+	}
+}

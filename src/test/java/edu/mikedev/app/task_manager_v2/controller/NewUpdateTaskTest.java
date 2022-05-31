@@ -11,6 +11,7 @@ import org.mockito.*;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import static org.mockito.Mockito.*;
 
@@ -167,5 +168,37 @@ public class NewUpdateTaskTest {
         ActionListener listener = captor.getValue();
         listener.actionPerformed(null);
         verify(newUpdateTaskController).onClickMakeButton();
+    }
+
+    @Test
+    public void testUpdateTaskWhenNotExistingOntoTheDB() throws PermissionException {
+        String subtask1 = "R";
+        String subtask2 = "T";
+        String subtask3 = "Y";
+        Task toUpdate = new Task("AAA", subtask1, subtask2, subtask3);
+        toUpdate.setId(100);
+        when(view.getTaskToUpdate()).thenReturn(toUpdate);
+        when(model.getLoggedUserTasks()).thenReturn(new ArrayList<>());
+
+        String newTaskTitle = "TTT";
+
+        when(view.getTaskTitle()).thenReturn(newTaskTitle);
+        when(view.getTaskSubtask1()).thenReturn(subtask1);
+        when(view.getTaskSubtask2()).thenReturn(subtask2);
+        when(view.getTaskSubtask3()).thenReturn(subtask3);
+
+        newUpdateTaskController.onClickMakeButton();
+
+        Task updatedTask = new Task(newTaskTitle, subtask1, subtask2, subtask3);
+
+        ArgumentCaptor<UserTasksController> captor = ArgumentCaptor.forClass(UserTasksController.class);
+
+        InOrder inOrder = inOrder(model, mainController);
+        inOrder.verify(model).updateTask(updatedTask);
+        inOrder.verify(model).getLoggedUserTasks();
+        inOrder.verify(mainController).setViewController(captor.capture());
+
+        UserTasksController taskController = captor.getValue();
+        verify(taskController).getView().setErrorMessage("The task with id 100 is missing");
     }
 }

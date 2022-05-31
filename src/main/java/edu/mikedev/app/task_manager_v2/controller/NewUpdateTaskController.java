@@ -6,6 +6,8 @@ import edu.mikedev.app.task_manager_v2.model.PermissionException;
 import edu.mikedev.app.task_manager_v2.view.NewUpdateTask;
 import edu.mikedev.app.task_manager_v2.view.UserTasksList;
 
+import java.util.List;
+
 public class NewUpdateTaskController implements ViewController<NewUpdateTask> {
 
     private final Model model;
@@ -54,20 +56,29 @@ public class NewUpdateTaskController implements ViewController<NewUpdateTask> {
             return;
         }
         Task taskToUpdate = view.getTaskToUpdate();
+        List<Task> loggedUserTasks = null;
+        try {
+            loggedUserTasks = model.getLoggedUserTasks();
+        } catch (PermissionException e) {
+            throw new RuntimeException(e);
+        }
+        int missingId = -1;
         if(taskToUpdate == null){
             addNewTask(taskTitle, taskSubtask1, taskSubtask2, taskSubtask3);
         } else {
             updateTask(taskTitle, taskSubtask1, taskSubtask2, taskSubtask3, taskToUpdate);
+            if(!loggedUserTasks.stream().anyMatch(t -> taskToUpdate.getId() == taskToUpdate.getId())){
+                missingId = taskToUpdate.getId();
+            }
+
         }
 
-        UserTasksList view = null;
-        try {
-            view = new UserTasksList(model.getLoggedUserTasks());
-        } catch (PermissionException e) {
-            throw new RuntimeException(e);
-        }
+        UserTasksList view = new UserTasksList(loggedUserTasks);
         UserTasksController viewController = new UserTasksController(model, view, managerController);
         managerController.setViewController(viewController);
+        if(missingId != -1){
+            view.setErrorMessage(String.format("The task with id %d is missing", missingId));
+        }
     }
 
     private void updateTask(String taskTitle, String taskSubtask1, String taskSubtask2, String taskSubtask3, Task taskToUpdate) {
