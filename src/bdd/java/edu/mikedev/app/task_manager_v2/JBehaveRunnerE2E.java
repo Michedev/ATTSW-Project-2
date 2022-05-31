@@ -1,17 +1,23 @@
 package edu.mikedev.app.task_manager_v2;
 
 import com.github.valfirst.jbehave.junit.monitoring.JUnitReportingRunner;
+import edu.mikedev.app.task_manager_v2.model.HibernateTransactionManager;
+import edu.mikedev.app.task_manager_v2.model.TransactionManager;
+import edu.mikedev.app.task_manager_v2.utils.HibernateDBUtilsPostgre;
+import org.hibernate.SessionFactory;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.JUnitStories;
-import org.jbehave.core.junit.JUnitStory;
 import org.jbehave.core.reporters.Format;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
+import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,7 +28,13 @@ import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 @RunWith(JUnitReportingRunner.class)
 public class JBehaveRunnerE2E extends JUnitStories {
 
-    // Here we specify the configuration, starting from default MostUsefulConfiguration, and changing only what is needed
+
+
+    @ClassRule
+    public static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:14.3-alpine")
+            .withDatabaseName("test").withUsername("root").withPassword("root");
+    private static HibernateDBUtilsPostgre dbUtils;
+
     @Override
     protected List<String> storyPaths() {
         String codeLocation = codeLocationFromClass(this.getClass()).getFile();
@@ -44,6 +56,20 @@ public class JBehaveRunnerE2E extends JUnitStories {
     @Override
     public InjectableStepsFactory stepsFactory() {
         // varargs, can have more that one steps classes
-        return new InstanceStepsFactory(configuration(), new UXSteps());
+        System.out.println("============= StepsFactory() ");
+        InitApp initApp = new InitApp();
+        return new InstanceStepsFactory(configuration(), initApp, new GUISteps(initApp), new DBSteps(initApp));
     }
+
+    @BeforeClass
+    public static void beforeClass(){
+        dbUtils = new HibernateDBUtilsPostgre(postgreSQLContainer.getContainerIpAddress(),
+                postgreSQLContainer.getMappedPort(5432), "test");
+
+        SessionFactory sessionFactory = dbUtils.buildSessionFactory();
+        TransactionManager transactionManager = new HibernateTransactionManager(sessionFactory);
+    }
+
+
+
 }
