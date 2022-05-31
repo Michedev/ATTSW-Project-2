@@ -1,17 +1,13 @@
 package edu.mikedev.app.task_manager_v2.view;
 
-import static org.junit.Assert.*;
-
+import edu.mikedev.app.task_manager_v2.data.Task;
 import org.assertj.swing.annotation.GUITest;
+import org.assertj.swing.core.matcher.JLabelMatcher;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
 import org.assertj.swing.junit.runner.GUITestRunner;
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-
-import edu.mikedev.app.task_manager_v2.data.Task;
 import org.junit.runner.RunWith;
 
 import javax.swing.*;
@@ -38,13 +34,17 @@ public class NewUpdateTaskTest extends AssertJSwingJUnitTestCase {
 	public void testBaseView() {
 		window.label("lblTaskTitle").requireText("Title");
 		window.textBox("txtTaskTitle").requireEmpty();
+		window.label(JLabelMatcher.withName("lblTitleErrorLabel")).requireNotVisible();
 		window.label("lblStep1").requireText("Step 1");
 		window.textBox("txtStep1").requireEmpty();
+		window.label(JLabelMatcher.withName("lblStep1ErrorLabel")).requireNotVisible();
 		window.label("lblStep2").requireText("Step 2");
 		window.textBox("txtStep2").requireEmpty();
+		window.label(JLabelMatcher.withName("lblStep2ErrorLabel")).requireNotVisible();
 		window.label("lblStep3").requireText("Step 3");
 		window.textBox("txtStep3").requireEmpty();
-		
+		window.label(JLabelMatcher.withName("lblStep3ErrorLabel")).requireNotVisible();
+
 		window.button("btnMake").requireText("Add");
 	}
 

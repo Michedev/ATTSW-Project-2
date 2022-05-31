@@ -1,15 +1,14 @@
 package edu.mikedev.app.task_manager_v2.view;
 
-import javax.swing.JPanel;
-import java.awt.GridBagLayout;
-import javax.swing.JLabel;
-import java.awt.GridBagConstraints;
-import javax.swing.JTextField;
-import java.awt.Insets;
-import java.awt.Color;
-import javax.swing.JButton;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionListener;
 
 public class RegisterPage extends JPanel {
+	private final JLabel lblPasswordError;
+	private final JLabel lblUsernameError;
+	private final JLabel lblEmailError;
+	private final JButton btnConfirm;
 	private JTextField txtUsername;
 	private JTextField txtPassword;
 	private JTextField txtEmail;
@@ -38,8 +37,8 @@ public class RegisterPage extends JPanel {
 		gbc_txtUsername.gridy = 1;
 		add(txtUsername, gbc_txtUsername);
 		txtUsername.setColumns(10);
-		
-		JLabel lblUsernameError = new JLabel("Username Error");
+
+		lblUsernameError = new JLabel("Username Error");
 		lblUsernameError.setVisible(false);
 		lblUsernameError.setForeground(Color.RED);
 		lblUsernameError.setName("lblUsernameError");
@@ -66,8 +65,8 @@ public class RegisterPage extends JPanel {
 		gbc_txtPassword.gridy = 4;
 		add(txtPassword, gbc_txtPassword);
 		txtPassword.setColumns(10);
-		
-		JLabel lblPasswordError = new JLabel("Password Error");
+
+		lblPasswordError = new JLabel("Password Error");
 		lblPasswordError.setVisible(false);
 		lblPasswordError.setForeground(Color.RED);
 		lblPasswordError.setName("lblPasswordError");
@@ -95,8 +94,8 @@ public class RegisterPage extends JPanel {
 		gbc_txtEmail.gridy = 7;
 		add(txtEmail, gbc_txtEmail);
 		txtEmail.setColumns(10);
-		
-		JLabel lblEmailError = new JLabel("Email Error");
+
+		lblEmailError = new JLabel("Email Error");
 		lblEmailError.setVisible(false);
 		lblEmailError.setName("lblEmailError");
 		lblEmailError.setForeground(Color.RED);
@@ -105,8 +104,8 @@ public class RegisterPage extends JPanel {
 		gbc_lblEmailError.gridx = 0;
 		gbc_lblEmailError.gridy = 8;
 		add(lblEmailError, gbc_lblEmailError);
-		
-		JButton btnConfirm = new JButton("Confirm");
+
+		btnConfirm = new JButton("Confirm");
 		btnConfirm.setName("btnConfirm");
 		GridBagConstraints gbc_btnConfirm = new GridBagConstraints();
 		gbc_btnConfirm.gridx = 0;
@@ -114,4 +113,31 @@ public class RegisterPage extends JPanel {
 		add(btnConfirm, gbc_btnConfirm);
 	}
 
+	public String getUsername() {
+		return txtUsername.getText();
+	}
+
+	public String getPassword() {
+		return txtPassword.getText();
+	}
+
+	public String getEmail() {
+		return txtEmail.getText();
+	}
+
+	public void setErrorLabelUsername(String errorMessage) {
+		lblUsernameError.setText(errorMessage);
+	}
+
+	public void setErrorLabelPassword(String errorMessage) {
+		lblPasswordError.setText(errorMessage);
+	}
+
+	public void setErrorLabelEmail(String errorMessage) {
+		lblEmailError.setText(errorMessage);
+	}
+
+	public void addActionListenerConfirmBtn(ActionListener actionListener) {
+		btnConfirm.addActionListener(actionListener);
+	}
 }

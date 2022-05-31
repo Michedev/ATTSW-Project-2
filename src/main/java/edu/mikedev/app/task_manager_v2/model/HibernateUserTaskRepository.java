@@ -4,6 +4,8 @@ import edu.mikedev.app.task_manager_v2.data.Task;
 import edu.mikedev.app.task_manager_v2.data.User;
 import org.hibernate.Session;
 
+import java.util.List;
+
 public class HibernateUserTaskRepository implements UserTaskRepository {
 
     private final Session session;
@@ -33,6 +35,12 @@ public class HibernateUserTaskRepository implements UserTaskRepository {
     public Task getTaskById(int id) {
         return session.find(Task.class, id);
     }
+
+    @Override
+    public List<Task> getUserTasks(int userId) {
+        return session.createQuery(String.format("SELECT t FROM Task t WHERE ID_USER = %d ORDER BY ID", userId), Task.class).getResultList();
+    }
+
     @Override
     public void add(Task task) {
         session.save(task);

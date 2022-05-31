@@ -1,15 +1,16 @@
 package edu.mikedev.app.task_manager_v2.view;
 
-import javax.swing.JPanel;
-
 import edu.mikedev.app.task_manager_v2.data.Task;
-import java.awt.GridBagLayout;
-import javax.swing.JLabel;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import javax.swing.JButton;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionListener;
 
 public class TaskDetail extends JPanel {
+
+	private final JButton btnDelete;
+	private final JButton btnUpdate;
+	private final transient Task task;
 
 	public TaskDetail(Task task) {
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -54,22 +55,34 @@ public class TaskDetail extends JPanel {
 		gbc_lblSubtask3.gridx = 0;
 		gbc_lblSubtask3.gridy = 4;
 		add(lblSubtask3, gbc_lblSubtask3);
-		
-		JButton btnUpdate = new JButton("Update");
+
+		btnUpdate = new JButton("Update");
 		btnUpdate.setName("btnUpdate");
 		GridBagConstraints gbc_btnUpdate = new GridBagConstraints();
 		gbc_btnUpdate.insets = new Insets(0, 0, 0, 5);
 		gbc_btnUpdate.gridx = 0;
 		gbc_btnUpdate.gridy = 6;
 		add(btnUpdate, gbc_btnUpdate);
-		
-		JButton btnDelete = new JButton("Delete");
+
+		btnDelete = new JButton("Delete");
 		btnDelete.setName("btnDelete");
 		GridBagConstraints gbc_btnDelete = new GridBagConstraints();
 		gbc_btnDelete.gridx = 1;
 		gbc_btnDelete.gridy = 6;
 		add(btnDelete, gbc_btnDelete);
 
+		this.task = task;
 	}
 
+	public Task getTask() {
+		return task;
+	}
+
+	public void addActionListenerUpdateButton(ActionListener actionListener) {
+		btnUpdate.addActionListener(actionListener);
+	}
+
+	public void addActionListenerDeleteButton(ActionListener actionListener) {
+		btnDelete.addActionListener(actionListener);
+	}
 }

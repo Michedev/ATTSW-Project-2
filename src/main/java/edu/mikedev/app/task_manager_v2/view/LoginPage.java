@@ -1,12 +1,13 @@
 package edu.mikedev.app.task_manager_v2.view;
 
 import javax.swing.*;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
-import java.awt.Color;
+import java.awt.*;
+import java.awt.event.ActionListener;
 
 public class LoginPage extends JPanel {
+	private final JLabel lblLoginError;
+	private final JButton btnLogin;
+	private final JButton btnRegister;
 	private JTextField txtUsername;
 	private JTextField txtPassword;
 	public LoginPage() {
@@ -57,9 +58,8 @@ public class LoginPage extends JPanel {
 		gbc_txtPassword.gridy = 3;
 		add(txtPassword, gbc_txtPassword);
 		txtPassword.setColumns(10);
-		
-		JLabel lblLoginError = new JLabel("Error message");
-		lblLoginError.setOpaque(true);
+
+		lblLoginError = new JLabel("Error message");
 		lblLoginError.setName("lblLoginError");
 		lblLoginError.setForeground(Color.RED);
 		lblLoginError.setVisible(false);
@@ -69,20 +69,41 @@ public class LoginPage extends JPanel {
 		gbc_lblLoginError.gridx = 0;
 		gbc_lblLoginError.gridy = 4;
 		add(lblLoginError, gbc_lblLoginError);
-		
-		JButton btnLogin = new JButton("Login");
+
+		btnLogin = new JButton("Login");
 		btnLogin.setName("btnLogin");
 		GridBagConstraints gbc_btnLogin = new GridBagConstraints();
 		gbc_btnLogin.insets = new Insets(0, 0, 0, 5);
 		gbc_btnLogin.gridx = 0;
 		gbc_btnLogin.gridy = 5;
 		add(btnLogin, gbc_btnLogin);
-		
-		JButton btnRegister = new JButton("Register");
+
+		btnRegister = new JButton("Register");
 		btnRegister.setName("btnRegister");
 		GridBagConstraints gbc_btnRegister = new GridBagConstraints();
 		gbc_btnRegister.gridx = 1;
 		gbc_btnRegister.gridy = 5;
 		add(btnRegister, gbc_btnRegister);
 	}
+
+	public String getUsername() {
+		return txtUsername.getText();
+	}
+
+	public String getPassword() {
+		return txtPassword.getText();
+	}
+
+	public void setErrorLabelText(String errorMessage) {
+		lblLoginError.setText(errorMessage);
+	}
+
+	public void addActionListenerBtnLogin(ActionListener l){
+		btnLogin.addActionListener(l);
+	}
+
+	public void addActionListenerBtnRegister(ActionListener l){
+		btnRegister.addActionListener(l);
+	}
+
 }

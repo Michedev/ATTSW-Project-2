@@ -3,6 +3,9 @@ package edu.mikedev.app.task_manager_v2.model;
 import edu.mikedev.app.task_manager_v2.data.Task;
 import edu.mikedev.app.task_manager_v2.data.User;
 
+import java.util.List;
+import java.util.Objects;
+
 public class Model {
     private final TransactionManager transactionManager;
     private static final String LOGIN_ERROR_MESSAGE = "You must login by calling the login() method before calling this one.";
@@ -57,18 +60,24 @@ public class Model {
         });
     }
 
-    public void deleteTask(Task task) throws PermissionException {
+    public Task deleteTask(Task task) throws PermissionException {
         if(this.logged == null){
             throw new PermissionException(LOGIN_ERROR_MESSAGE);
         }
         if(this.logged.getId() != task.getTaskOwner().getId()){
             throw new PermissionException(TASK_OWNER_ERROR_MESSAGE);
         }
-        transactionManager.doInTransaction(repository -> {
-            repository.delete(task);
-            return null;
-        });
 
+
+
+        return transactionManager.doInTransaction(repository -> {
+            Task taskById = repository.getTaskById(task.getId());
+            if(Objects.isNull(taskById)){
+                return null;
+            }
+            repository.delete(taskById);
+            return taskById;
+        });
     }
 
     public void registerUser(User user) throws IllegalStateException, IllegalArgumentException {
@@ -105,5 +114,13 @@ public class Model {
             throw new IllegalStateException("You cannot logout before login");
         }
         this.logged = null;
+    }
+
+    public List<Task> getLoggedUserTasks() throws PermissionException {
+        if(this.logged == null){
+            throw new PermissionException(LOGIN_ERROR_MESSAGE);
+        }
+        return transactionManager.doInTransaction(repository -> repository.getUserTasks(logged.getId()));
+
     }
 }

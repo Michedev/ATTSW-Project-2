@@ -74,6 +74,12 @@
 			<version>1.16.3</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.github.valfirst</groupId>
+			<artifactId>jbehave-junit-runner</artifactId>
+			<version>2.3.1</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -92,6 +98,7 @@
 						<configuration>
 							<sources>
 								<source>src/it/java</source>
+								<source>src/bdd/java</source>
 							</sources>
 						</configuration>
 					</execution>
@@ -105,6 +112,7 @@
 							<resources>
 								<resource>
 									<directory>src/it/resources</directory>
+									<directory>src/bdd/resources</directory>
 								</resource>
 							</resources>
 						</configuration>
@@ -121,6 +129,33 @@
 							<goal>integration-test</goal>
 							<goal>verify</goal>
 						</goals>
+						<configuration>
+							<skipTests>${skipIntegrationTests}</skipTests>
+							<includes>
+								<include>src/it/**/*.java</include>
+							</includes>
+							<excludes>
+								<exclude>src/bdd/**</exclude>
+								<exclude>src/test/**</exclude>
+							</excludes>
+						</configuration>
+					</execution>
+					<execution>
+						<id>E2E-test</id>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+						<configuration>
+							<skipTests>${skipE2ETests}</skipTests>
+							<includes>
+								<include>**/*E2E.java</include>
+							</includes>
+							<excludes>
+								<exclude>src/it/**</exclude>
+								<exclude>src/test/**</exclude>
+							</excludes>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -139,6 +174,7 @@
 							</includes>
 							<excludes>
 								<exclude>**/*IT.java</exclude>
+								<exclude>**/*E2E.java</exclude>
 							</excludes>
 						</configuration>
 					</execution>

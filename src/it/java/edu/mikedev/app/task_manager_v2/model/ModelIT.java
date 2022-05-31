@@ -8,9 +8,11 @@ import org.junit.*;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.sql.SQLException;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class ModelIT {
 
@@ -180,6 +182,24 @@ public class ModelIT {
 
         PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.getUserTask(userTask.getId()));
         Assert.assertEquals(LOGIN_ERROR_MESSAGE, e.getMessage());
+    }
+
+    @Test
+    public void testGetLoggedUserTasks(){
+        User user = dbUtils.users.iterator().next();
+        List<Task> expected  = user.getTasks().stream()
+                                .sorted(Comparator.comparingInt(Task::getId))
+                                .collect(Collectors.toList());
+
+        List<Task> actual = null;
+        try {
+            model.login(user.getUsername(), user.getPassword());
+            actual = model.getLoggedUserTasks();
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
+
+        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
     }
 
     @After

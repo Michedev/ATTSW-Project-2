@@ -2,16 +2,13 @@ package edu.mikedev.app.task_manager_v2.model;
 
 import edu.mikedev.app.task_manager_v2.data.Task;
 import edu.mikedev.app.task_manager_v2.data.User;
-import edu.mikedev.app.task_manager_v2.utils.HibernateDBUtilsInMemory;
-import org.hibernate.SessionFactory;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.awt.*;
-import java.util.function.Function;
+import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 
 import static org.mockito.AdditionalAnswers.answer;
 import static org.mockito.ArgumentMatchers.any;
@@ -100,8 +97,46 @@ public class HibernateModelTest {
         verify(repository, times(1)).getTaskById(10);
     }
 
+    @Test
+    public void testGetUsertasksWhenNotLogged(){
+        PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.getLoggedUserTasks());
+        Assert.assertEquals(LOGIN_ERROR_MESSAGE, e.getMessage());
+        verify(repository, never()).getUserTasks(anyInt());
+    }
+
+    @Test
+    public void testGetUserTasks(){
+        List<Task> taskList = Arrays.asList(
+          new Task("QWERTY", "F", "G", "H"),
+          new Task("AAA", "B", "C", "D"),
+          new Task("111", "#", "$", "^")
+        );
+        User mockedUser = new User("AAAA", "CCC", "E");
+        int userId = 10043;
+        mockedUser.setId(userId);
+        when(repository.getUserByUsernamePassword(USERNAME, PASSWORD)).thenReturn(mockedUser);
+        when(repository.getUserTasks(userId)).thenReturn(taskList);
+        try{
+            model.login(USERNAME, PASSWORD);
+        } catch (PermissionException e){
+            Assert.fail(e.getMessage());
+        }
+
+        List<Task> loggedUserTasks = null;
+        try {
+            loggedUserTasks = model.getLoggedUserTasks();
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
+
+        Assert.assertNotNull(loggedUserTasks);
+        Assert.assertArrayEquals(taskList.toArray(), loggedUserTasks.toArray());
+        verify(repository).getUserTasks(userId);
+    }
+
     private Task getUserTask() {
         Task userTask = new Task("AAA", "1", "2", "3");
+        userTask.setId(100);
         userTask.setTaskOwner(mockedUser);
         return userTask;
     }
@@ -194,8 +229,8 @@ public class HibernateModelTest {
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
-
         Task userTask = getUserTask();
+        when(repository.getTaskById(userTask.getId())).thenReturn(userTask);
 
         try {
             model.deleteTask(userTask);
