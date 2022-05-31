@@ -63,7 +63,6 @@ public class LoginPage extends JPanel {
 		txtPassword.setColumns(10);
 
 		lblLoginError = new JLabel("Error message");
-		lblLoginError.setOpaque(true);
 		lblLoginError.setName("lblLoginError");
 		lblLoginError.setForeground(Color.RED);
 		lblLoginError.setVisible(false);
