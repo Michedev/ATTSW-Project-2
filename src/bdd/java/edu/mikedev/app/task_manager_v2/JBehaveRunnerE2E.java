@@ -56,18 +56,8 @@ public class JBehaveRunnerE2E extends JUnitStories {
     @Override
     public InjectableStepsFactory stepsFactory() {
         // varargs, can have more that one steps classes
-        System.out.println("============= StepsFactory() ");
         InitApp initApp = new InitApp();
         return new InstanceStepsFactory(configuration(), initApp, new GUISteps(initApp), new DBSteps(initApp));
-    }
-
-    @BeforeClass
-    public static void beforeClass(){
-        dbUtils = new HibernateDBUtilsPostgre(postgreSQLContainer.getContainerIpAddress(),
-                postgreSQLContainer.getMappedPort(5432), "test");
-
-        SessionFactory sessionFactory = dbUtils.buildSessionFactory();
-        TransactionManager transactionManager = new HibernateTransactionManager(sessionFactory);
     }
 
 
