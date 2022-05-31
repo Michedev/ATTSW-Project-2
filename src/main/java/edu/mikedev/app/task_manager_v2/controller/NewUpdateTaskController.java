@@ -35,6 +35,42 @@ public class NewUpdateTaskController implements ViewController<NewUpdateTask> {
         String taskSubtask1 = view.getTaskSubtask1();
         String taskSubtask2 = view.getTaskSubtask2();
         String taskSubtask3 = view.getTaskSubtask3();
+        boolean anyError = setErrorLabelsTxtFields(taskTitle, taskSubtask1, taskSubtask2, taskSubtask3);
+        if(anyError){
+            return;
+        }
+        Task taskToUpdate = view.getTaskToUpdate();
+        int missingId = -1;
+        if(taskToUpdate == null){
+            addNewTask(taskTitle, taskSubtask1, taskSubtask2, taskSubtask3);
+        } else {
+            updateTask(taskTitle, taskSubtask1, taskSubtask2, taskSubtask3, taskToUpdate);
+        }
+
+        List<Task> loggedUserTasks = null;
+        try {
+            loggedUserTasks = model.getLoggedUserTasks();
+        } catch (PermissionException e) {
+            throw new RuntimeException(e);
+        }
+
+        if(taskToUpdate != null && loggedUserTasks.stream().noneMatch(t -> taskToUpdate.getId() == taskToUpdate.getId())){
+            missingId = taskToUpdate.getId();
+        }
+
+        UserTasksList view = makeUserTasksList(loggedUserTasks);
+        UserTasksController viewController = new UserTasksController(model, view, managerController);
+        managerController.setViewController(viewController);
+        if(missingId != -1){
+            view.setErrorMessage(String.format("The task with id %d is missing", missingId));
+        }
+    }
+
+    public UserTasksList makeUserTasksList(List<Task> loggedUserTasks) {
+        return new UserTasksList(loggedUserTasks);
+    }
+
+    private boolean setErrorLabelsTxtFields(String taskTitle, String taskSubtask1, String taskSubtask2, String taskSubtask3) {
         boolean anyError = false;
         if(taskTitle.isEmpty()){
             view.setTitleErrorLabelText("Missing title");
@@ -52,33 +88,7 @@ public class NewUpdateTaskController implements ViewController<NewUpdateTask> {
             view.setStep3ErrorLabelText("Missing subtask 3");
             anyError = true;
         }
-        if(anyError){
-            return;
-        }
-        Task taskToUpdate = view.getTaskToUpdate();
-        List<Task> loggedUserTasks = null;
-        try {
-            loggedUserTasks = model.getLoggedUserTasks();
-        } catch (PermissionException e) {
-            throw new RuntimeException(e);
-        }
-        int missingId = -1;
-        if(taskToUpdate == null){
-            addNewTask(taskTitle, taskSubtask1, taskSubtask2, taskSubtask3);
-        } else {
-            updateTask(taskTitle, taskSubtask1, taskSubtask2, taskSubtask3, taskToUpdate);
-            if(!loggedUserTasks.stream().anyMatch(t -> taskToUpdate.getId() == taskToUpdate.getId())){
-                missingId = taskToUpdate.getId();
-            }
-
-        }
-
-        UserTasksList view = new UserTasksList(loggedUserTasks);
-        UserTasksController viewController = new UserTasksController(model, view, managerController);
-        managerController.setViewController(viewController);
-        if(missingId != -1){
-            view.setErrorMessage(String.format("The task with id %d is missing", missingId));
-        }
+        return anyError;
     }
 
     private void updateTask(String taskTitle, String taskSubtask1, String taskSubtask2, String taskSubtask3, Task taskToUpdate) {

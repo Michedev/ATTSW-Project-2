@@ -4,10 +4,12 @@ import edu.mikedev.app.task_manager_v2.data.Task;
 import edu.mikedev.app.task_manager_v2.model.Model;
 import edu.mikedev.app.task_manager_v2.model.PermissionException;
 import edu.mikedev.app.task_manager_v2.view.NewUpdateTask;
+import edu.mikedev.app.task_manager_v2.view.UserTasksList;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.*;
+import org.mockito.stubbing.OngoingStubbing;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -179,6 +181,9 @@ public class NewUpdateTaskTest {
         toUpdate.setId(100);
         when(view.getTaskToUpdate()).thenReturn(toUpdate);
         when(model.getLoggedUserTasks()).thenReturn(new ArrayList<>());
+        UserTasksList mockedUserTasksListView = mock(UserTasksList.class);
+        NewUpdateTaskController spiedController = spy(newUpdateTaskController);
+        when(spiedController.makeUserTasksList(anyList())).thenReturn(mockedUserTasksListView);
 
         String newTaskTitle = "TTT";
 
@@ -187,18 +192,15 @@ public class NewUpdateTaskTest {
         when(view.getTaskSubtask2()).thenReturn(subtask2);
         when(view.getTaskSubtask3()).thenReturn(subtask3);
 
-        newUpdateTaskController.onClickMakeButton();
+        spiedController.onClickMakeButton();
 
         Task updatedTask = new Task(newTaskTitle, subtask1, subtask2, subtask3);
-
-        ArgumentCaptor<UserTasksController> captor = ArgumentCaptor.forClass(UserTasksController.class);
 
         InOrder inOrder = inOrder(model, mainController);
         inOrder.verify(model).updateTask(updatedTask);
         inOrder.verify(model).getLoggedUserTasks();
-        inOrder.verify(mainController).setViewController(captor.capture());
+        inOrder.verify(mainController).setViewController(any(UserTasksController.class));
 
-        UserTasksController taskController = captor.getValue();
-        verify(taskController).getView().setErrorMessage("The task with id 100 is missing");
+        verify(mockedUserTasksListView).setErrorMessage(String.format("The task with id %d is missing", toUpdate.getId()));
     }
 }
