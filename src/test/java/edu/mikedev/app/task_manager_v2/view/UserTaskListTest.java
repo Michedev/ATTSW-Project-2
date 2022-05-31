@@ -45,6 +45,7 @@ public class UserTaskListTest extends AssertJSwingJUnitTestCase {
 		window.button("btnDetailTask2").requireText("Detail");
 		window.label("lblTitleTask3").requireText("Title3");
 		window.button("btnDetailTask3").requireText("Detail");
+		window.label(JLabelMatcher.withName("lblError")).requireNotVisible();
 
 		window.button("btnNew").requireText("New");
 	}

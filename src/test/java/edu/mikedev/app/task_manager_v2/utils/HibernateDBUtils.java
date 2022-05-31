@@ -244,4 +244,15 @@ public abstract class HibernateDBUtils {
         return result;
 
     }
+
+    public void deleteTask(Task task) {
+        try {
+            Connection connection = initDBConnection();
+            Statement statement = connection.createStatement();
+            statement.executeQuery(String.format("DELETE FROM Tasks where id = %d", task.getId()));
+            connection.close();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
 }

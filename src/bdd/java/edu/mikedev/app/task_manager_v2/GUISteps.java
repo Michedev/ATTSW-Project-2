@@ -1,8 +1,10 @@
 package edu.mikedev.app.task_manager_v2;
 
 import edu.mikedev.app.task_manager_v2.data.Task;
+import edu.mikedev.app.task_manager_v2.view.LoginPage;
 import edu.mikedev.app.task_manager_v2.view.TaskDetail;
 import edu.mikedev.app.task_manager_v2.view.UserTasksList;
+import org.assertj.swing.core.matcher.JLabelMatcher;
 import org.assertj.swing.fixture.FrameFixture;
 import org.jbehave.core.annotations.*;
 import org.junit.Assert;
@@ -88,6 +90,7 @@ public class GUISteps {
     }
 
     @When("I click the delete button")
+    @Alias("the user clicks the Delete button")
     public void whenClickDeleteButton(){
         deletedTask = ((TaskDetail) jframe.getContentPane()).getTask();
         window.button("btnDelete").click();
@@ -152,6 +155,28 @@ public class GUISteps {
     @Then("the second task should have the title \"$title\"")
     public void thenTheSecondTaskShouldHaveThetitle(String title){
         window.label("lblTitleTask2").requireText(title);
+    }
+
+    @When("I update with the new title \"\"")
+    public void updateMissingTitle(){
+        window.textBox("txtTaskTitle").deleteText();
+
+        window.button("btnMake").click();
+    }
+
+    @When("I update with the new title \"$newTitle\"")
+    public void whenUpdateTitleOnly(String newTitle){
+        window.textBox("txtTaskTitle").deleteText().enterText(newTitle);
+
+        window.button("btnMake").click();
+    }
+
+    @Then("it should show an error message saying that the task doesn't exists anymore")
+    public void thenItShouldShowAnErrorMessage(){
+        List<Task> actualTasks = ((UserTasksList) jframe.getContentPane()).getTasks();
+        Assert.assertEquals(2, actualTasks.size());
+        window.label("lblError").requireVisible()
+                .requireText("The task with id 1 doesn't exists anymore");
     }
 
     private void doLogin() {
