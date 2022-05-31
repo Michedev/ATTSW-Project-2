@@ -12,7 +12,7 @@ public class NewUpdateTask extends JPanel {
 	private JTextField txtStep2;
 	private JTextField txtStep3;
 	private JButton btnMake;
-	private Task taskToUpdate;
+	private transient Task taskToUpdate;
 	private JLabel lblTitleErrorLabel;
 	private JLabel lblStep1ErrorLabel;
 	private JLabel lblStep2ErrorLabel;

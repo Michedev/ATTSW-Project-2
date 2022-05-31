@@ -35,8 +35,8 @@ public class UserTasksController implements ViewController<UserTasksList>{
     }
 
     public void onClickDetailButton(Task task) {
-        TaskDetail view = new TaskDetail(task);
-        TaskDetailController viewController = new TaskDetailController(model, view, managerController);
+        TaskDetail taskDetailView = new TaskDetail(task);
+        TaskDetailController viewController = new TaskDetailController(model, taskDetailView, managerController);
         managerController.setViewController(viewController);
     }
 

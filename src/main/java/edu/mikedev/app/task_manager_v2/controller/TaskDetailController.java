@@ -50,7 +50,7 @@ public class TaskDetailController implements ViewController<TaskDetail> {
             }
             loggedUserTasks = model.getLoggedUserTasks();
         } catch (PermissionException e) {
-            throw new RuntimeException(e);
+            managerController.initApplication();
         }
         UserTasksList view = new UserTasksList(loggedUserTasks);
         UserTasksController userTasksController = new UserTasksController(model, view, managerController);

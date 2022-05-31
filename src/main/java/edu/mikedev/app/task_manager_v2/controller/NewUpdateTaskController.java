@@ -51,18 +51,18 @@ public class NewUpdateTaskController implements ViewController<NewUpdateTask> {
         try {
             loggedUserTasks = model.getLoggedUserTasks();
         } catch (PermissionException e) {
-            throw new RuntimeException(e);
+            managerController.initApplication();
         }
 
         if(taskToUpdate != null && loggedUserTasks.stream().noneMatch(t -> t.getId() == taskToUpdate.getId())){
             missingId = taskToUpdate.getId();
         }
 
-        UserTasksList view = makeUserTasksList(loggedUserTasks);
-        UserTasksController viewController = new UserTasksController(model, view, managerController);
+        UserTasksList userTasksListView = makeUserTasksList(loggedUserTasks);
+        UserTasksController viewController = new UserTasksController(model, userTasksListView, managerController);
         managerController.setViewController(viewController);
         if(missingId != -1){
-            view.setErrorMessage(String.format("The task with id %d is missing", missingId));
+            userTasksListView.setErrorMessage(String.format("The task with id %d is missing", missingId));
         }
     }
 
@@ -100,7 +100,7 @@ public class NewUpdateTaskController implements ViewController<NewUpdateTask> {
         try {
             model.updateTask(taskToUpdate);
         } catch (PermissionException e) {
-            throw new RuntimeException(e);
+            managerController.initApplication();
         }
     }
 
@@ -109,7 +109,7 @@ public class NewUpdateTaskController implements ViewController<NewUpdateTask> {
         try {
             model.addUserTask(newTask);
         } catch (PermissionException e) {
-            throw new RuntimeException(e);
+            managerController.initApplication();
         }
     }
 }

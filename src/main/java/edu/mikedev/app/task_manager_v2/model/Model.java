@@ -73,7 +73,6 @@ public class Model {
         return transactionManager.doInTransaction(repository -> {
             Task taskById = repository.getTaskById(task.getId());
             if(Objects.isNull(taskById)){
-                System.out.println("enter here: Objects.isNull(taskById)");
                 return null;
             }
             repository.delete(taskById);

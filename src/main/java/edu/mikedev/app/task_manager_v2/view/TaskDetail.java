@@ -10,7 +10,7 @@ public class TaskDetail extends JPanel {
 
 	private final JButton btnDelete;
 	private final JButton btnUpdate;
-	private final Task task;
+	private final transient Task task;
 
 	public TaskDetail(Task task) {
 		GridBagLayout gridBagLayout = new GridBagLayout();

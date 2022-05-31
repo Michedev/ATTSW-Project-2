@@ -32,7 +32,7 @@ public class LoginController implements ViewController<LoginPage>{
         try {
             userLogged = model.login(username, password);
         } catch (PermissionException e) {
-            throw new RuntimeException(e);
+            managerController.initApplication();
         }
         if(userLogged == null){
             loginPage.setErrorLabelText("Username/Password aren't registered");
@@ -43,7 +43,7 @@ public class LoginController implements ViewController<LoginPage>{
         try {
             tasks = model.getLoggedUserTasks();
         } catch (PermissionException e) {
-            throw new RuntimeException(e);
+            managerController.initApplication();
         }
         UserTasksList view = new UserTasksList(tasks);
 

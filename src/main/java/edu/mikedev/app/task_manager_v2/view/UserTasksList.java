@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserTasksList extends JPanel {
-	private final List<Task> tasks;
+	private final transient List<Task> tasks;
 	private final JButton btnNew;
 	private final JLabel lblError;
 	private List<JButton> buttons;
