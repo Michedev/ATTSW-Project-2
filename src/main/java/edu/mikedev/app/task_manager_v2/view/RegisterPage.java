@@ -1,14 +1,8 @@
 package edu.mikedev.app.task_manager_v2.view;
 
-import javax.swing.JPanel;
-import java.awt.GridBagLayout;
-import javax.swing.JLabel;
-import java.awt.GridBagConstraints;
-import javax.swing.JTextField;
-import java.awt.Insets;
-import java.awt.Color;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionListener;
-import javax.swing.JButton;
 
 public class RegisterPage extends JPanel {
 	private final JLabel lblPasswordError;

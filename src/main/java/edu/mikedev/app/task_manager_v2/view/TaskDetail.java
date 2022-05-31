@@ -1,14 +1,10 @@
 package edu.mikedev.app.task_manager_v2.view;
 
-import javax.swing.JPanel;
-
 import edu.mikedev.app.task_manager_v2.data.Task;
-import java.awt.GridBagLayout;
-import javax.swing.JLabel;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionListener;
-import javax.swing.JButton;
 
 public class TaskDetail extends JPanel {
 

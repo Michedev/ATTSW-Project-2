@@ -1,17 +1,14 @@
 package edu.mikedev.app.task_manager_v2.utils;
 
-import edu.mikedev.app.task_manager_v2.data.Task;
-import edu.mikedev.app.task_manager_v2.data.User;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.junit.runner.Description;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.*;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class HibernateDBUtilsInMemory extends HibernateDBUtils {
 

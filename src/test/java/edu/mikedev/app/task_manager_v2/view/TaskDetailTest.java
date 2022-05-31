@@ -1,23 +1,15 @@
 package edu.mikedev.app.task_manager_v2.view;
 
-import static org.junit.Assert.*;
-
-import java.util.Arrays;
-import java.util.List;
-
-import javax.swing.JFrame;
-
+import edu.mikedev.app.task_manager_v2.data.Task;
 import org.assertj.swing.annotation.GUITest;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
 import org.assertj.swing.junit.runner.GUITestRunner;
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-
-import edu.mikedev.app.task_manager_v2.data.Task;
 import org.junit.runner.RunWith;
+
+import javax.swing.*;
 
 @RunWith(GUITestRunner.class)
 public class TaskDetailTest extends AssertJSwingJUnitTestCase {

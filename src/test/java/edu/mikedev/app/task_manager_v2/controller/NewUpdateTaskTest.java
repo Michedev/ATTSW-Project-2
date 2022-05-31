@@ -9,11 +9,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.*;
-import org.mockito.stubbing.OngoingStubbing;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.mockito.Mockito.*;

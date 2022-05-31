@@ -6,7 +6,9 @@ import org.hibernate.cfg.Configuration;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class HibernateDBUtilsPostgre extends HibernateDBUtils {
 

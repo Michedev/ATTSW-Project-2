@@ -7,7 +7,6 @@ import edu.mikedev.app.task_manager_v2.view.NewUpdateTask;
 import edu.mikedev.app.task_manager_v2.view.UserTasksList;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class NewUpdateTaskController implements ViewController<NewUpdateTask> {
 

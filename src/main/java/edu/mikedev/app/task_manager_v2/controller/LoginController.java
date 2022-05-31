@@ -8,9 +8,7 @@ import edu.mikedev.app.task_manager_v2.view.LoginPage;
 import edu.mikedev.app.task_manager_v2.view.RegisterPage;
 import edu.mikedev.app.task_manager_v2.view.UserTasksList;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class LoginController implements ViewController<LoginPage>{
     private final Model model;

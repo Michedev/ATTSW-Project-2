@@ -1,7 +1,6 @@
 package edu.mikedev.app.task_manager_v2;
 
 import edu.mikedev.app.task_manager_v2.data.Task;
-import edu.mikedev.app.task_manager_v2.view.LoginPage;
 import edu.mikedev.app.task_manager_v2.view.TaskDetail;
 import edu.mikedev.app.task_manager_v2.view.UserTasksList;
 import org.assertj.swing.core.matcher.JLabelMatcher;
@@ -11,7 +10,6 @@ import org.junit.Assert;
 
 import javax.swing.*;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class GUISteps {
 

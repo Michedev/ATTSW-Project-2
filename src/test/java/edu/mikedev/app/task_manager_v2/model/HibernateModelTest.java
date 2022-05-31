@@ -2,17 +2,13 @@ package edu.mikedev.app.task_manager_v2.model;
 
 import edu.mikedev.app.task_manager_v2.data.Task;
 import edu.mikedev.app.task_manager_v2.data.User;
-import edu.mikedev.app.task_manager_v2.utils.HibernateDBUtilsInMemory;
-import org.hibernate.SessionFactory;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.awt.*;
 import java.util.Arrays;
-import java.util.function.Function;
 import java.util.List;
+import java.util.function.Function;
 
 import static org.mockito.AdditionalAnswers.answer;
 import static org.mockito.ArgumentMatchers.any;

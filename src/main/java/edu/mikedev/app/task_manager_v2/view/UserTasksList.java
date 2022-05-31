@@ -1,12 +1,9 @@
 package edu.mikedev.app.task_manager_v2.view;
 
-import javax.swing.JPanel;
-
 import edu.mikedev.app.task_manager_v2.data.Task;
 
+import javax.swing.*;
 import java.awt.*;
-import javax.swing.JLabel;
-import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;

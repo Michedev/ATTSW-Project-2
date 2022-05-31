@@ -2,8 +2,6 @@ package edu.mikedev.app.task_manager_v2;
 
 import edu.mikedev.app.task_manager_v2.data.Task;
 import edu.mikedev.app.task_manager_v2.utils.HibernateDBUtils;
-import edu.mikedev.app.task_manager_v2.view.LoginPage;
-import org.assertj.swing.core.matcher.JLabelMatcher;
 import org.jbehave.core.annotations.BeforeScenario;
 import org.jbehave.core.annotations.BeforeStories;
 import org.jbehave.core.annotations.Given;

@@ -7,9 +7,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.mockito.AdditionalAnswers.answer;
-import static org.mockito.ArgumentMatchers.any;
-
 public class HibernateTransactionManagerTest {
 
     private HibernateDBUtilsInMemory dbUtils;
