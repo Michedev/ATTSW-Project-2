@@ -7,6 +7,7 @@ import edu.mikedev.app.task_manager_v2.view.NewUpdateTask;
 import edu.mikedev.app.task_manager_v2.view.UserTasksList;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class NewUpdateTaskController implements ViewController<NewUpdateTask> {
 
@@ -54,7 +55,7 @@ public class NewUpdateTaskController implements ViewController<NewUpdateTask> {
             throw new RuntimeException(e);
         }
 
-        if(taskToUpdate != null && loggedUserTasks.stream().noneMatch(t -> taskToUpdate.getId() == taskToUpdate.getId())){
+        if(taskToUpdate != null && loggedUserTasks.stream().noneMatch(t -> t.getId() == taskToUpdate.getId())){
             missingId = taskToUpdate.getId();
         }
 
