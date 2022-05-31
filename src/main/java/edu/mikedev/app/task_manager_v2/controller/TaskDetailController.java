@@ -41,8 +41,13 @@ public class TaskDetailController implements ViewController<TaskDetail> {
 
     public void onClickDeleteButton() {
         List<Task> loggedUserTasks = null;
+        int missingId = -1;
         try {
-            model.deleteTask(getView().getTask());
+            Task toDelete = getView().getTask();
+            Task deleted = model.deleteTask(toDelete);
+            if(deleted == null){
+                missingId = toDelete.getId();
+            }
             loggedUserTasks = model.getLoggedUserTasks();
         } catch (PermissionException e) {
             throw new RuntimeException(e);
@@ -50,5 +55,6 @@ public class TaskDetailController implements ViewController<TaskDetail> {
         UserTasksList view = new UserTasksList(loggedUserTasks);
         UserTasksController userTasksController = new UserTasksController(model, view, managerController);
         managerController.setViewController(userTasksController);
+        view.setErrorMessage(String.format("The task with id %d is missing", missingId));
     }
 }

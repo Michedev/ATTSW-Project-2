@@ -82,6 +82,11 @@ public class UserTasksList extends JPanel {
 	}
 
 	public void setErrorMessage(String message) {
+		lblError.setVisible(true);
 		lblError.setText(message);
+	}
+
+	public JLabel getLabelError() {
+		return lblError;
 	}
 }

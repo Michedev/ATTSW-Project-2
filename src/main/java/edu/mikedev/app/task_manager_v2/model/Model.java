@@ -59,16 +59,20 @@ public class Model {
         });
     }
 
-    public void deleteTask(Task task) throws PermissionException {
+    public Task deleteTask(Task task) throws PermissionException {
         if(this.logged == null){
             throw new PermissionException(LOGIN_ERROR_MESSAGE);
         }
         if(this.logged.getId() != task.getTaskOwner().getId()){
             throw new PermissionException(TASK_OWNER_ERROR_MESSAGE);
         }
-        transactionManager.doInTransaction(repository -> {
+
+        return transactionManager.doInTransaction(repository -> {
+            if(repository.getTaskById(task.getId()) == null){
+                return null;
+            }
             repository.delete(task);
-            return null;
+            return task;
         });
 
     }

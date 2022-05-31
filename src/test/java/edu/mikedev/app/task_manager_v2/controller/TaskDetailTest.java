@@ -14,8 +14,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -114,6 +116,36 @@ public class TaskDetailTest {
 
         verify(taskDetailController).onClickUpdateButton();
         verify(taskDetailController).onClickDeleteButton();
+    }
+
+    @Test
+    public void testDeleteTaskWhenIsMissingOnDB() throws PermissionException {
+        Task task = new Task("vbnm", "5", "6", "7");
+        task.setId(1430);
+        when(view.getTask()).thenReturn(task);
+        when(model.deleteTask(task)).thenReturn(null);
+        try {
+            when(model.getLoggedUserTasks()).thenReturn(new ArrayList<>());
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
+
+        taskDetailController.onClickDeleteButton();
+
+        try {
+            verify(model).deleteTask(task);
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
+
+        ArgumentCaptor<UserTasksController> captor = ArgumentCaptor.forClass(UserTasksController.class);
+        verify(mainController).setViewController(captor.capture());
+
+        UserTasksController actual = captor.getValue();
+
+        JLabel labelError = actual.getView().getLabelError();
+        Assert.assertTrue(labelError.isVisible());
+        Assert.assertEquals(String.format("The task with id %d is missing", task.getId()), labelError.getText());
     }
 
 }
