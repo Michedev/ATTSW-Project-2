@@ -14,6 +14,7 @@ import org.mockito.stubbing.OngoingStubbing;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static org.mockito.Mockito.*;
 
@@ -151,6 +152,7 @@ public class NewUpdateTaskTest {
         newUpdateTaskController.onClickMakeButton();
 
         Task updatedTask = new Task(newTaskTitle, subtask1, subtask2, subtask3);
+        updatedTask.setId(toUpdate.getId());
 
         InOrder inOrder = inOrder(model, mainController);
         inOrder.verify(model).updateTask(updatedTask);
@@ -180,7 +182,9 @@ public class NewUpdateTaskTest {
         Task toUpdate = new Task("AAA", subtask1, subtask2, subtask3);
         toUpdate.setId(100);
         when(view.getTaskToUpdate()).thenReturn(toUpdate);
-        when(model.getLoggedUserTasks()).thenReturn(new ArrayList<>());
+        Task loggedTask = new Task("1", "2", "3", "4");
+        loggedTask.setId(40);
+        when(model.getLoggedUserTasks()).thenReturn(Arrays.asList(loggedTask));
         UserTasksList mockedUserTasksListView = mock(UserTasksList.class);
         NewUpdateTaskController spiedController = spy(newUpdateTaskController);
         when(spiedController.makeUserTasksList(anyList())).thenReturn(mockedUserTasksListView);
@@ -195,6 +199,7 @@ public class NewUpdateTaskTest {
         spiedController.onClickMakeButton();
 
         Task updatedTask = new Task(newTaskTitle, subtask1, subtask2, subtask3);
+        updatedTask.setId(100);
 
         InOrder inOrder = inOrder(model, mainController);
         inOrder.verify(model).updateTask(updatedTask);
