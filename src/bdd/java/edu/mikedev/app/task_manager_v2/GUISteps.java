@@ -11,6 +11,7 @@ import org.junit.Assert;
 
 import javax.swing.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GUISteps {
 
@@ -100,7 +101,7 @@ public class GUISteps {
     public void thenTheTaskShouldNotExists(){
         UserTasksList list = ((UserTasksList) jframe.getContentPane());
         List<Task> taskList = list.getTasks();
-        Assert.assertFalse(taskList.stream().anyMatch(t -> t.getTitle().equals(deletedTask.getTitle())));
+        Assert.assertTrue(taskList.stream().noneMatch(t -> t.getTitle().equals(deletedTask.getTitle())));
     }
 
     @Given("the update page of the first task")

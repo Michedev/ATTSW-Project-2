@@ -140,6 +140,7 @@ public class HibernateModelTest {
 
     private Task getUserTask() {
         Task userTask = new Task("AAA", "1", "2", "3");
+        userTask.setId(100);
         userTask.setTaskOwner(mockedUser);
         return userTask;
     }
@@ -232,8 +233,8 @@ public class HibernateModelTest {
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
-
         Task userTask = getUserTask();
+        when(repository.getTaskById(userTask.getId())).thenReturn(userTask);
 
         try {
             model.deleteTask(userTask);

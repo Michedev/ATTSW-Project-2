@@ -80,12 +80,6 @@
 			<version>2.3.1</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.jbehave</groupId>
-			<artifactId>jbehave-guice</artifactId>
-			<version>5.0</version>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
 
 	<build>
@@ -180,6 +174,7 @@
 							</includes>
 							<excludes>
 								<exclude>**/*IT.java</exclude>
+								<exclude>**/*E2E.java</exclude>
 							</excludes>
 						</configuration>
 					</execution>

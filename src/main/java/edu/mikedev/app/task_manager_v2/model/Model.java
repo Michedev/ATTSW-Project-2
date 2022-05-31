@@ -4,6 +4,7 @@ import edu.mikedev.app.task_manager_v2.data.Task;
 import edu.mikedev.app.task_manager_v2.data.User;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Model {
     private final TransactionManager transactionManager;
@@ -67,14 +68,17 @@ public class Model {
             throw new PermissionException(TASK_OWNER_ERROR_MESSAGE);
         }
 
+
+
         return transactionManager.doInTransaction(repository -> {
-            if(repository.getTaskById(task.getId()) == null){
+            Task taskById = repository.getTaskById(task.getId());
+            if(Objects.isNull(taskById)){
+                System.out.println("enter here: Objects.isNull(taskById)");
                 return null;
             }
-            repository.delete(task);
-            return task;
+            repository.delete(taskById);
+            return taskById;
         });
-
     }
 
     public void registerUser(User user) throws IllegalStateException, IllegalArgumentException {
