@@ -57,4 +57,12 @@ public class TaskManagerControllerTest {
         verify(viewController).addEvents();
         verify(jFrame).pack();
     }
+
+    @Test
+    public void testShowWindow(){
+        mainController.showWindow();
+
+        verify(jFrame).setVisible(true);
+        verify(jFrame).pack();
+    }
 }
