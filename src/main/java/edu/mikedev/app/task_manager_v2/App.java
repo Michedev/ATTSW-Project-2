@@ -9,6 +9,7 @@ import edu.mikedev.app.task_manager_v2.model.TransactionManager;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+import javax.swing.*;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,7 +20,7 @@ public class App
         Module module = new AbstractModule(){
             @Override
             public void configure(){
-                Path mainResourceDirectory = Paths.get("src", "main", "resources");
+                Path mainResourceDirectory = Paths.get("src", "test", "resources");
                 File hibernateConfigFile = new File(mainResourceDirectory.resolve("hibernate.inmemory.cfg.xml").toAbsolutePath().toString());
 
                 bind(Path.class).annotatedWith(Names.named("ResourcePath")).toInstance(mainResourceDirectory);
@@ -31,18 +32,15 @@ public class App
             }
 
             @Provides
-            public SessionFactory sessionFactoryProvider(@Named("HibernateConfigFile") File configFile,
-                                                         @Named("URL") String url,
-                                                         @Named("port") int port,
-                                                         @Named("DBName") String dbName){
+            public SessionFactory sessionFactoryProvider(@Named("HibernateConfigFile") File configFile){
                 Configuration cfg = new Configuration();
                 cfg = cfg.configure(configFile);
-                cfg = cfg.setProperty("hibernate.connection.url", String.format("jdbc:postgresql://%s:%d/%s", url, port, dbName));
                 return cfg.buildSessionFactory();
             }
         };
         Injector injector = Guice.createInjector(module);
         TaskManagerController controller = injector.getInstance(TaskManagerController.class);
         controller.initApplication();
+        controller.showWindow();
     }
 }

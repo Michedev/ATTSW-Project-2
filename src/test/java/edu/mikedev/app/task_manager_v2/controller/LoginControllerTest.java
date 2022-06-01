@@ -73,7 +73,7 @@ public class LoginControllerTest {
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
-        verify(view, times(1)).setErrorLabelText("Username/Password aren't registered");
+        verify(view).setErrorLabelText("Username/Password aren't registered");
     }
 
     @Test

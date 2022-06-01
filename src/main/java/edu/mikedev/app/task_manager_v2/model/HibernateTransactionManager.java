@@ -4,11 +4,13 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
+import javax.inject.Inject;
 import java.util.function.Function;
 
 public class HibernateTransactionManager implements TransactionManager {
     private final SessionFactory sessionFactory;
 
+    @Inject
     public HibernateTransactionManager(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
