@@ -15,14 +15,15 @@ import javax.swing.*;
 public class LoginPageTest extends AssertJSwingJUnitTestCase {
 
 	FrameFixture window;
+	private JFrame frame;
 
 	@Override
 	protected void onSetUp() {
-		  JFrame frame = GuiActionRunner.execute(() -> {
-			 JFrame jframe = new JFrame();
-			 jframe.setContentPane(new LoginPage());
-			 return jframe;
-		  });
+		frame = GuiActionRunner.execute(() -> {
+		   JFrame jframe = new JFrame();
+		   jframe.setContentPane(new LoginPage());
+		   return jframe;
+		});
 		  window = new FrameFixture(robot(), frame);
 		  window.show(); // shows the frame to test
 	}
@@ -36,5 +37,15 @@ public class LoginPageTest extends AssertJSwingJUnitTestCase {
 		window.label(JLabelMatcher.withName("lblLoginError")).requireNotVisible();
 		window.button("btnLogin").requireText("Login");
 		window.button("btnRegister").requireText("Register");
+	}
+
+	@Test @GUITest
+	public void testSetLabelError(){
+		LoginPage contentPane = (LoginPage) frame.getContentPane();
+		GuiActionRunner.execute(() -> {
+			contentPane.setErrorLabelText("Test Label");
+		});
+
+		window.label(JLabelMatcher.withName("lblLoginError")).requireVisible().requireText("Test Label");
 	}
 }
