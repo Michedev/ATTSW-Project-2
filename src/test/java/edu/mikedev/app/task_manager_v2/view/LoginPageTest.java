@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.swing.*;
+import java.awt.*;
 
 @RunWith(GUITestRunner.class)
 public class LoginPageTest extends AssertJSwingJUnitTestCase {
@@ -46,6 +47,7 @@ public class LoginPageTest extends AssertJSwingJUnitTestCase {
 			contentPane.setErrorLabelText("Test Label");
 		});
 
-		window.label(JLabelMatcher.withName("lblLoginError")).requireVisible().requireText("Test Label");
+		window.label(JLabelMatcher.withName("lblLoginError")).requireVisible().requireText("Test Label")
+				.foreground().requireEqualTo(Color.RED);
 	}
 }

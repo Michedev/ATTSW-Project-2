@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.swing.*;
+import java.awt.*;
 
 @RunWith(GUITestRunner.class)
 public class NewUpdateTaskTest extends AssertJSwingJUnitTestCase {
@@ -82,10 +83,10 @@ public class NewUpdateTaskTest extends AssertJSwingJUnitTestCase {
 			contentPane.setStep3ErrorLabelText("Step3 Error");
 		});
 
-		window.label(JLabelMatcher.withName("lblTitleErrorLabel")).requireVisible().requireText("Title Error");
-		window.label(JLabelMatcher.withName("lblStep1ErrorLabel")).requireVisible().requireText("Step1 Error");
-		window.label(JLabelMatcher.withName("lblStep2ErrorLabel")).requireVisible().requireText("Step2 Error");
-		window.label(JLabelMatcher.withName("lblStep3ErrorLabel")).requireVisible().requireText("Step3 Error");
+		window.label(JLabelMatcher.withName("lblTitleErrorLabel")).requireVisible().requireText("Title Error").foreground().requireEqualTo(Color.RED);
+		window.label(JLabelMatcher.withName("lblStep1ErrorLabel")).requireVisible().requireText("Step1 Error").foreground().requireEqualTo(Color.RED);
+		window.label(JLabelMatcher.withName("lblStep2ErrorLabel")).requireVisible().requireText("Step2 Error").foreground().requireEqualTo(Color.RED);
+		window.label(JLabelMatcher.withName("lblStep3ErrorLabel")).requireVisible().requireText("Step3 Error").foreground().requireEqualTo(Color.RED);
 	}
 
 }

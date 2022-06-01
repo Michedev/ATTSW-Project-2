@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.swing.*;
+import java.awt.*;
 
 @RunWith(GUITestRunner.class)
 public class RegisterPageTest extends AssertJSwingJUnitTestCase {
@@ -51,8 +52,11 @@ public class RegisterPageTest extends AssertJSwingJUnitTestCase {
 			contentPane.setErrorLabelEmail("Error Email");
 		});
 
-		window.label(JLabelMatcher.withName("lblUsernameError")).requireVisible().requireText("Error Username");
-		window.label(JLabelMatcher.withName("lblPasswordError")).requireVisible().requireText("Error Password");
-		window.label(JLabelMatcher.withName("lblEmailError")).requireVisible().requireText("Error Email");
+		window.label(JLabelMatcher.withName("lblUsernameError")).requireVisible().requireText("Error Username")
+				.foreground().requireEqualTo(Color.RED);
+		window.label(JLabelMatcher.withName("lblPasswordError")).requireVisible().requireText("Error Password")
+				.foreground().requireEqualTo(Color.RED);
+		window.label(JLabelMatcher.withName("lblEmailError")).requireVisible().requireText("Error Email")
+				.foreground().requireEqualTo(Color.RED);
 	}
 }
