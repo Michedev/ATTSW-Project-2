@@ -37,6 +37,13 @@ public class App
                 cfg = cfg.configure(configFile);
                 return cfg.buildSessionFactory();
             }
+
+            @Provides
+            public JFrame jframeProvider(){
+                JFrame jFrame = new JFrame();
+                jFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+                return jFrame;
+            }
         };
         Injector injector = Guice.createInjector(module);
         TaskManagerController controller = injector.getInstance(TaskManagerController.class);
