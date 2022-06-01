@@ -51,15 +51,15 @@ public class HibernateModelTest {
             Assert.fail(e.getMessage());
         }
 
-        verify(repository, times(1)).getUserByUsernamePassword(any(), any());
+        verify(repository).getUserByUsernamePassword(any(), any());
         Assert.assertEquals(mockedUser, loggedUser);
     }
 
     @Test
-    public void testModelLoginWithWrongCredential(){
-        IllegalArgumentException e = Assert.assertThrows(IllegalArgumentException.class ,() -> model.login("A", "B"));
-        Assert.assertEquals("User with this credential doesn't exists", e.getMessage());
-        verify(repository, times(1)).getUserByUsernamePassword(any(), any());
+    public void testModelLoginWithWrongCredential() throws PermissionException {
+        User user = model.login("A", "B");
+        Assert.assertNull(user);
+        verify(repository).getUserByUsernamePassword(any(), any());
     }
 
     @Test
