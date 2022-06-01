@@ -36,8 +36,7 @@ public class TaskManagerApp implements Callable<Integer>
     private String dbName;
 
     public static void main( String[] args ) {
-        int exitCode = new CommandLine(new TaskManagerApp()).execute(args);
-        System.exit(exitCode);
+        new CommandLine(new TaskManagerApp()).execute(args);
     }
 
     @Override
