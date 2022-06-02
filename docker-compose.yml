@@ -3,7 +3,7 @@ version: '2.1'
 services:
   app-task-manager:
     image: ubuntu:20.04
-    container_name: app-task-manager
+    container_name: app-task-manager-v2
     build:
       context: .
       dockerfile: ./AppDockerfile
@@ -17,10 +17,13 @@ services:
       postgres-task-manager:
         condition: service_healthy
   postgres-task-manager:
-    image: postgres:14.1-alpine
-    container_name: postgres-task-manager
+    image: postgres:14.3-alpine
+    container_name: postgres-task-manager-v2
+    build:
+      context: .
+      dockerfile: ./PostgreDockerfile
     ports:
-      - 5432:5432
+      - "5432:5432"
     networks:
       - my-network
     environment:
