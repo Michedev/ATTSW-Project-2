@@ -41,15 +41,12 @@ public class TaskManagerApp implements Callable<Integer>
 
     @Override
     public Integer call() throws Exception {
-        Module module = new AbstractModule(){
+        com.google.inject.Module module = new AbstractModule(){
             @Override
             public void configure(){
-                Path mainResourceDirectory = Paths.get("src", "main", "resources");
-                String hibernateFileName = dbType.equals(DBType.InMemory) ? "hibernate.inmemory.cfg.xml" : "hibernate.cfg.xml";
-                File hibernateConfigFile = new File(mainResourceDirectory.resolve("hibernate.inmemory.cfg.xml").toAbsolutePath().toString());
+                String hibernateFileName = DBType.InMemory.equals(dbType) ? "hibernate.inmemory.cfg.xml" : "hibernate.cfg.xml";
 
-                bind(Path.class).annotatedWith(Names.named("ResourcePath")).toInstance(mainResourceDirectory);
-                bind(File.class).annotatedWith(Names.named("HibernateConfigFile")).toInstance(hibernateConfigFile);
+                bind(String.class).annotatedWith(Names.named("HibernateConfigFilename")).toInstance(hibernateFileName);
                 bind(String.class).annotatedWith(Names.named("address")).toInstance(address);
                 bind(Integer.class).annotatedWith(Names.named("port")).toInstance(port);
                 bind(String.class).annotatedWith(Names.named("DBName")).toInstance(dbName);
@@ -57,12 +54,12 @@ public class TaskManagerApp implements Callable<Integer>
             }
 
             @Provides
-            public SessionFactory sessionFactoryProvider(@Named("HibernateConfigFile") File configFile,
+            public SessionFactory sessionFactoryProvider(@Named("HibernateConfigFilename") String configFileName,
                                                          @Named("address") String address,
                                                          @Named("port") int port,
                                                          @Named("DBName") String dbName){
                 Configuration cfg = new Configuration();
-                cfg = cfg.configure(configFile);
+                cfg = cfg.configure(configFileName);
                 if(dbType.equals(DBType.PostgreSQL)){
                     cfg = cfg.setProperty("hibernate.connection.url", String.format("jdbc:postgresql://%s:%d/%s", address, port, dbName));
                 }

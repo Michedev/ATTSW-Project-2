@@ -1,7 +1,7 @@
 version: '2.1'
 
 services:
-  app-task-manager:
+  app-task-manager-v2:
     image: ubuntu:20.04
     container_name: app-task-manager-v2
     build:
@@ -14,9 +14,9 @@ services:
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
     depends_on:
-      postgres-task-manager:
+      postgres-task-manager-v2:
         condition: service_healthy
-  postgres-task-manager:
+  postgres-task-manager-v2:
     image: postgres:14.3-alpine
     container_name: postgres-task-manager-v2
     build:
