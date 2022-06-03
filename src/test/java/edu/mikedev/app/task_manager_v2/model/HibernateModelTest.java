@@ -51,6 +51,7 @@ public class HibernateModelTest {
             Assert.fail(e.getMessage());
         }
 
+        Assert.assertNotNull(loggedUser);
         verify(repository).getUserByUsernamePassword(any(), any());
         Assert.assertEquals(mockedUser, loggedUser);
     }
@@ -58,8 +59,10 @@ public class HibernateModelTest {
     @Test
     public void testModelLoginWithWrongCredential() throws PermissionException {
         User user = model.login("A", "B");
+
         Assert.assertNull(user);
         verify(repository).getUserByUsernamePassword(any(), any());
+        Assert.assertNotNull(model.login(USERNAME, PASSWORD));
     }
 
     @Test
@@ -231,14 +234,16 @@ public class HibernateModelTest {
         }
         Task userTask = getUserTask();
         when(repository.getTaskById(userTask.getId())).thenReturn(userTask);
-
+        Task deletedTask = null;
         try {
-            model.deleteTask(userTask);
+            deletedTask = model.deleteTask(userTask);
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
 
-        verify(repository, times(1)).delete(any(Task.class));
+        Assert.assertNotNull(deletedTask);
+        Assert.assertEquals(userTask, deletedTask);
+        verify(repository).delete(any(Task.class));
     }
 
     @Test
@@ -261,6 +266,27 @@ public class HibernateModelTest {
         PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.deleteTask(otherUserTask));
         Assert.assertEquals(OTHER_USER_ERROR_MESSAGE, e.getMessage());
         verify(repository, times(0)).delete(any(Task.class));
+    }
+
+    @Test
+    public void testDeleteTaskWhenNotExisting(){
+        Task task = getUserTask();
+        try {
+            model.login(USERNAME, PASSWORD);
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
+        when(repository.getTaskById(anyInt())).thenReturn(null);
+
+        Task deletedTask = null;
+        try {
+            deletedTask = model.deleteTask(task);
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
+
+        Assert.assertNull(deletedTask);
+        verify(repository, never()).delete(nullable(Task.class));
     }
 
     @Test

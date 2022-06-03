@@ -23,9 +23,6 @@ public class Model {
             throw new PermissionException("You cannot login twice");
         }
         User userLogged = transactionManager.doInTransaction(repository -> repository.getUserByUsernamePassword(username, password));
-        if(userLogged == null){
-            return null;
-        }
         this.logged = userLogged;
         return userLogged;
     }
