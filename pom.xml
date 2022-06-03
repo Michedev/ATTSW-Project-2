@@ -271,4 +271,40 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+	<profiles>
+		<profile>
+			<id>mutation-test</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.pitest</groupId>
+						<artifactId>pitest-maven</artifactId>
+						<version>1.7.3</version>
+						<configuration>
+							<targetClasses>
+								<param>edu.mikedev.app.task_manager_v2.model.*</param>
+								<param>edu.mikedev.app.task_manager_v2.controller.*</param>
+							</targetClasses>
+							<targetTests>
+								<param>edu.mikedev.app.task_manager_v2.model.*Test</param>
+								<param>edu.mikedev.app.task_manager_v2.controller.*Test</param>
+							</targetTests>
+							<mutators>
+								<mutator>DEFAULTS</mutator>
+							</mutators>
+							<mutationThreshold>80</mutationThreshold>
+						</configuration>
+						<executions>
+							<execution>
+								<phase>test</phase>
+								<goals>
+									<goal>mutationCoverage</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
