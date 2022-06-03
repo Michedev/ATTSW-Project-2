@@ -124,8 +124,8 @@ public class NewUpdateTaskTest {
 
         Task task = new Task(taskTitle, subtask1, subtask2, subtask3);
         InOrder inOrder = inOrder(model, mainController);
-        inOrder.verify(model).addUserTask(task);
         inOrder.verify(model).getLoggedUserTasks();
+        inOrder.verify(model).addUserTask(task);
         inOrder.verify(mainController).setViewController(any(UserTasksController.class));
 
         verify(model, never()).updateTask(any());
@@ -190,8 +190,8 @@ public class NewUpdateTaskTest {
         updatedTask.setId(toUpdate.getId());
 
         InOrder inOrder = inOrder(model, mainController);
-        inOrder.verify(model).updateTask(updatedTask);
         inOrder.verify(model).getLoggedUserTasks();
+        inOrder.verify(model).updateTask(updatedTask);
         inOrder.verify(mainController).setViewController(any(UserTasksController.class));
     }
 
@@ -237,8 +237,8 @@ public class NewUpdateTaskTest {
         updatedTask.setId(100);
 
         InOrder inOrder = inOrder(model, mainController);
-        inOrder.verify(model).updateTask(updatedTask);
         inOrder.verify(model).getLoggedUserTasks();
+        inOrder.verify(model).updateTask(updatedTask);
         inOrder.verify(mainController).setViewController(any(UserTasksController.class));
 
         verify(mockedUserTasksListView).setErrorMessage(String.format("The task with id %d is missing", toUpdate.getId()));
