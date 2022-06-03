@@ -131,6 +131,44 @@ public class NewUpdateTaskTest {
     }
 
     @Test
+    public void testUpdateTaskWithMissingFields(){
+        when(view.getTaskToUpdate()).thenReturn(new Task("Title", "1", "2", "3"));
+        when(view.getTaskTitle()).thenReturn("");
+        when(view.getTaskSubtask1()).thenReturn("");
+        when(view.getTaskSubtask2()).thenReturn("");
+        when(view.getTaskSubtask3()).thenReturn("");
+
+        newUpdateTaskController.onClickMakeButton();
+
+        verify(mainController, never()).setViewController(any());
+        verify(view).setTitleErrorLabelText("Missing title");
+        verify(view).setStep1ErrorLabelText("Missing subtask 1");
+        verify(view).setStep2ErrorLabelText("Missing subtask 2");
+        verify(view).setStep3ErrorLabelText("Missing subtask 3");
+    }
+
+    @Test
+    public void testUpdateTaskWhenThrowPermissionError() throws PermissionException {
+        String taskTitle = "TTT";
+        String subtask1 = "EEE";
+        String subtask2 = "ZZZ";
+        String subtask3 = "789";
+
+        when(view.getTaskToUpdate()).thenReturn(new Task("Title", "1", "2", "3"));
+        when(view.getTaskTitle()).thenReturn(taskTitle);
+        when(view.getTaskSubtask1()).thenReturn(subtask1);
+        when(view.getTaskSubtask2()).thenReturn(subtask2);
+        when(view.getTaskSubtask3()).thenReturn(subtask3);
+
+        doThrow(PermissionException.class).when(model).updateTask(any());
+
+        newUpdateTaskController.onClickMakeButton();
+
+        verify(mainController, never()).setViewController(any());
+        verify(mainController).initApplication();
+    }
+
+    @Test
     public void testUpdateTask() throws PermissionException {
         String subtask1 = "R";
         String subtask2 = "T";
