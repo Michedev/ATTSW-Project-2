@@ -65,14 +65,22 @@ public class TaskDetailTest {
     public void testClickDeleteButton(){
         Task task = new Task("vbnm", "5", "6", "7");
         when(view.getTask()).thenReturn(task);
+        List<Task> loggedUserTasks = Arrays.asList(
+                new Task("RR", "W", "Q", "Y"),
+                new Task("QQ", "1", "U", "C"),
+                new Task("DD", "2", "L", "V"),
+                new Task("XX", "7", "W", "M"),
+                task
+        );
         List<Task> expected = Arrays.asList(
                 new Task("RR", "W", "Q", "Y"),
                 new Task("QQ", "1", "U", "C"),
                 new Task("DD", "2", "L", "V"),
                 new Task("XX", "7", "W", "M")
         );
+
         try {
-            when(model.getLoggedUserTasks()).thenReturn(expected);
+            when(model.getLoggedUserTasks()).thenReturn(loggedUserTasks);
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
@@ -92,6 +100,7 @@ public class TaskDetailTest {
         List<Task> userTasksControllers = actual.getView().getTasks();
 
         Assert.assertArrayEquals(expected.toArray(), userTasksControllers.toArray());
+        Assert.assertFalse(actual.getView().getTasks().contains(task));
     }
 
     @Test
