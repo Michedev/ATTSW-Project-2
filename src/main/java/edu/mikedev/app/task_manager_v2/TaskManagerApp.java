@@ -1,6 +1,9 @@
 package edu.mikedev.app.task_manager_v2;
 
-import com.google.inject.*;
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Provides;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 import edu.mikedev.app.task_manager_v2.controller.TaskManagerController;
@@ -11,19 +14,16 @@ import org.hibernate.cfg.Configuration;
 import picocli.CommandLine;
 
 import javax.swing.*;
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.concurrent.Callable;
 
 enum DBType{
-    InMemory,
-    PostgreSQL,
+    INMEMORY,
+    POSTGRESSQL,
 }
 
 public class TaskManagerApp implements Callable<Integer>
 {
-    @CommandLine.Option(names = "--dbtype", defaultValue = "PostgreSQL", type = DBType.class)
+    @CommandLine.Option(names = "--dbtype", defaultValue = "POSTGRESSQL", type = DBType.class)
     private DBType dbType;
 
     @CommandLine.Option(names = "--address", defaultValue = "localhost")
@@ -44,7 +44,7 @@ public class TaskManagerApp implements Callable<Integer>
         com.google.inject.Module module = new AbstractModule(){
             @Override
             public void configure(){
-                String hibernateFileName = DBType.InMemory.equals(dbType) ? "hibernate.inmemory.cfg.xml" : "hibernate.cfg.xml";
+                String hibernateFileName = DBType.INMEMORY.equals(dbType) ? "hibernate.inmemory.cfg.xml" : "hibernate.cfg.xml";
 
                 bind(String.class).annotatedWith(Names.named("HibernateConfigFilename")).toInstance(hibernateFileName);
                 bind(String.class).annotatedWith(Names.named("address")).toInstance(address);
@@ -60,7 +60,7 @@ public class TaskManagerApp implements Callable<Integer>
                                                          @Named("DBName") String dbName){
                 Configuration cfg = new Configuration();
                 cfg = cfg.configure(configFileName);
-                if(dbType.equals(DBType.PostgreSQL)){
+                if(dbType.equals(DBType.POSTGRESSQL)){
                     cfg = cfg.setProperty("hibernate.connection.url", String.format("jdbc:postgresql://%s:%d/%s", address, port, dbName));
                 }
                 return cfg.buildSessionFactory();

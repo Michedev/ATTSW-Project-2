@@ -6,7 +6,6 @@ import edu.mikedev.app.task_manager_v2.model.PermissionException;
 import edu.mikedev.app.task_manager_v2.view.NewUpdateTask;
 import edu.mikedev.app.task_manager_v2.view.UserTasksList;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.*;
