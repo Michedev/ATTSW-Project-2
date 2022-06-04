@@ -205,7 +205,7 @@ public class NewUpdateTaskControllerTest {
         verify(newUpdateTaskController).onClickMakeButton();
     }
 
-    @Test //todo: move this test into the model
+    @Test
     public void testUpdateTaskWhenNotExistingOntoTheDB() throws PermissionException {
         String subtask1 = "R";
         String subtask2 = "T";

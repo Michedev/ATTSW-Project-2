@@ -119,7 +119,7 @@ public class TaskDetailControllerTest {
         verify(taskDetailController).onClickDeleteButton();
     }
 
-    @Test //todo: move t
+    @Test
     public void testDeleteTaskWhenIsMissingOnDB() throws PermissionException {
         Task task = new Task("vbnm", "5", "6", "7");
         task.setId(1430);

@@ -108,8 +108,7 @@ public class LoginControllerTest {
     public void testLoginWhenPermissionErrorIsThrown() throws PermissionException {
         when(view.getUsername()).thenReturn("A");
         when(view.getPassword()).thenReturn("B");
-        when(model.loginGetTasks(anyString(), anyString())).thenReturn(new ArrayList<>());
-        when(model.getLoggedUserTasks()).thenThrow(PermissionException.class);
+        when(model.loginGetTasks(anyString(), anyString())).thenThrow(PermissionException.class);
 
         loginController.onLoginButtonClick();
 

@@ -18,9 +18,7 @@ import org.mockito.ArgumentCaptor;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static org.mockito.Mockito.*;
 
@@ -73,7 +71,6 @@ public class ControllerIT extends AssertJSwingJUnitTestCase {
         String password = "pass123";
         User newUser = new User(username, password, "email@email.it", tasks);
         when(mockedModel.loginGetTasks(username, password)).thenReturn(tasks);
-        when(mockedModel.getLoggedUserTasks()).thenReturn(Arrays.asList(task1, task2));
 
         window.textBox("txtUsername").enterText(username);
         window.textBox("txtPassword").enterText(password);
@@ -198,7 +195,7 @@ public class ControllerIT extends AssertJSwingJUnitTestCase {
 
         ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
 
-        verify(mockedModel).deleteTask(captor.capture());
+        verify(mockedModel).deleteTaskGetUserTasks(captor.capture());
 
         Task deletedTask = captor.getValue();
 
@@ -217,7 +214,6 @@ public class ControllerIT extends AssertJSwingJUnitTestCase {
         String password = "pass123";
 
         when(mockedModel.loginGetTasks(username, password)).thenReturn(tasks);
-        when(mockedModel.getLoggedUserTasks()).thenReturn(Arrays.asList(task1, task2));
 
         window.textBox("txtUsername").enterText(username);
         window.textBox("txtPassword").enterText(password);

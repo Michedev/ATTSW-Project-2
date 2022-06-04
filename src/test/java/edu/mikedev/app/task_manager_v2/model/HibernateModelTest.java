@@ -271,7 +271,7 @@ public class HibernateModelTest {
 
         Assert.assertEquals(task.getId(), deleteTaskResponse.getMissingTaskId());
         Assert.assertArrayEquals(mockedUserTasks.toArray(), deleteTaskResponse.getTasks().toArray());
-        verify(repository).getUserTasks(anyInt());
+        verify(repository, times(2)).getUserTasks(anyInt());
         verify(repository, never()).delete(nullable(Task.class));
     }
 

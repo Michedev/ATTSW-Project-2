@@ -90,7 +90,7 @@ public class ModelIT {
 
         Task toRemove = user.getTasks().iterator().next();
         try {
-            model.deleteTask(toRemove);
+            model.deleteTaskGetUserTasks(toRemove);
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
@@ -190,8 +190,7 @@ public class ModelIT {
 
         List<Task> actual = null;
         try {
-            model.loginGetTasks(user.getUsername(), user.getPassword());
-            actual = model.getLoggedUserTasks();
+            actual = model.loginGetTasks(user.getUsername(), user.getPassword());
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
