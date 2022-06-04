@@ -95,6 +95,7 @@ public class LoginPage extends JPanel {
 	}
 
 	public void setErrorLabelText(String errorMessage) {
+		lblLoginError.setVisible(true);
 		lblLoginError.setText(errorMessage);
 	}
 

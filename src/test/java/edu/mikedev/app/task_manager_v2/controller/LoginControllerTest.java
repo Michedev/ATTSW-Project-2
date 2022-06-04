@@ -4,6 +4,7 @@ import edu.mikedev.app.task_manager_v2.data.User;
 import edu.mikedev.app.task_manager_v2.model.Model;
 import edu.mikedev.app.task_manager_v2.model.PermissionException;
 import edu.mikedev.app.task_manager_v2.view.LoginPage;
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -14,6 +15,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.awt.event.ActionListener;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 
@@ -43,14 +46,25 @@ public class LoginControllerTest {
 
     @Test
     public void testLoginButtonWithoutUsernamePassword(){
-        when(view.getUsername()).thenReturn("");
-        when(view.getPassword()).thenReturn("");
+        // Done a pseudo version of parameterized tests
+        // I avoided such mechanism because with JUnit 4
+        // parameterized tests all test cases would have
+        // been executed with the parameters
+        List<Pair<String, String>> pairs = Arrays.asList(
+                Pair.of("", ""),
+                Pair.of("aa", ""),
+                Pair.of("", "ff")
+        );
+        for(Pair<String, String> usernamePassword: pairs){
+            when(view.getUsername()).thenReturn(usernamePassword.getLeft());
+            when(view.getPassword()).thenReturn(usernamePassword.getRight());
 
-        loginController.onLoginButtonClick();
+            loginController.onLoginButtonClick();
+        }
 
-        verify(view, times(1)).setErrorLabelText("Missing Username/Password");
+        verify(view, times(pairs.size())).setErrorLabelText("Missing Username/Password");
         try {
-            verify(model, times(0)).login(anyString(), anyString());
+            verify(model, never()).login(anyString(), anyString());
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
@@ -69,11 +83,37 @@ public class LoginControllerTest {
         loginController.onLoginButtonClick();
 
         try {
-            verify(model, times(1)).login(anyString(), anyString());
+            verify(model).login(anyString(), anyString());
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
-        verify(view, times(1)).setErrorLabelText("Username/Password aren't registered");
+        verify(view).setErrorLabelText("Username/Password aren't registered");
+    }
+
+    @Test
+    public void testGetUserTasksWhenPermissionErrorIsThrown() throws PermissionException {
+        when(view.getUsername()).thenReturn("A");
+        when(view.getPassword()).thenReturn("B");
+
+        when(model.login(anyString(), anyString())).thenThrow(PermissionException.class);
+
+        loginController.onLoginButtonClick();
+
+        verify(mainController).initApplication();
+        verify(mainController, never()).setViewController(any());
+    }
+
+    @Test
+    public void testLoginWhenPermissionErrorIsThrown() throws PermissionException {
+        when(view.getUsername()).thenReturn("A");
+        when(view.getPassword()).thenReturn("B");
+        when(model.login(anyString(), anyString())).thenReturn(new User("A", "B", "C"));
+        when(model.getLoggedUserTasks()).thenThrow(PermissionException.class);
+
+        loginController.onLoginButtonClick();
+
+        verify(mainController).initApplication();
+        verify(mainController, never()).setViewController(any());
     }
 
     @Test
@@ -97,7 +137,7 @@ public class LoginControllerTest {
     public void testRegisterButtonClick(){
         loginController.onRegisterButtonClick();
 
-        verify(mainController, times(1)).setViewController(any(RegisterController.class));
+        verify(mainController).setViewController(any(RegisterController.class));
     }
 
     @Test

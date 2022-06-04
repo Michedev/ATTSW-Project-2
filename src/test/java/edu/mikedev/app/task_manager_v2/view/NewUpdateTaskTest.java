@@ -11,16 +11,18 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.swing.*;
+import java.awt.*;
 
 @RunWith(GUITestRunner.class)
 public class NewUpdateTaskTest extends AssertJSwingJUnitTestCase {
 	FrameFixture window;
 	NewUpdateTask view;
+	private JFrame frame;
 
 	@Override
 	protected void onSetUp() {
 		Task task = new Task("TaskTitle", "subtask1", "subtask2", "subtask3");
-		JFrame frame = GuiActionRunner.execute(() -> {
+		frame = GuiActionRunner.execute(() -> {
 			view = new NewUpdateTask();
 			JFrame jframe = new JFrame();
 			 jframe.setContentPane(view);
@@ -62,8 +64,29 @@ public class NewUpdateTaskTest extends AssertJSwingJUnitTestCase {
 		window.textBox("txtStep1").requireText(task.getSubtask1());
 		window.textBox("txtStep2").requireText(task.getSubtask2());
 		window.textBox("txtStep3").requireText(task.getSubtask3());
+
+		window.label(JLabelMatcher.withName("lblTitleErrorLabel")).requireNotVisible();
+		window.label(JLabelMatcher.withName("lblStep1ErrorLabel")).requireNotVisible();
+		window.label(JLabelMatcher.withName("lblStep2ErrorLabel")).requireNotVisible();
+		window.label(JLabelMatcher.withName("lblStep3ErrorLabel")).requireNotVisible();
 		
 		window.button("btnMake").requireText("Update");
+	}
+
+	@Test @GUITest
+	public void testSetErrorLabel(){
+		NewUpdateTask contentPane = (NewUpdateTask) frame.getContentPane();
+		GuiActionRunner.execute( () -> {
+			contentPane.setTitleErrorLabelText("Title Error");
+			contentPane.setStep1ErrorLabelText("Step1 Error");
+			contentPane.setStep2ErrorLabelText("Step2 Error");
+			contentPane.setStep3ErrorLabelText("Step3 Error");
+		});
+
+		window.label(JLabelMatcher.withName("lblTitleErrorLabel")).requireVisible().requireText("Title Error").foreground().requireEqualTo(Color.RED);
+		window.label(JLabelMatcher.withName("lblStep1ErrorLabel")).requireVisible().requireText("Step1 Error").foreground().requireEqualTo(Color.RED);
+		window.label(JLabelMatcher.withName("lblStep2ErrorLabel")).requireVisible().requireText("Step2 Error").foreground().requireEqualTo(Color.RED);
+		window.label(JLabelMatcher.withName("lblStep3ErrorLabel")).requireVisible().requireText("Step3 Error").foreground().requireEqualTo(Color.RED);
 	}
 
 }

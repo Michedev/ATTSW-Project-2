@@ -127,14 +127,17 @@ public class RegisterPage extends JPanel {
 
 	public void setErrorLabelUsername(String errorMessage) {
 		lblUsernameError.setText(errorMessage);
+		lblUsernameError.setVisible(true);
 	}
 
 	public void setErrorLabelPassword(String errorMessage) {
 		lblPasswordError.setText(errorMessage);
+		lblPasswordError.setVisible(true);
 	}
 
 	public void setErrorLabelEmail(String errorMessage) {
 		lblEmailError.setText(errorMessage);
+		lblEmailError.setVisible(true);
 	}
 
 	public void addActionListenerConfirmBtn(ActionListener actionListener) {

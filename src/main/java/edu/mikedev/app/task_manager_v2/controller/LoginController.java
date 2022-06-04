@@ -22,10 +22,10 @@ public class LoginController implements ViewController<LoginPage>{
     }
 
     public void onLoginButtonClick(){
-        String username = this.loginPage.getUsername();
-        String password = this.loginPage.getPassword();
+        String username = loginPage.getUsername();
+        String password = loginPage.getPassword();
         if(username.isEmpty() || password.isEmpty()){
-            this.loginPage.setErrorLabelText("Missing Username/Password");
+            loginPage.setErrorLabelText("Missing Username/Password");
             return;
         }
         User userLogged = null;
@@ -33,6 +33,7 @@ public class LoginController implements ViewController<LoginPage>{
             userLogged = model.login(username, password);
         } catch (PermissionException e) {
             managerController.initApplication();
+            return;
         }
         if(userLogged == null){
             loginPage.setErrorLabelText("Username/Password aren't registered");
@@ -44,6 +45,7 @@ public class LoginController implements ViewController<LoginPage>{
             tasks = model.getLoggedUserTasks();
         } catch (PermissionException e) {
             managerController.initApplication();
+            return;
         }
         UserTasksList view = new UserTasksList(tasks);
 

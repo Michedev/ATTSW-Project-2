@@ -10,19 +10,21 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.swing.*;
+import java.awt.*;
 
 @RunWith(GUITestRunner.class)
 public class RegisterPageTest extends AssertJSwingJUnitTestCase {
 
 	FrameFixture window;
+	private JFrame frame;
 
 	@Override
 	protected void onSetUp() {
-		  JFrame frame = GuiActionRunner.execute(() -> {
-			 JFrame jframe = new JFrame();
-			 jframe.setContentPane(new RegisterPage());
-			 return jframe;
-		  });
+		frame = GuiActionRunner.execute(() -> {
+		   JFrame jframe = new JFrame();
+		   jframe.setContentPane(new RegisterPage());
+		   return jframe;
+		});
 		  window = new FrameFixture(robot(), frame);
 		  window.show(); // shows the frame to test
 	}
@@ -39,5 +41,22 @@ public class RegisterPageTest extends AssertJSwingJUnitTestCase {
 		window.label(JLabelMatcher.withName("lblPasswordError")).requireNotVisible();
 		window.label(JLabelMatcher.withName("lblEmailError")).requireNotVisible();
 		window.button("btnConfirm").requireText("Confirm");
+	}
+
+	@Test @GUITest
+	public void testSetLabelError(){
+		RegisterPage contentPane = (RegisterPage) frame.getContentPane();
+		GuiActionRunner.execute(() -> {
+			contentPane.setErrorLabelUsername("Error Username");
+			contentPane.setErrorLabelPassword("Error Password");
+			contentPane.setErrorLabelEmail("Error Email");
+		});
+
+		window.label(JLabelMatcher.withName("lblUsernameError")).requireVisible().requireText("Error Username")
+				.foreground().requireEqualTo(Color.RED);
+		window.label(JLabelMatcher.withName("lblPasswordError")).requireVisible().requireText("Error Password")
+				.foreground().requireEqualTo(Color.RED);
+		window.label(JLabelMatcher.withName("lblEmailError")).requireVisible().requireText("Error Email")
+				.foreground().requireEqualTo(Color.RED);
 	}
 }

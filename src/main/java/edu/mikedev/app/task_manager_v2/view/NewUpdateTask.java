@@ -176,18 +176,22 @@ public class NewUpdateTask extends JPanel {
 
 	public void setTitleErrorLabelText(String text) {
 		lblTitleErrorLabel.setText(text);
+		lblTitleErrorLabel.setVisible(true);
 	}
 
 	public void setStep1ErrorLabelText(String text) {
 		lblStep1ErrorLabel.setText(text);
+		lblStep1ErrorLabel.setVisible(true);
 	}
 
 	public void setStep2ErrorLabelText(String text) {
 		lblStep2ErrorLabel.setText(text);
+		lblStep2ErrorLabel.setVisible(true);
 	}
 
 	public void setStep3ErrorLabelText(String text) {
 		lblStep3ErrorLabel.setText(text);
+		lblStep3ErrorLabel.setVisible(true);
 	}
 
 

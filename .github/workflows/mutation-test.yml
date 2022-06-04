@@ -1,0 +1,29 @@
+name: Mutation test
+on:
+  pull_request:
+    types: [opened, synchronize, reopened ]
+  workflow_dispatch:
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java_version: [8]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK ${{matrix.java_version}}
+        uses: actions/setup-java@v2
+        with:
+          java-version: ${{matrix.java_version}}
+          distribution: 'adopt'
+          cache: maven
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml', '**/*.yml') }}
+          restore-keys: ${{ runner.os }}-m2-
+      - name: Run mutation tests
+        run:  mvn test -DskipTests -Pmutation-test

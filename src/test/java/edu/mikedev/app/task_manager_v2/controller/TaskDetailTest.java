@@ -146,4 +146,14 @@ public class TaskDetailTest {
         Assert.assertEquals(String.format("The task with id %d is missing", task.getId()), labelError.getText());
     }
 
+    @Test
+    public void testThrowPermissionExceptionOnGetUserTasksWhenDelete() throws PermissionException {
+        when(model.getLoggedUserTasks()).thenThrow(PermissionException.class);
+
+        taskDetailController.onClickDeleteButton();
+
+        verify(model, never()).deleteTask(any());
+        verify(mainController).initApplication();
+        verify(mainController, never()).setViewController(any(UserTasksController.class));
+    }
 }

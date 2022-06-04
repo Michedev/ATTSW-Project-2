@@ -17,6 +17,7 @@ import org.mockito.ArgumentCaptor;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -73,6 +74,7 @@ public class ControllerIT extends AssertJSwingJUnitTestCase {
         String password = "pass123";
         User newUser = new User(username, password, "email@email.it", tasks);
         when(mockedModel.login(username, password)).thenReturn(newUser);
+        when(mockedModel.getLoggedUserTasks()).thenReturn(Arrays.asList(task1, task2));
 
         window.textBox("txtUsername").enterText(username);
         window.textBox("txtPassword").enterText(password);
@@ -217,6 +219,7 @@ public class ControllerIT extends AssertJSwingJUnitTestCase {
         String password = "pass123";
         User newUser = new User(username, password, "email@email.it", tasks);
         when(mockedModel.login(username, password)).thenReturn(newUser);
+        when(mockedModel.getLoggedUserTasks()).thenReturn(Arrays.asList(task1, task2));
 
         window.textBox("txtUsername").enterText(username);
         window.textBox("txtPassword").enterText(password);
