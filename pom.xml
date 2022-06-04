@@ -155,7 +155,7 @@
 				<version>2.22.1</version>
 				<executions>
 					<execution>
-						<id>default-it</id>
+						<id>integration-test</id>
 						<goals>
 							<goal>integration-test</goal>
 							<goal>verify</goal>
@@ -163,11 +163,11 @@
 						<configuration>
 							<skipTests>${skipIntegrationTests}</skipTests>
 							<includes>
-								<include>src/it/**/*.java</include>
+								<include>**/*IT.java</include>
 							</includes>
 							<excludes>
-								<exclude>src/bdd/**</exclude>
-								<exclude>src/test/**</exclude>
+								<exclude>**/*E2E.java</exclude>
+								<exclude>**/*Test.java</exclude>
 							</excludes>
 						</configuration>
 					</execution>
@@ -183,8 +183,8 @@
 								<include>**/*E2E.java</include>
 							</includes>
 							<excludes>
-								<exclude>src/it/**</exclude>
-								<exclude>src/test/**</exclude>
+								<exclude>**/*IT.java</exclude>
+								<exclude>**/*Test.java</exclude>
 							</excludes>
 						</configuration>
 					</execution>
