@@ -1,5 +1,6 @@
 package edu.mikedev.app.task_manager_v2.model;
 
+import edu.mikedev.app.task_manager_v2.data.DeleteTaskResponse;
 import edu.mikedev.app.task_manager_v2.data.Task;
 import edu.mikedev.app.task_manager_v2.data.User;
 
@@ -70,7 +71,7 @@ public class Model {
         });
     }
 
-    public List<Task> deleteTaskGetUserTasks(Task task) throws PermissionException {
+    public DeleteTaskResponse deleteTaskGetUserTasks(Task task) throws PermissionException {
         if(this.logged == null){
             throw new PermissionException(LOGIN_ERROR_MESSAGE);
         }
@@ -81,10 +82,10 @@ public class Model {
         return transactionManager.doInTransaction(repository -> {
             Task taskById = repository.getTaskById(task.getId());
             if(Objects.isNull(taskById)){
-                return null;
+                return new DeleteTaskResponse(repository.getUserTasks(logged.getId()), task.getId());
             }
             repository.delete(taskById);
-            return repository.getUserTasks(logged.getId());
+            return new DeleteTaskResponse(repository.getUserTasks(logged.getId()), -1);
         });
     }
 
@@ -114,7 +115,13 @@ public class Model {
            repository.add(user);
            return null;
         });
+    }
 
+    public List<Task> getLoggedUserTasks() throws PermissionException {
+        if(this.logged == null){
+            throw new PermissionException(LOGIN_ERROR_MESSAGE);
+        }
+        return transactionManager.doInTransaction(repository -> repository.getUserTasks(logged.getId()));
     }
 
     public void logout() throws IllegalStateException {

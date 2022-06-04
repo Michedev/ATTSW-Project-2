@@ -11,11 +11,10 @@ import org.junit.Test;
 import org.mockito.*;
 
 import java.awt.event.ActionListener;
-import java.util.Arrays;
 
 import static org.mockito.Mockito.*;
 
-public class NewUpdateTaskTest {
+public class NewUpdateTaskControllerTest {
 
     @Mock
     private Model model;
@@ -124,7 +123,6 @@ public class NewUpdateTaskTest {
         Task task = new Task(taskTitle, subtask1, subtask2, subtask3);
         InOrder inOrder = inOrder(model, mainController);
         inOrder.verify(model).addUserTaskGetTasks(task);
-        inOrder.verify(model).getLoggedUserTasks();
         inOrder.verify(mainController).setViewController(any(UserTasksController.class));
 
         verify(model, never()).updateTaskGetTasks(any());
@@ -152,8 +150,9 @@ public class NewUpdateTaskTest {
     }
 
     @Test
-    public void testThrowPermissionExceptionWhenGetUserTasks() throws PermissionException {
-        when(model.getLoggedUserTasks()).thenThrow(PermissionException.class);
+    public void testThrowPermissionExceptionWhenAddNewTask() throws PermissionException {
+        when(model.addUserTaskGetTasks(any(Task.class))).thenThrow(PermissionException.class);
+
         when(view.getTaskTitle()).thenReturn("TTT");
         when(view.getTaskSubtask1()).thenReturn("EEE");
         when(view.getTaskSubtask2()).thenReturn("YYY");
@@ -189,7 +188,6 @@ public class NewUpdateTaskTest {
 
         InOrder inOrder = inOrder(model, mainController);
         inOrder.verify(model).updateTaskGetTasks(updatedTask);
-        inOrder.verify(model).getLoggedUserTasks();
         inOrder.verify(mainController).setViewController(any(UserTasksController.class));
     }
 
@@ -207,7 +205,7 @@ public class NewUpdateTaskTest {
         verify(newUpdateTaskController).onClickMakeButton();
     }
 
-    @Test
+    @Test //todo: move this test into the model
     public void testUpdateTaskWhenNotExistingOntoTheDB() throws PermissionException {
         String subtask1 = "R";
         String subtask2 = "T";
@@ -217,7 +215,6 @@ public class NewUpdateTaskTest {
         when(view.getTaskToUpdate()).thenReturn(toUpdate);
         Task loggedTask = new Task("1", "2", "3", "4");
         loggedTask.setId(40);
-        when(model.getLoggedUserTasks()).thenReturn(Arrays.asList(loggedTask));
         UserTasksList mockedUserTasksListView = mock(UserTasksList.class);
         NewUpdateTaskController spiedController = spy(newUpdateTaskController);
         when(spiedController.makeUserTasksList(anyList())).thenReturn(mockedUserTasksListView);
@@ -236,7 +233,6 @@ public class NewUpdateTaskTest {
 
         InOrder inOrder = inOrder(model, mainController);
         inOrder.verify(model).updateTaskGetTasks(updatedTask);
-        inOrder.verify(model).getLoggedUserTasks();
         inOrder.verify(mainController).setViewController(any(UserTasksController.class));
 
         verify(mockedUserTasksListView).setErrorMessage(String.format("The task with id %d is missing", toUpdate.getId()));

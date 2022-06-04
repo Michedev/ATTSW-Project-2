@@ -1,5 +1,6 @@
 package edu.mikedev.app.task_manager_v2.model;
 
+import edu.mikedev.app.task_manager_v2.data.DeleteTaskResponse;
 import edu.mikedev.app.task_manager_v2.data.Task;
 import edu.mikedev.app.task_manager_v2.data.User;
 import org.junit.Assert;
@@ -209,16 +210,15 @@ public class HibernateModelTest {
         Task taskToDelete = mockedUserTasks.get(0);
         when(repository.getUserTasks(mockedUser.getId())).thenReturn(Arrays.asList(mockedUserTasks.get(1)));
         when(repository.getTaskById(taskToDelete.getId())).thenReturn(taskToDelete);
-        List<Task> userTasksAfterDelete = null;
+        DeleteTaskResponse deleteTaskResponse = null;
         try {
-            userTasksAfterDelete = model.deleteTaskGetUserTasks(taskToDelete);
+            deleteTaskResponse = model.deleteTaskGetUserTasks(taskToDelete);
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
 
-        Assert.assertNotNull(userTasksAfterDelete);
-        Assert.assertFalse(userTasksAfterDelete.contains(taskToDelete));
-        Assert.assertEquals(mockedUserTasks.size() - 1, userTasksAfterDelete.size());
+        Assert.assertEquals(-1, deleteTaskResponse.getMissingTaskId());
+        Assert.assertEquals(mockedUserTasks.size() - 1, deleteTaskResponse.getTasks().size());
         verify(repository).getTaskById(anyInt());
         verify(repository).delete(any(Task.class));
         verify(repository, times(2)).getUserTasks(anyInt());
@@ -258,17 +258,19 @@ public class HibernateModelTest {
     @Test
     public void testDeleteTaskWhenNotExisting(){
         Task task = mockedUserTasks.get(0);
+        task.setId(4848);
         modelLogin();
         when(repository.getTaskById(anyInt())).thenReturn(null);
 
-        List<Task> userTasks = null;
+        DeleteTaskResponse deleteTaskResponse = null;
         try {
-            userTasks = model.deleteTaskGetUserTasks(task);
+            deleteTaskResponse = model.deleteTaskGetUserTasks(task);
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
 
-        Assert.assertNull(userTasks);
+        Assert.assertEquals(task.getId(), deleteTaskResponse.getMissingTaskId());
+        Assert.assertArrayEquals(mockedUserTasks.toArray(), deleteTaskResponse.getTasks().toArray());
         verify(repository).getUserTasks(anyInt());
         verify(repository, never()).delete(nullable(Task.class));
     }
@@ -346,6 +348,7 @@ public class HibernateModelTest {
         Assert.assertEquals("You cannot logout before login", e.getMessage());
     }
 
+
     private Task getOtherUserTask() {
         Task otherUserTask = new Task("BBB", "5", "6", "7");
         User otherUser = new User();
@@ -353,5 +356,7 @@ public class HibernateModelTest {
         otherUserTask.setTaskOwner(otherUser);
         return otherUserTask;
     }
+
+
 
 }

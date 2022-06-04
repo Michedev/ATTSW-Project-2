@@ -41,21 +41,14 @@ public class NewUpdateTaskController implements ViewController<NewUpdateTask> {
         }
 
         Task taskToUpdate = view.getTaskToUpdate();
+        List<Task> loggedUserTasks = null;
         try{
             if(taskToUpdate == null){
-                addNewTask(taskTitle, taskSubtask1, taskSubtask2, taskSubtask3);
+                loggedUserTasks = addNewTask(taskTitle, taskSubtask1, taskSubtask2, taskSubtask3);
             } else {
-                updateTask(taskTitle, taskSubtask1, taskSubtask2, taskSubtask3, taskToUpdate);
+                loggedUserTasks = updateTask(taskTitle, taskSubtask1, taskSubtask2, taskSubtask3, taskToUpdate);
             }
         } catch (PermissionException e){
-            managerController.initApplication();
-            return;
-        }
-
-        List<Task> loggedUserTasks = null;
-        try {
-            loggedUserTasks = model.getLoggedUserTasks();
-        } catch (PermissionException e) {
             managerController.initApplication();
             return;
         }
@@ -103,18 +96,18 @@ public class NewUpdateTaskController implements ViewController<NewUpdateTask> {
         return anyError;
     }
 
-    private void updateTask(String taskTitle, String taskSubtask1, String taskSubtask2, String taskSubtask3, Task taskToUpdate) throws PermissionException {
+    private List<Task> updateTask(String taskTitle, String taskSubtask1, String taskSubtask2, String taskSubtask3, Task taskToUpdate) throws PermissionException {
         taskToUpdate.setTitle(taskTitle);
         taskToUpdate.setSubtask1(taskSubtask1);
         taskToUpdate.setSubtask2(taskSubtask2);
         taskToUpdate.setSubtask3(taskSubtask3);
 
-        model.updateTaskGetTasks(taskToUpdate);
+        return model.updateTaskGetTasks(taskToUpdate);
     }
 
-    private void addNewTask(String taskTitle, String taskSubtask1, String taskSubtask2, String taskSubtask3) throws PermissionException {
+    private List<Task> addNewTask(String taskTitle, String taskSubtask1, String taskSubtask2, String taskSubtask3) throws PermissionException {
         Task newTask = new Task(taskTitle, taskSubtask1, taskSubtask2, taskSubtask3);
 
-        model.addUserTaskGetTasks(newTask);
+        return model.addUserTaskGetTasks(newTask);
     }
 }
