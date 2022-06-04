@@ -25,15 +25,25 @@ public class HibernateModelTest {
     private TransactionManager transactionManager;
     private UserTaskRepository repository;
     private User mockedUser;
+    private List<Task> mockedUserTasks;
 
 
     @Before
     public void setUp(){
+        Task task1 = new Task("A", "1", "2", "3");
+        task1.setId(1);
+        Task task2 = new Task("E", "4", "5", "6");
+        task2.setId(2);
         transactionManager = mock(TransactionManager.class);
         repository = mock(UserTaskRepository.class);
         mockedUser = new User(USERNAME, PASSWORD, "email@email.com");
         mockedUser.setId(userId);
         when(repository.getUserByUsernamePassword(USERNAME, PASSWORD)).thenReturn(mockedUser);
+        mockedUserTasks = Arrays.asList(
+                task1,
+                task2
+        );
+        when(repository.getUserTasks(userId)).thenReturn(mockedUserTasks);
 
         when(transactionManager.doInTransaction(any())).thenAnswer(answer((Function<UserTaskRepository, ?> f) -> {
             return f.apply(repository);
@@ -44,39 +54,49 @@ public class HibernateModelTest {
 
     @Test
     public void testModelLogin(){
-        User loggedUser = null;
+        List<Task> userTasks = null;
         try {
-            loggedUser = model.login(USERNAME, PASSWORD);
+            userTasks = model.loginGetTasks(USERNAME, PASSWORD);
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
 
-        Assert.assertNotNull(loggedUser);
+        Assert.assertNotNull(userTasks);
         verify(repository).getUserByUsernamePassword(any(), any());
-        Assert.assertEquals(mockedUser, loggedUser);
+        Assert.assertEquals(mockedUserTasks, userTasks);
     }
 
     @Test
-    public void testModelLoginWithWrongCredential() throws PermissionException {
-        User user = model.login("A", "B");
-
-        Assert.assertNull(user);
+    public void testModelLoginWithWrongCredential() {
+        List<Task> userTasks = null;
+        try {
+            userTasks = model.loginGetTasks("A", "B");
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
+        Assert.assertNull(userTasks);
+        verify(repository, never()).getTaskById(anyInt());
         verify(repository).getUserByUsernamePassword(any(), any());
-        Assert.assertNotNull(model.login(USERNAME, PASSWORD));
+        try {
+            Assert.assertNotNull(model.loginGetTasks(USERNAME, PASSWORD));
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
     }
 
     @Test
     public void testDoubleLogin() {
         try {
-            model.login(USERNAME, PASSWORD);
+            model.loginGetTasks(USERNAME, PASSWORD);
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
 
-        PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.login(USERNAME, PASSWORD));
+        PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.loginGetTasks(USERNAME, PASSWORD));
 
         Assert.assertEquals("You cannot login twice", e.getMessage());
-        verify(repository, times(1)).getUserByUsernamePassword(any(), any());
+        verify(repository).getUserByUsernamePassword(any(), any());
+        verify(repository).getUserTasks(anyInt());
     }
 
     @Test
@@ -84,7 +104,7 @@ public class HibernateModelTest {
         Task userTask = getUserTask();
         when(repository.getTaskById(10)).thenReturn(userTask);
         try {
-            model.login(USERNAME, PASSWORD);
+            model.loginGetTasks(USERNAME, PASSWORD);
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
@@ -119,16 +139,11 @@ public class HibernateModelTest {
         mockedUser.setId(userId);
         when(repository.getUserByUsernamePassword(USERNAME, PASSWORD)).thenReturn(mockedUser);
         when(repository.getUserTasks(userId)).thenReturn(taskList);
-        try{
-            model.login(USERNAME, PASSWORD);
-        } catch (PermissionException e){
-            Assert.fail(e.getMessage());
-        }
-
         List<Task> loggedUserTasks = null;
-        try {
-            loggedUserTasks = model.getLoggedUserTasks();
-        } catch (PermissionException e) {
+
+        try{
+            loggedUserTasks = model.loginGetTasks(USERNAME, PASSWORD);
+        } catch (PermissionException e){
             Assert.fail(e.getMessage());
         }
 
@@ -147,7 +162,7 @@ public class HibernateModelTest {
     @Test
     public void testGetUserTaskOtherUser(){
         try {
-            model.login(USERNAME, PASSWORD);
+            model.loginGetTasks(USERNAME, PASSWORD);
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
@@ -165,61 +180,68 @@ public class HibernateModelTest {
     public void testGetUserTaskWhenNonlogged(){
         PermissionException e = Assert.assertThrows(PermissionException.class, () ->model.getUserTask(100));
         Assert.assertEquals(LOGIN_ERROR_MESSAGE, e.getMessage());
-        verify(repository, times(0)).getTaskById(anyInt());
+        verify(repository, never()).getTaskById(anyInt());
     }
 
     @Test
     public void testAddNewTask(){
         Task newTask = new Task("FGH", "M", "N", "O");
         try {
-            model.login(USERNAME, PASSWORD);
+            model.loginGetTasks(USERNAME, PASSWORD);
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
-
+        List<Task> userTasks = null;
         try {
-            model.addUserTask(newTask);
+            userTasks = model.addUserTaskGetTasks(newTask);
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
 
         verify(repository, times(1)).add(any(Task.class));
+        verify(repository, times(2)).getUserTasks(anyInt());
         Assert.assertEquals(mockedUser, newTask.getTaskOwner());
+        Assert.assertEquals(mockedUserTasks.size() + 1, userTasks.size());
+        Assert.assertTrue(userTasks.contains(newTask));
     }
 
     @Test
     public void testAddNewTaskWhenNotLogged(){
         Task userTask = getUserTask();
 
-        PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.addUserTask(userTask));
+        PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.addUserTaskGetTasks(userTask));
         Assert.assertEquals(LOGIN_ERROR_MESSAGE, e.getMessage());
-        verify(repository, times(0)).add(any(Task.class));
+        verify(repository, never()).add(any(Task.class));
     }
 
     @Test
     public void testUpdateTask(){
         try {
-            model.login(USERNAME, PASSWORD);
+            model.loginGetTasks(USERNAME, PASSWORD);
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
 
         Task userTask = getUserTask();
 
+        List<Task> userTasks = null;
+
         try {
-            model.updateTask(userTask);
+            userTasks = model.updateTaskGetTasks(userTask);
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
 
-        verify(repository, times(1)).update(any(Task.class));
+        verify(repository).update(any(Task.class));
+        verify(repository, times(2)).getUserTasks(anyInt());
+        Assert.assertEquals(mockedUserTasks.size(), userTasks.size());
     }
 
     @Test
     public void testUpdateTaskWhenNotLogged(){
         Task userTask = getUserTask();
 
-        PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.updateTask(userTask));
+        PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.updateTaskGetTasks(userTask));
         Assert.assertEquals(LOGIN_ERROR_MESSAGE, e.getMessage());
 
         verify(repository, times(0)).update(any(Task.class));
@@ -228,7 +250,7 @@ public class HibernateModelTest {
     @Test
     public void testDeleteTask(){
         try {
-            model.login(USERNAME, PASSWORD);
+            model.loginGetTasks(USERNAME, PASSWORD);
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
@@ -259,7 +281,7 @@ public class HibernateModelTest {
     public void testDeleteTaskAnotherUser(){
         Task otherUserTask = getOtherUserTask();
         try {
-            model.login(USERNAME, PASSWORD);
+            model.loginGetTasks(USERNAME, PASSWORD);
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
@@ -272,7 +294,7 @@ public class HibernateModelTest {
     public void testDeleteTaskWhenNotExisting(){
         Task task = getUserTask();
         try {
-            model.login(USERNAME, PASSWORD);
+            model.loginGetTasks(USERNAME, PASSWORD);
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
@@ -286,6 +308,7 @@ public class HibernateModelTest {
         }
 
         Assert.assertNull(deletedTask);
+        verify(repository, times(2)).getUserTasks(anyInt());
         verify(repository, never()).delete(nullable(Task.class));
     }
 
@@ -330,7 +353,7 @@ public class HibernateModelTest {
     @Test
     public void testRegisterUserWhenLogged(){
         try {
-            model.login(USERNAME, PASSWORD);
+            model.loginGetTasks(USERNAME, PASSWORD);
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
@@ -342,12 +365,12 @@ public class HibernateModelTest {
     @Test
     public void testUserLogout(){
         try {
-            model.login(USERNAME, PASSWORD);
+            model.loginGetTasks(USERNAME, PASSWORD);
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
         model.logout();
-        PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.addUserTask(new Task()));
+        PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.addUserTaskGetTasks(new Task()));
         Assert.assertEquals(LOGIN_ERROR_MESSAGE, e.getMessage());
         verify(repository, times(1)).getUserByUsernamePassword(any(), any());
     }
@@ -361,7 +384,7 @@ public class HibernateModelTest {
     @Test
     public void testDoubleLogout(){
         try {
-            model.login(USERNAME, PASSWORD);
+            model.loginGetTasks(USERNAME, PASSWORD);
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }

@@ -1,7 +1,6 @@
 package edu.mikedev.app.task_manager_v2.controller;
 
 import edu.mikedev.app.task_manager_v2.data.Task;
-import edu.mikedev.app.task_manager_v2.data.User;
 import edu.mikedev.app.task_manager_v2.model.Model;
 import edu.mikedev.app.task_manager_v2.model.PermissionException;
 import edu.mikedev.app.task_manager_v2.view.LoginPage;
@@ -28,25 +27,18 @@ public class LoginController implements ViewController<LoginPage>{
             loginPage.setErrorLabelText("Missing Username/Password");
             return;
         }
-        User userLogged = null;
+        List<Task> tasks = null;
         try {
-            userLogged = model.login(username, password);
+            tasks = model.loginGetTasks(username, password);
         } catch (PermissionException e) {
             managerController.initApplication();
             return;
         }
-        if(userLogged == null){
+        if(tasks == null){
             loginPage.setErrorLabelText("Username/Password aren't registered");
             return;
         }
 
-        List<Task> tasks = null;
-        try {
-            tasks = model.getLoggedUserTasks();
-        } catch (PermissionException e) {
-            managerController.initApplication();
-            return;
-        }
         UserTasksList view = new UserTasksList(tasks);
 
         UserTasksController controller = new UserTasksController(model, view, managerController);

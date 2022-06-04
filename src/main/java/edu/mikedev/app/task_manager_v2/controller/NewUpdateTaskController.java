@@ -109,12 +109,12 @@ public class NewUpdateTaskController implements ViewController<NewUpdateTask> {
         taskToUpdate.setSubtask2(taskSubtask2);
         taskToUpdate.setSubtask3(taskSubtask3);
 
-        model.updateTask(taskToUpdate);
+        model.updateTaskGetTasks(taskToUpdate);
     }
 
     private void addNewTask(String taskTitle, String taskSubtask1, String taskSubtask2, String taskSubtask3) throws PermissionException {
         Task newTask = new Task(taskTitle, taskSubtask1, taskSubtask2, taskSubtask3);
 
-        model.addUserTask(newTask);
+        model.addUserTaskGetTasks(newTask);
     }
 }

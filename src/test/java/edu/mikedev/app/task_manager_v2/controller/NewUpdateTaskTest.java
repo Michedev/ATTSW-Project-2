@@ -123,11 +123,11 @@ public class NewUpdateTaskTest {
 
         Task task = new Task(taskTitle, subtask1, subtask2, subtask3);
         InOrder inOrder = inOrder(model, mainController);
-        inOrder.verify(model).addUserTask(task);
+        inOrder.verify(model).addUserTaskGetTasks(task);
         inOrder.verify(model).getLoggedUserTasks();
         inOrder.verify(mainController).setViewController(any(UserTasksController.class));
 
-        verify(model, never()).updateTask(any());
+        verify(model, never()).updateTaskGetTasks(any());
     }
 
     @Test
@@ -143,7 +143,7 @@ public class NewUpdateTaskTest {
         when(view.getTaskSubtask2()).thenReturn(subtask2);
         when(view.getTaskSubtask3()).thenReturn(subtask3);
 
-        doThrow(PermissionException.class).when(model).updateTask(any());
+        doThrow(PermissionException.class).when(model).updateTaskGetTasks(any());
 
         newUpdateTaskController.onClickMakeButton();
 
@@ -163,7 +163,7 @@ public class NewUpdateTaskTest {
 
         verify(mainController).initApplication();
         verify(mainController, never()).setViewController(any(UserTasksController.class));
-        verify(model).addUserTask(any());
+        verify(model).addUserTaskGetTasks(any());
     }
 
     @Test
@@ -188,7 +188,7 @@ public class NewUpdateTaskTest {
         updatedTask.setId(toUpdate.getId());
 
         InOrder inOrder = inOrder(model, mainController);
-        inOrder.verify(model).updateTask(updatedTask);
+        inOrder.verify(model).updateTaskGetTasks(updatedTask);
         inOrder.verify(model).getLoggedUserTasks();
         inOrder.verify(mainController).setViewController(any(UserTasksController.class));
     }
@@ -235,7 +235,7 @@ public class NewUpdateTaskTest {
         updatedTask.setId(100);
 
         InOrder inOrder = inOrder(model, mainController);
-        inOrder.verify(model).updateTask(updatedTask);
+        inOrder.verify(model).updateTaskGetTasks(updatedTask);
         inOrder.verify(model).getLoggedUserTasks();
         inOrder.verify(mainController).setViewController(any(UserTasksController.class));
 

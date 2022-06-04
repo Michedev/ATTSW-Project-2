@@ -4,6 +4,7 @@ import edu.mikedev.app.task_manager_v2.data.Task;
 import edu.mikedev.app.task_manager_v2.data.User;
 
 import javax.inject.Inject;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
@@ -18,13 +19,21 @@ public class Model {
         this.transactionManager = transactionManager;
     }
 
-    public User login(String username, String password) throws PermissionException, IllegalArgumentException {
+    public List<Task> loginGetTasks(String username, String password) throws PermissionException, IllegalArgumentException {
         if(this.logged != null){
             throw new PermissionException("You cannot login twice");
         }
-        User userLogged = transactionManager.doInTransaction(repository -> repository.getUserByUsernamePassword(username, password));
+        User userLogged = transactionManager.doInTransaction(repository -> {
+            User logged = repository.getUserByUsernamePassword(username, password);
+            if(logged == null){
+                return null;
+            }
+            List<Task> userTasks = repository.getUserTasks(logged.getId());
+            logged.setTasks(userTasks);
+            return logged;
+        });
         this.logged = userLogged;
-        return userLogged;
+        return logged.getTasks();
     }
 
     public Task getUserTask(int taskId) throws PermissionException {
@@ -38,24 +47,24 @@ public class Model {
         return task;
     }
 
-    public void addUserTask(Task task) throws PermissionException {
+    public List<Task> addUserTaskGetTasks(Task task) throws PermissionException {
         if(this.logged == null){
             throw new PermissionException(LOGIN_ERROR_MESSAGE);
         }
         task.setTaskOwner(logged);
-        transactionManager.doInTransaction(repository -> {
+        return transactionManager.doInTransaction(repository -> {
             repository.add(task);
-            return null;
+            return repository.getUserTasks(logged.getId());
         });
     }
 
-    public void updateTask(Task userTask) throws PermissionException {
+    public List<Task> updateTaskGetTasks(Task userTask) throws PermissionException {
         if(this.logged == null){
             throw new PermissionException(LOGIN_ERROR_MESSAGE);
         }
-        transactionManager.doInTransaction(repository -> {
+        return transactionManager.doInTransaction(repository -> {
             repository.update(userTask);
-            return null;
+            return repository.getUserTasks(logged.getId());
         });
     }
 

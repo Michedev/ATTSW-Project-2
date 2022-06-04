@@ -19,6 +19,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.mockito.Mockito.*;
@@ -62,18 +63,16 @@ public class ControllerIT extends AssertJSwingJUnitTestCase {
     @Test
     @GUITest
     public void testSuccessfulLogin() throws PermissionException {
-        Set<Task> tasks = new HashSet<>();
         Task task1 = new Task("A", "B", "C", "D");
         task1.setId(1);
         Task task2 = new Task("123", "1", "2", "3");
         task2.setId(2);
-        tasks.add(task1);
-        tasks.add(task2);
+        List<Task> tasks = Arrays.asList(task1, task2);
 
         String username = "user123";
         String password = "pass123";
         User newUser = new User(username, password, "email@email.it", tasks);
-        when(mockedModel.login(username, password)).thenReturn(newUser);
+        when(mockedModel.loginGetTasks(username, password)).thenReturn(tasks);
         when(mockedModel.getLoggedUserTasks()).thenReturn(Arrays.asList(task1, task2));
 
         window.textBox("txtUsername").enterText(username);
@@ -148,7 +147,7 @@ public class ControllerIT extends AssertJSwingJUnitTestCase {
         window.button("btnMake").click();
 
         ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
-        verify(mockedModel).addUserTask(captor.capture());
+        verify(mockedModel).addUserTaskGetTasks(captor.capture());
 
         Task addedTask = captor.getValue();
 
@@ -174,7 +173,7 @@ public class ControllerIT extends AssertJSwingJUnitTestCase {
 
         ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
 
-        verify(mockedModel).updateTask(captor.capture());
+        verify(mockedModel).updateTaskGetTasks(captor.capture());
 
         Task updatedTask = captor.getValue();
 
@@ -207,18 +206,17 @@ public class ControllerIT extends AssertJSwingJUnitTestCase {
     }
 
     private Pair<Task, Task> doLogin() throws PermissionException {
-        Set<Task> tasks = new HashSet<>();
         Task task1 = new Task("A", "B", "C", "D");
         task1.setId(1);
         Task task2 = new Task("123", "1", "2", "3");
         task2.setId(2);
-        tasks.add(task1);
-        tasks.add(task2);
+
+        List<Task> tasks = Arrays.asList(task1, task2);
 
         String username = "user123";
         String password = "pass123";
-        User newUser = new User(username, password, "email@email.it", tasks);
-        when(mockedModel.login(username, password)).thenReturn(newUser);
+
+        when(mockedModel.loginGetTasks(username, password)).thenReturn(tasks);
         when(mockedModel.getLoggedUserTasks()).thenReturn(Arrays.asList(task1, task2));
 
         window.textBox("txtUsername").enterText(username);

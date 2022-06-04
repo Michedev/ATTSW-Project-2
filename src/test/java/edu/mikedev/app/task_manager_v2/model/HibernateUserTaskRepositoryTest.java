@@ -13,6 +13,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -49,7 +50,7 @@ public class HibernateUserTaskRepositoryTest {
     @Test
     public void testUserAdd(){
         String newUsername = "username41";
-        User u = new User(newUsername, "passw1", "email@mail.it", new HashSet<Task>());
+        User u = new User(newUsername, "passw1", "email@mail.it", new ArrayList<>());
         Assert.assertFalse(dbUtils.getDBUsernames().contains(newUsername));
         Transaction t = session.beginTransaction();
         hibernateUserTaskRepository.add(u);

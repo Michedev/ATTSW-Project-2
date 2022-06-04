@@ -44,17 +44,14 @@ public class ModelIT {
     @Test
     public void testLogin(){
         User expectedUser = dbUtils.users.iterator().next();
-        User loggedUser = null;
+        List<Task> tasks = null;
         try {
-            loggedUser = model.login(expectedUser.getUsername(), expectedUser.getPassword());
+            tasks = model.loginGetTasks(expectedUser.getUsername(), expectedUser.getPassword());
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
-        Assert.assertNotNull(loggedUser);
-        Assert.assertEquals(expectedUser.getId(), loggedUser.getId());
-        Assert.assertEquals(expectedUser.getUsername(), loggedUser.getUsername());
-        Assert.assertEquals(expectedUser.getPassword(), loggedUser.getPassword());
-        Assert.assertEquals(expectedUser.getEmail(), loggedUser.getEmail());
+        Assert.assertNotNull(tasks);
+        Assert.assertArrayEquals(expectedUser.getTasks().toArray(), tasks.toArray());
     }
 
     @Test
@@ -62,13 +59,13 @@ public class ModelIT {
         User user = dbUtils.users.iterator().next();
 
         try {
-            model.login(user.getUsername(), user.getPassword());
+            model.loginGetTasks(user.getUsername(), user.getPassword());
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
         Task newTask = new Task("AAA", "1", "2", "3");
         try {
-            model.addUserTask(newTask);
+            model.addUserTaskGetTasks(newTask);
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
@@ -86,7 +83,7 @@ public class ModelIT {
         User user = dbUtils.users.iterator().next();
 
         try {
-            model.login(user.getUsername(), user.getPassword());
+            model.loginGetTasks(user.getUsername(), user.getPassword());
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
@@ -106,7 +103,7 @@ public class ModelIT {
         User user = dbUtils.users.iterator().next();
 
         try {
-            model.login(user.getUsername(), user.getPassword());
+            model.loginGetTasks(user.getUsername(), user.getPassword());
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
@@ -117,7 +114,7 @@ public class ModelIT {
         toUpdate.setTitle(newTitle);
 
         try {
-            model.updateTask(toUpdate);
+            model.updateTaskGetTasks(toUpdate);
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
@@ -132,7 +129,7 @@ public class ModelIT {
         User user = dbUtils.users.iterator().next();
 
         try {
-            model.login(user.getUsername(), user.getPassword());
+            model.loginGetTasks(user.getUsername(), user.getPassword());
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
@@ -173,7 +170,7 @@ public class ModelIT {
         Task userTask  = user.getTasks().iterator().next();
 
         try {
-            model.login(user.getUsername(), user.getPassword());
+            model.loginGetTasks(user.getUsername(), user.getPassword());
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
@@ -193,7 +190,7 @@ public class ModelIT {
 
         List<Task> actual = null;
         try {
-            model.login(user.getUsername(), user.getPassword());
+            model.loginGetTasks(user.getUsername(), user.getPassword());
             actual = model.getLoggedUserTasks();
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());

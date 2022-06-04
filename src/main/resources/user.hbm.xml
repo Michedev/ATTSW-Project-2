@@ -21,10 +21,11 @@
             <column name="email" not-null="true"/>
         </property>
 
-        <set name="tasks" table="tasks" inverse="true" cascade="all">
+        <list name="tasks" table="tasks" inverse="true" cascade="all">
             <key column="id_user" not-null="true" />
+            <list-index column = "id"/>
             <one-to-many class="Task"/>
-        </set>
+        </list>
 
     </class>
 </hibernate-mapping>
