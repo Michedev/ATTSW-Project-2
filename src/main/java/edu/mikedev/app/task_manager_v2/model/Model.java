@@ -4,7 +4,6 @@ import edu.mikedev.app.task_manager_v2.data.Task;
 import edu.mikedev.app.task_manager_v2.data.User;
 
 import javax.inject.Inject;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,6 +31,9 @@ public class Model {
             logged.setTasks(userTasks);
             return logged;
         });
+        if(userLogged == null){
+            return null;
+        }
         this.logged = userLogged;
         return logged.getTasks();
     }
@@ -68,7 +70,7 @@ public class Model {
         });
     }
 
-    public Task deleteTask(Task task) throws PermissionException {
+    public List<Task> deleteTaskGetUserTasks(Task task) throws PermissionException {
         if(this.logged == null){
             throw new PermissionException(LOGIN_ERROR_MESSAGE);
         }
@@ -76,15 +78,13 @@ public class Model {
             throw new PermissionException(TASK_OWNER_ERROR_MESSAGE);
         }
 
-
-
         return transactionManager.doInTransaction(repository -> {
             Task taskById = repository.getTaskById(task.getId());
             if(Objects.isNull(taskById)){
                 return null;
             }
             repository.delete(taskById);
-            return taskById;
+            return repository.getUserTasks(logged.getId());
         });
     }
 
@@ -124,11 +124,4 @@ public class Model {
         this.logged = null;
     }
 
-    public List<Task> getLoggedUserTasks() throws PermissionException {
-        if(this.logged == null){
-            throw new PermissionException(LOGIN_ERROR_MESSAGE);
-        }
-        return transactionManager.doInTransaction(repository -> repository.getUserTasks(logged.getId()));
-
-    }
 }
