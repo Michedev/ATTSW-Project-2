@@ -8,6 +8,7 @@
         <property name = "hibernate.connection.url">jdbc:postgresql://localhost:5432/test</property>
         <property name = "hibernate.connection.username">root</property>
         <property name = "hibernate.connection.password">root</property>
+
         <mapping resource = "task.hbm.xml"/>
         <mapping resource = "user.hbm.xml"/>
     </session-factory>

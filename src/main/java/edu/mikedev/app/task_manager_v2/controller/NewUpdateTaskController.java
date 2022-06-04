@@ -39,13 +39,6 @@ public class NewUpdateTaskController implements ViewController<NewUpdateTask> {
         if(anyError){
             return;
         }
-        List<Task> loggedUserTasks = null;
-        try {
-            loggedUserTasks = model.getLoggedUserTasks();
-        } catch (PermissionException e) {
-            managerController.initApplication();
-            return;
-        }
 
         Task taskToUpdate = view.getTaskToUpdate();
         try{
@@ -55,6 +48,14 @@ public class NewUpdateTaskController implements ViewController<NewUpdateTask> {
                 updateTask(taskTitle, taskSubtask1, taskSubtask2, taskSubtask3, taskToUpdate);
             }
         } catch (PermissionException e){
+            managerController.initApplication();
+            return;
+        }
+
+        List<Task> loggedUserTasks = null;
+        try {
+            loggedUserTasks = model.getLoggedUserTasks();
+        } catch (PermissionException e) {
             managerController.initApplication();
             return;
         }
