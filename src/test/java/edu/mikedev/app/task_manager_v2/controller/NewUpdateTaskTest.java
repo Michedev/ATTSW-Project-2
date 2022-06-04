@@ -163,8 +163,7 @@ public class NewUpdateTaskTest {
 
         verify(mainController).initApplication();
         verify(mainController, never()).setViewController(any(UserTasksController.class));
-        verify(model, never()).updateTask(any());
-        verify(model, never()).addUserTask(any());
+        verify(model).addUserTask(any());
     }
 
     @Test
