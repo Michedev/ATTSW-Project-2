@@ -81,4 +81,15 @@ public class Task {
 	public int hashCode() {
 		return Objects.hash(title, subtask1, subtask2, subtask3);
 	}
+
+	@Override
+	public String toString() {
+		return "Task{" +
+				"id=" + id +
+				", title='" + title + '\'' +
+				", subtask1='" + subtask1 + '\'' +
+				", subtask2='" + subtask2 + '\'' +
+				", subtask3='" + subtask3 + '\'' +
+				'}';
+	}
 }

@@ -50,12 +50,12 @@ public abstract class HibernateDBUtils {
         String password2 = "password";
         String email = "email@email.com";
 
-        task1.setId(1);
-        task2.setId(2);
-        task3.setId(3);
-        task4.setId(4);
-        task5.setId(5);
-        task6.setId(6);
+        task1.setId(0);
+        task2.setId(1);
+        task3.setId(2);
+        task4.setId(3);
+        task5.setId(4);
+        task6.setId(5);
 
         List<Task> taskList1 = Arrays.asList(task1, task2, task3);
         List<Task> taskList2 = Arrays.asList(task4, task5, task6);
@@ -226,7 +226,7 @@ public abstract class HibernateDBUtils {
         try {
             Connection connection = initDBConnection();
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("select * from Tasks where id_user = " + userId);
+            ResultSet resultSet = statement.executeQuery("select * from Tasks where id_user = " + userId + " order by id");
             while(resultSet.next()){
                 Task task = getTaskFromQuery(resultSet);
                 result.add(task);

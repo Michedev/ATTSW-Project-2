@@ -1,6 +1,7 @@
 package edu.mikedev.app.task_manager_v2.model;
 
 import edu.mikedev.app.task_manager_v2.controller.TaskManagerController;
+import edu.mikedev.app.task_manager_v2.data.DeleteTaskResponse;
 import edu.mikedev.app.task_manager_v2.data.Task;
 import edu.mikedev.app.task_manager_v2.data.User;
 import edu.mikedev.app.task_manager_v2.view.*;
@@ -17,6 +18,7 @@ import org.mockito.ArgumentCaptor;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -174,10 +176,9 @@ public class ControllerIT extends AssertJSwingJUnitTestCase {
 
         Task updatedTask = captor.getValue();
 
-        Assert.assertEquals(taskNewTitle, updatedTask.getTitle());
-        Assert.assertEquals(task1.getSubtask1(), updatedTask.getSubtask1());
-        Assert.assertEquals(task1.getSubtask2(), updatedTask.getSubtask2());
-        Assert.assertEquals(task1.getSubtask3(), updatedTask.getSubtask3());
+        Task expected = new Task(taskNewTitle, task1.getSubtask1(), task1.getSubtask2(), task1.getSubtask3());
+
+        Assert.assertEquals(expected, updatedTask);
 
     }
 
@@ -185,6 +186,13 @@ public class ControllerIT extends AssertJSwingJUnitTestCase {
     @GUITest
     public void testDeleteTask() throws PermissionException {
         Pair<Task, Task> tasks = doLogin();
+        List<Task> expected = Arrays.asList(tasks.getLeft());
+        when(mockedModel.deleteTaskGetUserTasks(any(Task.class))).thenReturn(
+          new DeleteTaskResponse(
+                  expected,
+                  -1
+          )
+        );
 
         Task task2 = tasks.getRight();
 
@@ -200,6 +208,7 @@ public class ControllerIT extends AssertJSwingJUnitTestCase {
         Task deletedTask = captor.getValue();
 
         Assert.assertEquals(task2, deletedTask);
+        Assert.assertArrayEquals(expected.toArray(), ((UserTasksList) jframe.getContentPane()).getTasks().toArray());
     }
 
     private Pair<Task, Task> doLogin() throws PermissionException {
