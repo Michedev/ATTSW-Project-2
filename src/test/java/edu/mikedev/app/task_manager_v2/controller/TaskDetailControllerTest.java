@@ -1,5 +1,6 @@
 package edu.mikedev.app.task_manager_v2.controller;
 
+import edu.mikedev.app.task_manager_v2.data.DeleteTaskResponse;
 import edu.mikedev.app.task_manager_v2.data.Task;
 import edu.mikedev.app.task_manager_v2.model.Model;
 import edu.mikedev.app.task_manager_v2.model.PermissionException;
@@ -21,7 +22,7 @@ import java.util.List;
 
 import static org.mockito.Mockito.*;
 
-public class TaskDetailTest {
+public class TaskDetailControllerTest {
 
     @Mock
     private Model model;
@@ -63,16 +64,17 @@ public class TaskDetailTest {
 
     @Test
     public void testClickDeleteButton(){
-        Task task = new Task("vbnm", "5", "6", "7");
-        when(view.getTask()).thenReturn(task);
-        List<Task> expected = Arrays.asList(
+        Task taskToDelete = new Task("vbnm", "5", "6", "7");
+        when(view.getTask()).thenReturn(taskToDelete);
+        DeleteTaskResponse tasksAfterDelete = new DeleteTaskResponse(Arrays.asList(
                 new Task("RR", "W", "Q", "Y"),
                 new Task("QQ", "1", "U", "C"),
                 new Task("DD", "2", "L", "V"),
                 new Task("XX", "7", "W", "M")
-        );
+        ), -1);
+
         try {
-            when(model.getLoggedUserTasks()).thenReturn(expected);
+            when(model.deleteTaskGetUserTasks(taskToDelete)).thenReturn(tasksAfterDelete);
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
@@ -80,7 +82,7 @@ public class TaskDetailTest {
         taskDetailController.onClickDeleteButton();
 
         try {
-            verify(model).deleteTask(task);
+            verify(model).deleteTaskGetUserTasks(taskToDelete);
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
@@ -91,7 +93,8 @@ public class TaskDetailTest {
         UserTasksController actual = captor.getValue();
         List<Task> userTasksControllers = actual.getView().getTasks();
 
-        Assert.assertArrayEquals(expected.toArray(), userTasksControllers.toArray());
+        Assert.assertArrayEquals(tasksAfterDelete.getTasks().toArray(), userTasksControllers.toArray());
+        Assert.assertFalse(actual.getView().getTasks().contains(taskToDelete));
     }
 
     @Test
@@ -121,17 +124,12 @@ public class TaskDetailTest {
         Task task = new Task("vbnm", "5", "6", "7");
         task.setId(1430);
         when(view.getTask()).thenReturn(task);
-        when(model.deleteTask(task)).thenReturn(null);
-        try {
-            when(model.getLoggedUserTasks()).thenReturn(new ArrayList<>());
-        } catch (PermissionException e) {
-            Assert.fail(e.getMessage());
-        }
+        when(model.deleteTaskGetUserTasks(task)).thenReturn(new DeleteTaskResponse(new ArrayList<>(), task.getId()));
 
         taskDetailController.onClickDeleteButton();
 
         try {
-            verify(model).deleteTask(task);
+            verify(model).deleteTaskGetUserTasks(task);
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
@@ -139,20 +137,19 @@ public class TaskDetailTest {
         ArgumentCaptor<UserTasksController> captor = ArgumentCaptor.forClass(UserTasksController.class);
         verify(mainController).setViewController(captor.capture());
 
-        UserTasksController actual = captor.getValue();
+        UserTasksController userTasksController = captor.getValue();
 
-        JLabel labelError = actual.getView().getLabelError();
+        JLabel labelError = userTasksController.getView().getLabelError();
         Assert.assertTrue(labelError.isVisible());
         Assert.assertEquals(String.format("The task with id %d is missing", task.getId()), labelError.getText());
     }
 
     @Test
     public void testThrowPermissionExceptionOnGetUserTasksWhenDelete() throws PermissionException {
-        when(model.getLoggedUserTasks()).thenThrow(PermissionException.class);
+        when(model.deleteTaskGetUserTasks(any())).thenThrow(PermissionException.class);
 
         taskDetailController.onClickDeleteButton();
 
-        verify(model, never()).deleteTask(any());
         verify(mainController).initApplication();
         verify(mainController, never()).setViewController(any(UserTasksController.class));
     }

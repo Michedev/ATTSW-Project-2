@@ -6,7 +6,10 @@ import org.hibernate.SessionFactory;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
 
 public abstract class HibernateDBUtils {
 
@@ -38,7 +41,6 @@ public abstract class HibernateDBUtils {
     }
 
     protected void fillDBTables(Statement statement) {
-        Set<Task> taskSet1 = new HashSet<>();
         Task task1 = new Task("title1", "subtask1-1", "subtask2-1", "subtask3-1");
         Task task2 = new Task("title2", "subtask1-2", "subtask2-2", "subtask3-2");
         Task task3 = new Task("title3", "subtask1-3", "subtask2-3", "subtask3-3");
@@ -50,33 +52,28 @@ public abstract class HibernateDBUtils {
         String username2 = "username";
         String password2 = "password";
         String email = "email@email.com";
-        Set<Task> taskSet2 = new HashSet<>();
 
-        task1.setId(1);
-        task2.setId(2);
-        task3.setId(3);
-        task4.setId(4);
-        task5.setId(5);
-        task6.setId(6);
+        task1.setId(0);
+        task2.setId(1);
+        task3.setId(2);
+        task4.setId(3);
+        task5.setId(4);
+        task6.setId(5);
 
-        taskSet1.add(task1);
-        taskSet1.add(task2);
-        taskSet1.add(task3);
-        taskSet2.add(task4);
-        taskSet2.add(task5);
-        taskSet2.add(task6);
+        List<Task> taskList1 = Arrays.asList(task1, task2, task3);
+        List<Task> taskList2 = Arrays.asList(task4, task5, task6);
 
         User user1 = new User(username1, password1, email);
-        user1.setTasks(taskSet1);
-        for(Task t: taskSet1){
+        user1.setTasks(taskList1);
+        for(Task t: taskList1){
             t.setTaskOwner(user1);
         }
         user1.setId(1);
         insertUser(statement, user1);
 
         User user2 = new User(username2, password2, email);
-        user2.setTasks(taskSet2);
-        for(Task t: taskSet2){
+        user2.setTasks(taskList2);
+        for(Task t: taskList2){
             t.setTaskOwner(user2);
         }
         user2.setId(2);
@@ -232,7 +229,7 @@ public abstract class HibernateDBUtils {
         try {
             Connection connection = initDBConnection();
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("select * from Tasks where id_user = " + userId);
+            ResultSet resultSet = statement.executeQuery("select * from Tasks where id_user = " + userId + " order by id");
             while(resultSet.next()){
                 Task task = getTaskFromQuery(resultSet);
                 result.add(task);

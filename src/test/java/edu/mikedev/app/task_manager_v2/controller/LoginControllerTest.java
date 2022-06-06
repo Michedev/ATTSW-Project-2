@@ -1,6 +1,6 @@
 package edu.mikedev.app.task_manager_v2.controller;
 
-import edu.mikedev.app.task_manager_v2.data.User;
+import edu.mikedev.app.task_manager_v2.data.Task;
 import edu.mikedev.app.task_manager_v2.model.Model;
 import edu.mikedev.app.task_manager_v2.model.PermissionException;
 import edu.mikedev.app.task_manager_v2.view.LoginPage;
@@ -64,7 +64,7 @@ public class LoginControllerTest {
 
         verify(view, times(pairs.size())).setErrorLabelText("Missing Username/Password");
         try {
-            verify(model, never()).login(anyString(), anyString());
+            verify(model, never()).loginGetTasks(anyString(), anyString());
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
@@ -75,7 +75,7 @@ public class LoginControllerTest {
         when(view.getUsername()).thenReturn("MissingUsername");
         when(view.getPassword()).thenReturn("MissingPassword");
         try {
-            when(model.login(anyString(), anyString())).thenReturn(null);
+            when(model.loginGetTasks(anyString(), anyString())).thenReturn(null);
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
@@ -83,7 +83,7 @@ public class LoginControllerTest {
         loginController.onLoginButtonClick();
 
         try {
-            verify(model).login(anyString(), anyString());
+            verify(model).loginGetTasks(anyString(), anyString());
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
@@ -95,7 +95,7 @@ public class LoginControllerTest {
         when(view.getUsername()).thenReturn("A");
         when(view.getPassword()).thenReturn("B");
 
-        when(model.login(anyString(), anyString())).thenThrow(PermissionException.class);
+        when(model.loginGetTasks(anyString(), anyString())).thenThrow(PermissionException.class);
 
         loginController.onLoginButtonClick();
 
@@ -107,8 +107,7 @@ public class LoginControllerTest {
     public void testLoginWhenPermissionErrorIsThrown() throws PermissionException {
         when(view.getUsername()).thenReturn("A");
         when(view.getPassword()).thenReturn("B");
-        when(model.login(anyString(), anyString())).thenReturn(new User("A", "B", "C"));
-        when(model.getLoggedUserTasks()).thenThrow(PermissionException.class);
+        when(model.loginGetTasks(anyString(), anyString())).thenThrow(PermissionException.class);
 
         loginController.onLoginButtonClick();
 
@@ -121,16 +120,26 @@ public class LoginControllerTest {
         when(view.getUsername()).thenReturn("A");
         when(view.getPassword()).thenReturn("B");
 
+        List<Task> tasks = Arrays.asList(
+                new Task("456", "h", "j", "k"),
+                new Task("1", "2", "3", "4")
+        );
+        tasks.get(0).setId(1);
+        tasks.get(1).setId(2);
         try {
-            when(model.login("A", "B")).thenReturn(new User("1", "2", "3"));
+            when(model.loginGetTasks("A", "B")).thenReturn(tasks);
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
 
         loginController.onLoginButtonClick();
 
-        verify(mainController).setViewController(any(UserTasksController.class));
+        ArgumentCaptor<UserTasksController> captor = ArgumentCaptor.forClass(UserTasksController.class);
 
+        verify(mainController).setViewController(captor.capture());
+        UserTasksController controller = captor.getValue();
+
+        Assert.assertArrayEquals(tasks.toArray(), controller.getView().getTasks().toArray());
     }
 
     @Test

@@ -1,7 +1,7 @@
 package edu.mikedev.app.task_manager_v2.data;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class User {
 	
@@ -9,7 +9,7 @@ public class User {
 	private String username;
 	private String password;
 	private String email;
-	private Set<Task> tasks;
+	private List<Task> tasks;
 	
 	public User() {}
 
@@ -18,11 +18,11 @@ public class User {
 		this.username = username;
 		this.password = password;
 		this.email = email;
-		this.tasks = new HashSet<>();
+		this.tasks = new ArrayList<>();
 	}
 
 
-	public User(String username, String password, String email, Set<Task> tasks) {
+	public User(String username, String password, String email, List<Task> tasks) {
 		super();
 		this.username = username;
 		this.password = password;
@@ -62,11 +62,11 @@ public class User {
 		this.email = email;
 	}
 
-	public Set<Task> getTasks() {
+	public List<Task> getTasks() {
 		return tasks;
 	}
 
-	public void setTasks(Set<Task> tasks) {
+	public void setTasks(List<Task> tasks) {
 		this.tasks = tasks;
 	}
 	

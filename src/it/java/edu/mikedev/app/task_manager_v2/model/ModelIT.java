@@ -1,5 +1,6 @@
 package edu.mikedev.app.task_manager_v2.model;
 
+import edu.mikedev.app.task_manager_v2.data.DeleteTaskResponse;
 import edu.mikedev.app.task_manager_v2.data.Task;
 import edu.mikedev.app.task_manager_v2.data.User;
 import edu.mikedev.app.task_manager_v2.utils.HibernateDBUtilsPostgre;
@@ -8,11 +9,8 @@ import org.junit.*;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.sql.SQLException;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class ModelIT {
 
@@ -44,98 +42,95 @@ public class ModelIT {
     @Test
     public void testLogin(){
         User expectedUser = dbUtils.users.iterator().next();
-        User loggedUser = null;
+        List<Task> tasks = null;
         try {
-            loggedUser = model.login(expectedUser.getUsername(), expectedUser.getPassword());
+            tasks = model.loginGetTasks(expectedUser.getUsername(), expectedUser.getPassword());
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
-        Assert.assertNotNull(loggedUser);
-        Assert.assertEquals(expectedUser.getId(), loggedUser.getId());
-        Assert.assertEquals(expectedUser.getUsername(), loggedUser.getUsername());
-        Assert.assertEquals(expectedUser.getPassword(), loggedUser.getPassword());
-        Assert.assertEquals(expectedUser.getEmail(), loggedUser.getEmail());
+        Assert.assertNotNull(tasks);
+        Assert.assertArrayEquals(expectedUser.getTasks().toArray(), tasks.toArray());
     }
 
     @Test
     public void testAddTask(){
         User user = dbUtils.users.iterator().next();
 
-        try {
-            model.login(user.getUsername(), user.getPassword());
-        } catch (PermissionException e) {
-            Assert.fail(e.getMessage());
-        }
+        doLogin(user);
+
         Task newTask = new Task("AAA", "1", "2", "3");
+        List<Task> actualUserTasks = null;
         try {
-            model.addUserTask(newTask);
+            actualUserTasks = model.addUserTaskGetTasks(newTask);
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
 
-        List<Task> userTasks = dbUtils.getUserTasks(user.getId());
-        List<String> dbTaskTitles = dbUtils.getDBTaskTitles();
-        Optional<Task> optionalMatchedTask = userTasks.stream().filter(task -> task.getTitle().equals(newTask.getTitle())).findFirst();
-        Assert.assertTrue(optionalMatchedTask.isPresent());
-        Task matchedTask = optionalMatchedTask.get();
-        Assert.assertEquals(dbTaskTitles.size(), matchedTask.getId());
+        List<Task> expectedUserTask = dbUtils.getUserTasks(user.getId());
+        Assert.assertTrue(expectedUserTask.stream().anyMatch(task -> task.equals(newTask)));
+        Assert.assertEquals(expectedUserTask.size(), actualUserTasks.size());
     }
 
     @Test
     public void testRemoveTask(){
         User user = dbUtils.users.iterator().next();
 
-        try {
-            model.login(user.getUsername(), user.getPassword());
-        } catch (PermissionException e) {
-            Assert.fail(e.getMessage());
-        }
+        doLogin(user);
 
         Task toRemove = user.getTasks().iterator().next();
+        DeleteTaskResponse response = null;
         try {
-            model.deleteTask(toRemove);
+            response = model.deleteTaskGetUserTasks(toRemove);
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
+        List<Task> dbUserTasks = dbUtils.getUserTasks(user.getId());
 
-        Assert.assertFalse(dbUtils.getDBTaskTitles().contains(toRemove.getTitle()));
+        Assert.assertEquals(-1, response.getMissingTaskId());
+        Assert.assertFalse(dbUserTasks.contains(toRemove));
+        Assert.assertArrayEquals(dbUserTasks.toArray(), response.getTasks().toArray());
+    }
+
+    private void doLogin(User user) {
+        try {
+            model.loginGetTasks(user.getUsername(), user.getPassword());
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
     }
 
     @Test
     public void testUpdateTask(){
         User user = dbUtils.users.iterator().next();
 
-        try {
-            model.login(user.getUsername(), user.getPassword());
-        } catch (PermissionException e) {
-            Assert.fail(e.getMessage());
-        }
+        doLogin(user);
 
-        Task toUpdate = user.getTasks().iterator().next();
+
+
+        Task toUpdate = user.getTasks().get(0);
         String oldTitle = toUpdate.getTitle();
         String newTitle = "NewTitle";
         toUpdate.setTitle(newTitle);
-
+        DeleteTaskResponse response = null;
         try {
-            model.updateTask(toUpdate);
+            response = model.updateTaskGetTasks(toUpdate);
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
 
-        List<String> dbTaskTitles = dbUtils.getDBTaskTitles();
-        Assert.assertFalse(dbTaskTitles.contains(oldTitle));
-        Assert.assertTrue(dbTaskTitles.contains(newTitle));
+        Assert.assertNotNull(response);
+        List<Task> dbUserTasks = dbUtils.getUserTasks(user.getId());
+        Assert.assertEquals(-1, response.getMissingTaskId());
+        Assert.assertArrayEquals(dbUserTasks.toArray(), response.getTasks().toArray());
+        Assert.assertTrue(dbUserTasks.stream().anyMatch(t -> t.getTitle().equals(newTitle)));
+        Assert.assertTrue(dbUserTasks.stream().noneMatch(t -> t.getTitle().equals(oldTitle)));
     }
 
     @Test
     public void testGetTaskById(){
         User user = dbUtils.users.iterator().next();
 
-        try {
-            model.login(user.getUsername(), user.getPassword());
-        } catch (PermissionException e) {
-            Assert.fail(e.getMessage());
-        }
+        doLogin(user);
 
         Iterator<Task> taskIterator = user.getTasks().iterator();
         taskIterator.next();
@@ -172,34 +167,12 @@ public class ModelIT {
         User user = dbUtils.users.iterator().next();
         Task userTask  = user.getTasks().iterator().next();
 
-        try {
-            model.login(user.getUsername(), user.getPassword());
-        } catch (PermissionException e) {
-            Assert.fail(e.getMessage());
-        }
+        doLogin(user);
 
         model.logout();
 
         PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.getUserTask(userTask.getId()));
         Assert.assertEquals(LOGIN_ERROR_MESSAGE, e.getMessage());
-    }
-
-    @Test
-    public void testGetLoggedUserTasks(){
-        User user = dbUtils.users.iterator().next();
-        List<Task> expected  = user.getTasks().stream()
-                                .sorted(Comparator.comparingInt(Task::getId))
-                                .collect(Collectors.toList());
-
-        List<Task> actual = null;
-        try {
-            model.login(user.getUsername(), user.getPassword());
-            actual = model.getLoggedUserTasks();
-        } catch (PermissionException e) {
-            Assert.fail(e.getMessage());
-        }
-
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
     }
 
     @After

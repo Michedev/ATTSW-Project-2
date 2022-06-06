@@ -33,11 +33,8 @@ public class HibernateTransactionManagerTest {
             repository.add(toAdd);
             return null;
         });
-
         Assert.assertTrue(dbUtils.getDBUsernames().contains(toAdd.getUsername()));
-
     }
-
     @Test
     public void testRollbackTransaction(){
         User toAdd = new User("ABC", "A", "B");
@@ -48,7 +45,6 @@ public class HibernateTransactionManagerTest {
             repository.delete(notExistingUser);
             return null;
         });
-
         Assert.assertFalse(dbUtils.getDBUsernames().contains(toAdd.getUsername()));
     }
 

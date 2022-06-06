@@ -1,13 +1,12 @@
 package edu.mikedev.app.task_manager_v2.controller;
 
+import edu.mikedev.app.task_manager_v2.data.DeleteTaskResponse;
 import edu.mikedev.app.task_manager_v2.data.Task;
 import edu.mikedev.app.task_manager_v2.model.Model;
 import edu.mikedev.app.task_manager_v2.model.PermissionException;
 import edu.mikedev.app.task_manager_v2.view.NewUpdateTask;
 import edu.mikedev.app.task_manager_v2.view.TaskDetail;
 import edu.mikedev.app.task_manager_v2.view.UserTasksList;
-
-import java.util.List;
 
 public class TaskDetailController implements ViewController<TaskDetail> {
 
@@ -40,20 +39,17 @@ public class TaskDetailController implements ViewController<TaskDetail> {
     }
 
     public void onClickDeleteButton() {
-        List<Task> loggedUserTasks = null;
+        DeleteTaskResponse deleteTaskResponse = null;
         int missingId = -1;
         try {
-            loggedUserTasks = model.getLoggedUserTasks();
             Task toDelete = getView().getTask();
-            Task deleted = model.deleteTask(toDelete);
-            if(deleted == null){
-                missingId = toDelete.getId();
-            }
+            deleteTaskResponse = model.deleteTaskGetUserTasks(toDelete);
+            missingId = deleteTaskResponse.getMissingTaskId();
         } catch (PermissionException e) {
             managerController.initApplication();
             return;
         }
-        UserTasksList view = new UserTasksList(loggedUserTasks);
+        UserTasksList view = new UserTasksList(deleteTaskResponse.getTasks());
         UserTasksController userTasksController = new UserTasksController(model, view, managerController);
         managerController.setViewController(userTasksController);
         if(missingId != -1){

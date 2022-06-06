@@ -1,5 +1,6 @@
 package edu.mikedev.app.task_manager_v2.model;
 
+import edu.mikedev.app.task_manager_v2.data.DeleteTaskResponse;
 import edu.mikedev.app.task_manager_v2.data.Task;
 import edu.mikedev.app.task_manager_v2.data.User;
 
@@ -18,13 +19,24 @@ public class Model {
         this.transactionManager = transactionManager;
     }
 
-    public User login(String username, String password) throws PermissionException, IllegalArgumentException {
+    public List<Task> loginGetTasks(String username, String password) throws PermissionException, IllegalArgumentException {
         if(this.logged != null){
             throw new PermissionException("You cannot login twice");
         }
-        User userLogged = transactionManager.doInTransaction(repository -> repository.getUserByUsernamePassword(username, password));
+        User userLogged = transactionManager.doInTransaction(repository -> {
+            User userRepository = repository.getUserByUsernamePassword(username, password);
+            if(userRepository == null){
+                return null;
+            }
+            List<Task> userTasks = repository.getUserTasks(userRepository.getId());
+            userRepository.setTasks(userTasks);
+            return userRepository;
+        });
+        if(userLogged == null){
+            return null;
+        }
         this.logged = userLogged;
-        return userLogged;
+        return logged.getTasks();
     }
 
     public Task getUserTask(int taskId) throws PermissionException {
@@ -38,28 +50,39 @@ public class Model {
         return task;
     }
 
-    public void addUserTask(Task task) throws PermissionException {
+    public List<Task> addUserTaskGetTasks(Task task) throws PermissionException {
         if(this.logged == null){
             throw new PermissionException(LOGIN_ERROR_MESSAGE);
         }
         task.setTaskOwner(logged);
-        transactionManager.doInTransaction(repository -> {
+        return transactionManager.doInTransaction(repository -> {
             repository.add(task);
-            return null;
+            return repository.getUserTasks(logged.getId());
         });
     }
 
-    public void updateTask(Task userTask) throws PermissionException {
+    public DeleteTaskResponse updateTaskGetTasks(Task userTask) throws PermissionException {
         if(this.logged == null){
             throw new PermissionException(LOGIN_ERROR_MESSAGE);
         }
-        transactionManager.doInTransaction(repository -> {
-            repository.update(userTask);
-            return null;
+        if(this.logged.getId() != userTask.getTaskOwner().getId()){
+            throw new PermissionException(TASK_OWNER_ERROR_MESSAGE);
+        }
+        return transactionManager.doInTransaction(repository -> {
+            Task sessionTask = repository.getTaskById(userTask.getId());
+            if(sessionTask == null){
+                return new DeleteTaskResponse(repository.getUserTasks(logged.getId()), userTask.getId());
+            }
+            sessionTask.setTitle(userTask.getTitle());
+            sessionTask.setSubtask1(userTask.getSubtask1());
+            sessionTask.setSubtask2(userTask.getSubtask2());
+            sessionTask.setSubtask3(userTask.getSubtask3());
+            repository.update(sessionTask);
+            return new DeleteTaskResponse(repository.getUserTasks(logged.getId()), -1);
         });
     }
 
-    public Task deleteTask(Task task) throws PermissionException {
+    public DeleteTaskResponse deleteTaskGetUserTasks(Task task) throws PermissionException {
         if(this.logged == null){
             throw new PermissionException(LOGIN_ERROR_MESSAGE);
         }
@@ -67,15 +90,13 @@ public class Model {
             throw new PermissionException(TASK_OWNER_ERROR_MESSAGE);
         }
 
-
-
         return transactionManager.doInTransaction(repository -> {
             Task taskById = repository.getTaskById(task.getId());
             if(Objects.isNull(taskById)){
-                return null;
+                return new DeleteTaskResponse(repository.getUserTasks(logged.getId()), task.getId());
             }
             repository.delete(taskById);
-            return taskById;
+            return new DeleteTaskResponse(repository.getUserTasks(logged.getId()), -1);
         });
     }
 
@@ -105,7 +126,6 @@ public class Model {
            repository.add(user);
            return null;
         });
-
     }
 
     public void logout() throws IllegalStateException {
@@ -115,11 +135,4 @@ public class Model {
         this.logged = null;
     }
 
-    public List<Task> getLoggedUserTasks() throws PermissionException {
-        if(this.logged == null){
-            throw new PermissionException(LOGIN_ERROR_MESSAGE);
-        }
-        return transactionManager.doInTransaction(repository -> repository.getUserTasks(logged.getId()));
-
-    }
 }

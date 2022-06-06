@@ -1,21 +1,25 @@
 package edu.mikedev.app.task_manager_v2.controller;
 
+import edu.mikedev.app.task_manager_v2.data.DeleteTaskResponse;
 import edu.mikedev.app.task_manager_v2.data.Task;
 import edu.mikedev.app.task_manager_v2.model.Model;
 import edu.mikedev.app.task_manager_v2.model.PermissionException;
 import edu.mikedev.app.task_manager_v2.view.NewUpdateTask;
-import edu.mikedev.app.task_manager_v2.view.UserTasksList;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.*;
 
+import javax.swing.*;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 
-public class NewUpdateTaskTest {
+public class NewUpdateTaskControllerTest {
 
     @Mock
     private Model model;
@@ -114,20 +118,27 @@ public class NewUpdateTaskTest {
         String subtask2 = "ZZZ";
         String subtask3 = "789";
 
+        Task expected = new Task(taskTitle, subtask1, subtask2, subtask3);
+
         when(view.getTaskTitle()).thenReturn(taskTitle);
         when(view.getTaskSubtask1()).thenReturn(subtask1);
         when(view.getTaskSubtask2()).thenReturn(subtask2);
         when(view.getTaskSubtask3()).thenReturn(subtask3);
+        List<Task> expectedTaskList = Arrays.asList(expected);
+        when(model.addUserTaskGetTasks(expected)).thenReturn(expectedTaskList);
 
         newUpdateTaskController.onClickMakeButton();
 
+        ArgumentCaptor<UserTasksController> captor = ArgumentCaptor.forClass(UserTasksController.class);
+
         Task task = new Task(taskTitle, subtask1, subtask2, subtask3);
         InOrder inOrder = inOrder(model, mainController);
-        inOrder.verify(model).addUserTask(task);
-        inOrder.verify(model).getLoggedUserTasks();
-        inOrder.verify(mainController).setViewController(any(UserTasksController.class));
+        inOrder.verify(model).addUserTaskGetTasks(task);
+        inOrder.verify(mainController).setViewController(captor.capture());
 
-        verify(model, never()).updateTask(any());
+        verify(model, never()).updateTaskGetTasks(any());
+        UserTasksController userTasksController = captor.getValue();
+        Assert.assertArrayEquals(expectedTaskList.toArray(), userTasksController.getView().getTasks().toArray());
     }
 
     @Test
@@ -143,7 +154,7 @@ public class NewUpdateTaskTest {
         when(view.getTaskSubtask2()).thenReturn(subtask2);
         when(view.getTaskSubtask3()).thenReturn(subtask3);
 
-        doThrow(PermissionException.class).when(model).updateTask(any());
+        doThrow(PermissionException.class).when(model).updateTaskGetTasks(any());
 
         newUpdateTaskController.onClickMakeButton();
 
@@ -152,8 +163,9 @@ public class NewUpdateTaskTest {
     }
 
     @Test
-    public void testThrowPermissionExceptionWhenGetUserTasks() throws PermissionException {
-        when(model.getLoggedUserTasks()).thenThrow(PermissionException.class);
+    public void testThrowPermissionExceptionWhenAddNewTask() throws PermissionException {
+        when(model.addUserTaskGetTasks(any(Task.class))).thenThrow(PermissionException.class);
+
         when(view.getTaskTitle()).thenReturn("TTT");
         when(view.getTaskSubtask1()).thenReturn("EEE");
         when(view.getTaskSubtask2()).thenReturn("YYY");
@@ -163,7 +175,7 @@ public class NewUpdateTaskTest {
 
         verify(mainController).initApplication();
         verify(mainController, never()).setViewController(any(UserTasksController.class));
-        verify(model).addUserTask(any());
+        verify(model).addUserTaskGetTasks(any());
     }
 
     @Test
@@ -171,6 +183,12 @@ public class NewUpdateTaskTest {
         Task toUpdate = new Task("AAA", "1", "2", "3");
         toUpdate.setId(100);
         when(view.getTaskToUpdate()).thenReturn(toUpdate);
+        when(model.updateTaskGetTasks(toUpdate)).thenReturn(
+                new DeleteTaskResponse(
+                        new ArrayList<>(),
+                        -1
+                )
+        );
 
         String newTaskTitle = "TTT";
         String newSubtask1 = "R";
@@ -182,15 +200,63 @@ public class NewUpdateTaskTest {
         when(view.getTaskSubtask2()).thenReturn(newSubtask2);
         when(view.getTaskSubtask3()).thenReturn(newSubtask3);
 
+
         newUpdateTaskController.onClickMakeButton();
 
         Task updatedTask = new Task(newTaskTitle, newSubtask1, newSubtask2, newSubtask3);
         updatedTask.setId(toUpdate.getId());
 
         InOrder inOrder = inOrder(model, mainController);
-        inOrder.verify(model).updateTask(updatedTask);
-        inOrder.verify(model).getLoggedUserTasks();
-        inOrder.verify(mainController).setViewController(any(UserTasksController.class));
+        inOrder.verify(model).updateTaskGetTasks(updatedTask);
+        ArgumentCaptor<UserTasksController> captor = ArgumentCaptor.forClass(UserTasksController.class);
+
+        inOrder.verify(mainController).setViewController(captor.capture());
+
+        UserTasksController controller = captor.getValue();
+        JLabel labelError = controller.getView().getLabelError();
+        Assert.assertFalse(labelError.isVisible());
+        Assert.assertNotEquals(String.format("The task with id %d is missing", toUpdate.getId()), labelError.getText());
+    }
+
+    @Test
+    public void testUpdateTaskWhenMissing() throws PermissionException {
+        Task toUpdate = new Task("AAA", "1", "2", "3");
+        toUpdate.setId(100);
+        when(view.getTaskToUpdate()).thenReturn(toUpdate);
+        when(model.updateTaskGetTasks(toUpdate)).thenReturn(
+                new DeleteTaskResponse(
+                        new ArrayList<>(),
+                        toUpdate.getId()
+                )
+        );
+
+        String newTaskTitle = "TTT";
+        String newSubtask1 = "R";
+        String newSubtask2 = "T";
+        String newSubtask3 = "Y";
+
+        when(view.getTaskTitle()).thenReturn(newTaskTitle);
+        when(view.getTaskSubtask1()).thenReturn(newSubtask1);
+        when(view.getTaskSubtask2()).thenReturn(newSubtask2);
+        when(view.getTaskSubtask3()).thenReturn(newSubtask3);
+
+
+        newUpdateTaskController.onClickMakeButton();
+
+        Task updatedTask = new Task(newTaskTitle, newSubtask1, newSubtask2, newSubtask3);
+        updatedTask.setId(toUpdate.getId());
+
+        InOrder inOrder = inOrder(model, mainController);
+        inOrder.verify(model).updateTaskGetTasks(updatedTask);
+
+        ArgumentCaptor<UserTasksController> captor = ArgumentCaptor.forClass(UserTasksController.class);
+
+        inOrder.verify(mainController).setViewController(captor.capture());
+
+        UserTasksController controller = captor.getValue();
+        JLabel labelError = controller.getView().getLabelError();
+        Assert.assertTrue(labelError.isVisible());
+        Assert.assertEquals(String.format("The task with id %d is missing", toUpdate.getId()), labelError.getText());
     }
 
     @Test
@@ -207,38 +273,4 @@ public class NewUpdateTaskTest {
         verify(newUpdateTaskController).onClickMakeButton();
     }
 
-    @Test
-    public void testUpdateTaskWhenNotExistingOntoTheDB() throws PermissionException {
-        String subtask1 = "R";
-        String subtask2 = "T";
-        String subtask3 = "Y";
-        Task toUpdate = new Task("AAA", subtask1, subtask2, subtask3);
-        toUpdate.setId(100);
-        when(view.getTaskToUpdate()).thenReturn(toUpdate);
-        Task loggedTask = new Task("1", "2", "3", "4");
-        loggedTask.setId(40);
-        when(model.getLoggedUserTasks()).thenReturn(Arrays.asList(loggedTask));
-        UserTasksList mockedUserTasksListView = mock(UserTasksList.class);
-        NewUpdateTaskController spiedController = spy(newUpdateTaskController);
-        when(spiedController.makeUserTasksList(anyList())).thenReturn(mockedUserTasksListView);
-
-        String newTaskTitle = "TTT";
-
-        when(view.getTaskTitle()).thenReturn(newTaskTitle);
-        when(view.getTaskSubtask1()).thenReturn(subtask1);
-        when(view.getTaskSubtask2()).thenReturn(subtask2);
-        when(view.getTaskSubtask3()).thenReturn(subtask3);
-
-        spiedController.onClickMakeButton();
-
-        Task updatedTask = new Task(newTaskTitle, subtask1, subtask2, subtask3);
-        updatedTask.setId(100);
-
-        InOrder inOrder = inOrder(model, mainController);
-        inOrder.verify(model).updateTask(updatedTask);
-        inOrder.verify(model).getLoggedUserTasks();
-        inOrder.verify(mainController).setViewController(any(UserTasksController.class));
-
-        verify(mockedUserTasksListView).setErrorMessage(String.format("The task with id %d is missing", toUpdate.getId()));
-    }
 }

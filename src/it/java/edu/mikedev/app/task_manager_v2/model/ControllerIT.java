@@ -1,6 +1,7 @@
 package edu.mikedev.app.task_manager_v2.model;
 
 import edu.mikedev.app.task_manager_v2.controller.TaskManagerController;
+import edu.mikedev.app.task_manager_v2.data.DeleteTaskResponse;
 import edu.mikedev.app.task_manager_v2.data.Task;
 import edu.mikedev.app.task_manager_v2.data.User;
 import edu.mikedev.app.task_manager_v2.view.*;
@@ -18,8 +19,7 @@ import org.mockito.ArgumentCaptor;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 
@@ -62,19 +62,16 @@ public class ControllerIT extends AssertJSwingJUnitTestCase {
     @Test
     @GUITest
     public void testSuccessfulLogin() throws PermissionException {
-        Set<Task> tasks = new HashSet<>();
         Task task1 = new Task("A", "B", "C", "D");
         task1.setId(1);
         Task task2 = new Task("123", "1", "2", "3");
         task2.setId(2);
-        tasks.add(task1);
-        tasks.add(task2);
+        List<Task> tasks = Arrays.asList(task1, task2);
 
         String username = "user123";
         String password = "pass123";
         User newUser = new User(username, password, "email@email.it", tasks);
-        when(mockedModel.login(username, password)).thenReturn(newUser);
-        when(mockedModel.getLoggedUserTasks()).thenReturn(Arrays.asList(task1, task2));
+        when(mockedModel.loginGetTasks(username, password)).thenReturn(tasks);
 
         window.textBox("txtUsername").enterText(username);
         window.textBox("txtPassword").enterText(password);
@@ -121,7 +118,7 @@ public class ControllerIT extends AssertJSwingJUnitTestCase {
 
     @Test
     @GUITest
-    public void testGoTONewTaskPage() throws PermissionException {
+    public void testGoToNewTaskPage() throws PermissionException {
         doLogin();
 
         window.button("btnNew").click();
@@ -148,7 +145,7 @@ public class ControllerIT extends AssertJSwingJUnitTestCase {
         window.button("btnMake").click();
 
         ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
-        verify(mockedModel).addUserTask(captor.capture());
+        verify(mockedModel).addUserTaskGetTasks(captor.capture());
 
         Task addedTask = captor.getValue();
 
@@ -161,34 +158,46 @@ public class ControllerIT extends AssertJSwingJUnitTestCase {
     @Test
     @GUITest
     public void testUpdateTask() throws PermissionException {
+
         Pair<Task, Task> tasks = doLogin();
 
         Task task1 = tasks.getLeft();
+        String taskNewTitle = "NewTask23";
+        Task expected = new Task(taskNewTitle, task1.getSubtask1(), task1.getSubtask2(), task1.getSubtask3());
+        when(mockedModel.updateTaskGetTasks(task1)).thenReturn(new DeleteTaskResponse(
+                Arrays.asList(expected, tasks.getRight()), -1
+            )
+        );
 
         window.button("btnDetailTask1").click();
         window.button("btnUpdate").click();
 
-        String taskNewTitle = "NewTask23";
         window.textBox("txtTaskTitle").deleteText().enterText(taskNewTitle);
         window.button("btnMake").click();
 
         ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
 
-        verify(mockedModel).updateTask(captor.capture());
+        verify(mockedModel).updateTaskGetTasks(captor.capture());
 
         Task updatedTask = captor.getValue();
 
-        Assert.assertEquals(taskNewTitle, updatedTask.getTitle());
-        Assert.assertEquals(task1.getSubtask1(), updatedTask.getSubtask1());
-        Assert.assertEquals(task1.getSubtask2(), updatedTask.getSubtask2());
-        Assert.assertEquals(task1.getSubtask3(), updatedTask.getSubtask3());
 
+        Assert.assertEquals(expected, updatedTask);
+        window.label("lblTitleTask1").requireText(taskNewTitle);
+        window.label("lblTitleTask2").requireText(tasks.getRight().getTitle());
     }
 
     @Test
     @GUITest
     public void testDeleteTask() throws PermissionException {
         Pair<Task, Task> tasks = doLogin();
+        List<Task> expected = Arrays.asList(tasks.getLeft());
+        when(mockedModel.deleteTaskGetUserTasks(any(Task.class))).thenReturn(
+          new DeleteTaskResponse(
+                  expected,
+                  -1
+          )
+        );
 
         Task task2 = tasks.getRight();
 
@@ -199,27 +208,26 @@ public class ControllerIT extends AssertJSwingJUnitTestCase {
 
         ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
 
-        verify(mockedModel).deleteTask(captor.capture());
+        verify(mockedModel).deleteTaskGetUserTasks(captor.capture());
 
         Task deletedTask = captor.getValue();
 
         Assert.assertEquals(task2, deletedTask);
+        Assert.assertArrayEquals(expected.toArray(), ((UserTasksList) jframe.getContentPane()).getTasks().toArray());
     }
 
     private Pair<Task, Task> doLogin() throws PermissionException {
-        Set<Task> tasks = new HashSet<>();
         Task task1 = new Task("A", "B", "C", "D");
         task1.setId(1);
         Task task2 = new Task("123", "1", "2", "3");
         task2.setId(2);
-        tasks.add(task1);
-        tasks.add(task2);
+
+        List<Task> tasks = Arrays.asList(task1, task2);
 
         String username = "user123";
         String password = "pass123";
-        User newUser = new User(username, password, "email@email.it", tasks);
-        when(mockedModel.login(username, password)).thenReturn(newUser);
-        when(mockedModel.getLoggedUserTasks()).thenReturn(Arrays.asList(task1, task2));
+
+        when(mockedModel.loginGetTasks(username, password)).thenReturn(tasks);
 
         window.textBox("txtUsername").enterText(username);
         window.textBox("txtPassword").enterText(password);

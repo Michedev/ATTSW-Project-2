@@ -14,13 +14,24 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 
-		<sonar.issue.ignore.multicriteria>e1,e2</sonar.issue.ignore.multicriteria>
+		<sonar.issue.ignore.multicriteria>e1,e2,e3,e4,e5</sonar.issue.ignore.multicriteria>
 
 		<sonar.issue.ignore.multicriteria.e1.ruleKey>java:S117</sonar.issue.ignore.multicriteria.e1.ruleKey>
 		<sonar.issue.ignore.multicriteria.e1.resourceKey>src/main/**/view/*.java</sonar.issue.ignore.multicriteria.e1.resourceKey>
 
 		<sonar.issue.ignore.multicriteria.e2.ruleKey>java:S2699</sonar.issue.ignore.multicriteria.e2.ruleKey>
 		<sonar.issue.ignore.multicriteria.e2.resourceKey>src/test/**/view/*.java</sonar.issue.ignore.multicriteria.e2.resourceKey>
+
+		<sonar.issue.ignore.multicriteria.e3.ruleKey>java:S1168</sonar.issue.ignore.multicriteria.e3.ruleKey>
+		<sonar.issue.ignore.multicriteria.e3.resourceKey>src/main/java/edu/mikedev/app/task_manager_v2/model/Model.java</sonar.issue.ignore.multicriteria.e3.resourceKey>
+
+		<sonar.issue.ignore.multicriteria.e4.ruleKey>java:S106</sonar.issue.ignore.multicriteria.e4.ruleKey>
+		<sonar.issue.ignore.multicriteria.e4.resourceKey>src/main/java/edu/mikedev/app/task_manager_v2/model/HibernateTransactionManager.java</sonar.issue.ignore.multicriteria.e4.resourceKey>
+
+		<sonar.issue.ignore.multicriteria.e5.ruleKey>xml:S3822</sonar.issue.ignore.multicriteria.e5.ruleKey>
+		<sonar.issue.ignore.multicriteria.e5.resourceKey>src/main/resources/hibernate.inmemory.cfg.xml</sonar.issue.ignore.multicriteria.e5.resourceKey>
+
+
 		<skipTests>false</skipTests>
 		<skipUnitTests>${skipTests}</skipUnitTests>
 		<skipIntegrationTests>${skipTests}</skipIntegrationTests>
@@ -289,6 +300,9 @@
 								<param>edu.mikedev.app.task_manager_v2.model.*Test</param>
 								<param>edu.mikedev.app.task_manager_v2.controller.*Test</param>
 							</targetTests>
+							<excludedClasses>
+								<excludedClass>edu.mikedev.app.task_manager_v2.model.HibernateTransactionManager</excludedClass>
+							</excludedClasses>
 							<mutators>
 								<mutator>DEFAULTS</mutator>
 							</mutators>
