@@ -7,10 +7,12 @@ import edu.mikedev.app.task_manager_v2.model.PermissionException;
 import edu.mikedev.app.task_manager_v2.view.NewUpdateTask;
 import edu.mikedev.app.task_manager_v2.view.UserTasksList;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.*;
 
+import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -198,12 +200,56 @@ public class NewUpdateTaskControllerTest {
 
         InOrder inOrder = inOrder(model, mainController);
         inOrder.verify(model).updateTaskGetTasks(updatedTask);
-        inOrder.verify(mainController).setViewController(any(UserTasksController.class));
+        ArgumentCaptor<UserTasksController> captor = ArgumentCaptor.forClass(UserTasksController.class);
+
+        inOrder.verify(mainController).setViewController(captor.capture());
+
+        UserTasksController controller = captor.getValue();
+        JLabel labelError = controller.getView().getLabelError();
+        Assert.assertFalse(labelError.isVisible());
+        Assert.assertNotEquals(String.format("The task with id %d is missing", toUpdate.getId()), labelError.getText());
+
     }
 
     @Test
-    public void testUpdateTaskWhenMissing(){
+    public void testUpdateTaskWhenMissing() throws PermissionException {
+        Task toUpdate = new Task("AAA", "1", "2", "3");
+        toUpdate.setId(100);
+        when(view.getTaskToUpdate()).thenReturn(toUpdate);
+        when(model.updateTaskGetTasks(toUpdate)).thenReturn(
+                new DeleteTaskResponse(
+                        new ArrayList<>(),
+                        toUpdate.getId()
+                )
+        );
 
+        String newTaskTitle = "TTT";
+        String newSubtask1 = "R";
+        String newSubtask2 = "T";
+        String newSubtask3 = "Y";
+
+        when(view.getTaskTitle()).thenReturn(newTaskTitle);
+        when(view.getTaskSubtask1()).thenReturn(newSubtask1);
+        when(view.getTaskSubtask2()).thenReturn(newSubtask2);
+        when(view.getTaskSubtask3()).thenReturn(newSubtask3);
+
+
+        newUpdateTaskController.onClickMakeButton();
+
+        Task updatedTask = new Task(newTaskTitle, newSubtask1, newSubtask2, newSubtask3);
+        updatedTask.setId(toUpdate.getId());
+
+        InOrder inOrder = inOrder(model, mainController);
+        inOrder.verify(model).updateTaskGetTasks(updatedTask);
+
+        ArgumentCaptor<UserTasksController> captor = ArgumentCaptor.forClass(UserTasksController.class);
+
+        inOrder.verify(mainController).setViewController(captor.capture());
+
+        UserTasksController controller = captor.getValue();
+        JLabel labelError = controller.getView().getLabelError();
+        Assert.assertTrue(labelError.isVisible());
+        Assert.assertEquals(String.format("The task with id %d is missing", toUpdate.getId()), labelError.getText());
     }
 
     @Test
