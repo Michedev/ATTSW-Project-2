@@ -69,11 +69,15 @@ public class Model {
             throw new PermissionException(TASK_OWNER_ERROR_MESSAGE);
         }
         return transactionManager.doInTransaction(repository -> {
-            Task taskByID = repository.getTaskById(userTask.getId());
-            if(taskByID == null){
+            Task sessionTask = repository.getTaskById(userTask.getId());
+            if(sessionTask == null){
                 return new DeleteTaskResponse(repository.getUserTasks(logged.getId()), userTask.getId());
             }
-            repository.update(taskByID);
+            sessionTask.setTitle(userTask.getTitle());
+            sessionTask.setSubtask1(userTask.getSubtask1());
+            sessionTask.setSubtask2(userTask.getSubtask2());
+            sessionTask.setSubtask3(userTask.getSubtask3());
+            repository.update(sessionTask);
             return new DeleteTaskResponse(repository.getUserTasks(logged.getId()), -1);
         });
     }
