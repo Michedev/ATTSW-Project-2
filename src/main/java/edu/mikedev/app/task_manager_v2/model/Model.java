@@ -127,14 +127,7 @@ public class Model {
            return null;
         });
     }
-
-    public List<Task> getLoggedUserTasks() throws PermissionException {
-        if(this.logged == null){
-            throw new PermissionException(LOGIN_ERROR_MESSAGE);
-        }
-        return transactionManager.doInTransaction(repository -> repository.getUserTasks(logged.getId()));
-    }
-
+    
     public void logout() throws IllegalStateException {
         if(this.logged == null){
             throw new IllegalStateException("You cannot logout before login");

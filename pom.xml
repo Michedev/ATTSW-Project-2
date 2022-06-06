@@ -289,6 +289,9 @@
 								<param>edu.mikedev.app.task_manager_v2.model.*Test</param>
 								<param>edu.mikedev.app.task_manager_v2.controller.*Test</param>
 							</targetTests>
+							<excludedClasses>
+								<excludedClass>edu.mikedev.app.task_manager_v2.model.HibernateTransactionManager</excludedClass>
+							</excludedClasses>
 							<mutators>
 								<mutator>DEFAULTS</mutator>
 							</mutators>

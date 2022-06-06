@@ -3,12 +3,15 @@ package edu.mikedev.app.task_manager_v2.model;
 import edu.mikedev.app.task_manager_v2.data.Task;
 import edu.mikedev.app.task_manager_v2.data.User;
 import edu.mikedev.app.task_manager_v2.utils.HibernateDBUtilsInMemory;
+import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.List;
 
 public class HibernateTransactionManagerTest {
 
@@ -33,11 +36,8 @@ public class HibernateTransactionManagerTest {
             repository.add(toAdd);
             return null;
         });
-
         Assert.assertTrue(dbUtils.getDBUsernames().contains(toAdd.getUsername()));
-
     }
-
     @Test
     public void testRollbackTransaction(){
         User toAdd = new User("ABC", "A", "B");
@@ -48,7 +48,6 @@ public class HibernateTransactionManagerTest {
             repository.delete(notExistingUser);
             return null;
         });
-
         Assert.assertFalse(dbUtils.getDBUsernames().contains(toAdd.getUsername()));
     }
 

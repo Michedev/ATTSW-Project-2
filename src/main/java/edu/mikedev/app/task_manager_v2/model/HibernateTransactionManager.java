@@ -17,17 +17,22 @@ public class HibernateTransactionManager implements TransactionManager {
 
     public <T> T doInTransaction(Function<UserTaskRepository, T> f) {
         Session session = sessionFactory.openSession();
-        Transaction t = session.beginTransaction();
+        Transaction t = null;
         HibernateUserTaskRepository repository = new HibernateUserTaskRepository(session);
         T output = null;
         try{
+            t = session.beginTransaction();
             output = f.apply(repository);
             t.commit();
         } catch (Exception e){
+            if(t != null){
+                t.rollback();
+            }
         }
         finally {
             session.close();
         }
+        System.out.println("Session is open: " + session.isOpen());
         return output;
     }
 }

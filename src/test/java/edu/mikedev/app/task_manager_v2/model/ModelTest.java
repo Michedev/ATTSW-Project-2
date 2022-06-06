@@ -14,7 +14,7 @@ import static org.mockito.AdditionalAnswers.answer;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class HibernateModelTest {
+public class ModelTest {
 
     private final String OTHER_USER_ERROR_MESSAGE = "The task owner is not the logged user";
     private final String LOGIN_ERROR_MESSAGE = "You must login by calling the login() method before calling this one.";
@@ -174,7 +174,9 @@ public class HibernateModelTest {
                 userTask,
                 mockedUserTasks.get(1)
         ));
-        when(repository.getTaskById(userTask.getId())).thenReturn(userTask);
+        Task sessionTask = new Task();
+        sessionTask = spy(sessionTask);
+        when(repository.getTaskById(userTask.getId())).thenReturn(sessionTask);
         DeleteTaskResponse response = null;
 
         try {
@@ -186,11 +188,17 @@ public class HibernateModelTest {
         List<Task> actualUserTasks = response.getTasks();
 
         verify(repository).update(any(Task.class));
+
         verify(repository, times(2)).getUserTasks(anyInt());
         Assert.assertEquals(-1, response.getMissingTaskId());
         Assert.assertEquals(mockedUserTasks.size(), actualUserTasks.size());
         Assert.assertTrue(actualUserTasks.stream().anyMatch(t -> t.getTitle().equals(newTitle)));
         Assert.assertTrue(actualUserTasks.stream().noneMatch(t -> t.getTitle().equals(oldTitle)));
+
+        verify(sessionTask).setTitle(newTitle);
+        verify(sessionTask).setSubtask1(userTask.getSubtask1());
+        verify(sessionTask).setSubtask2(userTask.getSubtask2());
+        verify(sessionTask).setSubtask3(userTask.getSubtask3());
     }
 
     @Test

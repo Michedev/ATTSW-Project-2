@@ -16,6 +16,7 @@ import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 
@@ -118,19 +119,27 @@ public class NewUpdateTaskControllerTest {
         String subtask2 = "ZZZ";
         String subtask3 = "789";
 
+        Task expected = new Task(taskTitle, subtask1, subtask2, subtask3);
+
         when(view.getTaskTitle()).thenReturn(taskTitle);
         when(view.getTaskSubtask1()).thenReturn(subtask1);
         when(view.getTaskSubtask2()).thenReturn(subtask2);
         when(view.getTaskSubtask3()).thenReturn(subtask3);
+        List<Task> expectedTaskList = Arrays.asList(expected);
+        when(model.addUserTaskGetTasks(expected)).thenReturn(expectedTaskList);
 
         newUpdateTaskController.onClickMakeButton();
+
+        ArgumentCaptor<UserTasksController> captor = ArgumentCaptor.forClass(UserTasksController.class);
 
         Task task = new Task(taskTitle, subtask1, subtask2, subtask3);
         InOrder inOrder = inOrder(model, mainController);
         inOrder.verify(model).addUserTaskGetTasks(task);
-        inOrder.verify(mainController).setViewController(any(UserTasksController.class));
+        inOrder.verify(mainController).setViewController(captor.capture());
 
         verify(model, never()).updateTaskGetTasks(any());
+        UserTasksController userTasksController = captor.getValue();
+        Assert.assertArrayEquals(expectedTaskList.toArray(), userTasksController.getView().getTasks().toArray());
     }
 
     @Test
@@ -208,7 +217,6 @@ public class NewUpdateTaskControllerTest {
         JLabel labelError = controller.getView().getLabelError();
         Assert.assertFalse(labelError.isVisible());
         Assert.assertNotEquals(String.format("The task with id %d is missing", toUpdate.getId()), labelError.getText());
-
     }
 
     @Test
