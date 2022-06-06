@@ -69,10 +69,11 @@ public class Model {
             throw new PermissionException(TASK_OWNER_ERROR_MESSAGE);
         }
         return transactionManager.doInTransaction(repository -> {
-            if(repository.getTaskById(userTask.getId()) == null){
+            Task taskByID = repository.getTaskById(userTask.getId());
+            if(taskByID == null){
                 return new DeleteTaskResponse(repository.getUserTasks(logged.getId()), userTask.getId());
             }
-            repository.update(userTask);
+            repository.update(taskByID);
             return new DeleteTaskResponse(repository.getUserTasks(logged.getId()), -1);
         });
     }

@@ -110,25 +110,23 @@ public class ModelIT {
         doLogin(user);
 
         List<Task> userTasksPreadd = dbUtils.getUserTasks(user.getId());
-        System.out.println("%%%%%%%%%");
-        System.out.println(userTasksPreadd.stream().map(Task::getId).collect(Collectors.toList()));
-        System.out.println(userTasksPreadd.stream().map(Task::getTitle).collect(Collectors.toList()));
 
 
         Task toUpdate = user.getTasks().get(0);
         String oldTitle = toUpdate.getTitle();
         String newTitle = "NewTitle";
         toUpdate.setTitle(newTitle);
-        List<Task> actualUserTasks = null;
+        DeleteTaskResponse response = null;
         try {
-            actualUserTasks = model.updateTaskGetTasks(toUpdate);
+            response = model.updateTaskGetTasks(toUpdate);
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
 
+        Assert.assertNotNull(response);
         List<Task> dbUserTasks = dbUtils.getUserTasks(user.getId());
-
-        Assert.assertArrayEquals(dbUserTasks.toArray(), actualUserTasks.toArray());
+        Assert.assertEquals(-1, response.getMissingTaskId());
+        Assert.assertArrayEquals(dbUserTasks.toArray(), response.getTasks().toArray());
     }
 
     @Test

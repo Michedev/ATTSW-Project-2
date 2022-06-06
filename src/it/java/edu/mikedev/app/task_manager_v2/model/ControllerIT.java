@@ -18,7 +18,6 @@ import org.mockito.ArgumentCaptor;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -119,7 +118,7 @@ public class ControllerIT extends AssertJSwingJUnitTestCase {
 
     @Test
     @GUITest
-    public void testGoTONewTaskPage() throws PermissionException {
+    public void testGoToNewTaskPage() throws PermissionException {
         doLogin();
 
         window.button("btnNew").click();
@@ -159,14 +158,20 @@ public class ControllerIT extends AssertJSwingJUnitTestCase {
     @Test
     @GUITest
     public void testUpdateTask() throws PermissionException {
+
         Pair<Task, Task> tasks = doLogin();
 
         Task task1 = tasks.getLeft();
+        String taskNewTitle = "NewTask23";
+        Task expected = new Task(taskNewTitle, task1.getSubtask1(), task1.getSubtask2(), task1.getSubtask3());
+        when(mockedModel.updateTaskGetTasks(task1)).thenReturn(new DeleteTaskResponse(
+                Arrays.asList(expected, tasks.getRight()), -1
+            )
+        );
 
         window.button("btnDetailTask1").click();
         window.button("btnUpdate").click();
 
-        String taskNewTitle = "NewTask23";
         window.textBox("txtTaskTitle").deleteText().enterText(taskNewTitle);
         window.button("btnMake").click();
 
@@ -176,10 +181,10 @@ public class ControllerIT extends AssertJSwingJUnitTestCase {
 
         Task updatedTask = captor.getValue();
 
-        Task expected = new Task(taskNewTitle, task1.getSubtask1(), task1.getSubtask2(), task1.getSubtask3());
 
         Assert.assertEquals(expected, updatedTask);
-
+        window.label("lblTitleTask1").requireText(taskNewTitle);
+        window.label("lblTitleTask2").requireText(tasks.getRight().getTitle());
     }
 
     @Test
