@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserTasksList extends JPanel {
+	private static final long serialVersionUID = -1418499913982165702L;
+
 	private final transient List<Task> tasks;
 	private final JButton btnNew;
 	private final JLabel lblError;

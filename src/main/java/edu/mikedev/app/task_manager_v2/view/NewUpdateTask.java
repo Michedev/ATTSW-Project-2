@@ -7,6 +7,8 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 
 public class NewUpdateTask extends JPanel {
+	private static final long serialVersionUID = -7319259707286936336L;
+
 	private JTextField txtTaskTitle;
 	private JTextField txtStep1;
 	private JTextField txtStep2;

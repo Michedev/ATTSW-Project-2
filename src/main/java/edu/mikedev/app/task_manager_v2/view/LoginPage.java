@@ -5,6 +5,8 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 
 public class LoginPage extends JPanel {
+	private static final long serialVersionUID = 4732237797397541277L;
+	
 	private final JLabel lblLoginError;
 	private final JButton btnLogin;
 	private final JButton btnRegister;

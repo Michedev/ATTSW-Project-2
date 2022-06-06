@@ -21,7 +21,6 @@ public class NewUpdateTaskTest extends AssertJSwingJUnitTestCase {
 
 	@Override
 	protected void onSetUp() {
-		Task task = new Task("TaskTitle", "subtask1", "subtask2", "subtask3");
 		frame = GuiActionRunner.execute(() -> {
 			view = new NewUpdateTask();
 			JFrame jframe = new JFrame();

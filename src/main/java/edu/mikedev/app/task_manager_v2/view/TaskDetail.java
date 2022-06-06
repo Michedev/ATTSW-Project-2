@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 
 public class TaskDetail extends JPanel {
+	private static final long serialVersionUID = -560014755480944410L;
 
 	private final JButton btnDelete;
 	private final JButton btnUpdate;

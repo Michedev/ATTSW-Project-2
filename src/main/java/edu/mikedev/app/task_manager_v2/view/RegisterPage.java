@@ -5,6 +5,8 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 
 public class RegisterPage extends JPanel {
+	private static final long serialVersionUID = 6957886775685813752L;
+
 	private final JLabel lblPasswordError;
 	private final JLabel lblUsernameError;
 	private final JLabel lblEmailError;
