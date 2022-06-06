@@ -1,8 +1,6 @@
 package edu.mikedev.app.task_manager_v2.model;
 
-import edu.mikedev.app.task_manager_v2.data.DeleteTaskResponse;
-import edu.mikedev.app.task_manager_v2.data.Task;
-import edu.mikedev.app.task_manager_v2.data.User;
+import edu.mikedev.app.task_manager_v2.data.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -202,6 +200,19 @@ public class HibernateModelTest {
         verify(repository, never()).getUserByUsernamePassword(anyString(), anyString());
         verify(repository, never()).getUserTasks(mockedUser.getId());
     }
+
+    @Test
+    public void testUpdateTaskOfAnotherUser(){
+        User otherUser = new User();
+        otherUser.setId(1000);
+        Task toUpdate = new Task("QQQ", "A", "B", "C");
+        toUpdate.setId(1499);
+        toUpdate.setTaskOwner(otherUser);
+
+        PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.updateTaskGetTasks(toUpdate));
+        Assert.assertEquals(OTHER_USER_ERROR_MESSAGE, e.getMessage());
+    }
+
 
     @Test
     public void testDeleteTask(){
