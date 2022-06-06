@@ -47,15 +47,12 @@ public class TaskDetailController implements ViewController<TaskDetail> {
         try {
             Task toDelete = getView().getTask();
             deleteTaskResponse = model.deleteTaskGetUserTasks(toDelete);
-            if(deleteTaskResponse.getMissingTaskId() != -1){
-                missingId = deleteTaskResponse.getMissingTaskId();
-            }
+            missingId = deleteTaskResponse.getMissingTaskId();
         } catch (PermissionException e) {
             managerController.initApplication();
             return;
         }
-        List<Task> userTaskList = new ArrayList<>(deleteTaskResponse.getTasks());
-        UserTasksList view = new UserTasksList(userTaskList);
+        UserTasksList view = new UserTasksList(deleteTaskResponse.getTasks());
         UserTasksController userTasksController = new UserTasksController(model, view, managerController);
         managerController.setViewController(userTasksController);
         if(missingId != -1){
