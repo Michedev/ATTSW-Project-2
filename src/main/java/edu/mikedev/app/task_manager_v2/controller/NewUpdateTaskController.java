@@ -1,5 +1,6 @@
 package edu.mikedev.app.task_manager_v2.controller;
 
+import edu.mikedev.app.task_manager_v2.data.DeleteTaskResponse;
 import edu.mikedev.app.task_manager_v2.data.Task;
 import edu.mikedev.app.task_manager_v2.model.Model;
 import edu.mikedev.app.task_manager_v2.model.PermissionException;
@@ -42,18 +43,20 @@ public class NewUpdateTaskController implements ViewController<NewUpdateTask> {
 
         Task taskToUpdate = view.getTaskToUpdate();
         List<Task> loggedUserTasks = null;
+        int missingId = -1;
         try{
             if(taskToUpdate == null){
                 loggedUserTasks = addNewTask(taskTitle, taskSubtask1, taskSubtask2, taskSubtask3);
             } else {
-                loggedUserTasks = updateTask(taskTitle, taskSubtask1, taskSubtask2, taskSubtask3, taskToUpdate);
+                DeleteTaskResponse response = updateTask(taskTitle, taskSubtask1, taskSubtask2, taskSubtask3, taskToUpdate);
+                loggedUserTasks = response.getTasks();
+                missingId = response.getMissingTaskId();
             }
         } catch (PermissionException e){
             managerController.initApplication();
             return;
         }
 
-        int missingId = findAnyMissingId(taskToUpdate, loggedUserTasks);
 
         UserTasksList userTasksListView = makeUserTasksList(loggedUserTasks);
         UserTasksController viewController = new UserTasksController(model, userTasksListView, managerController);
@@ -61,14 +64,6 @@ public class NewUpdateTaskController implements ViewController<NewUpdateTask> {
         if(missingId != -1){
             userTasksListView.setErrorMessage(String.format("The task with id %d is missing", missingId));
         }
-    }
-
-    private int findAnyMissingId(Task taskToUpdate, List<Task> loggedUserTasks) {
-        int missingId = -1;
-        if(taskToUpdate != null && loggedUserTasks.stream().noneMatch(t -> t.getId() == taskToUpdate.getId())){
-            missingId = taskToUpdate.getId();
-        }
-        return missingId;
     }
 
     public UserTasksList makeUserTasksList(List<Task> loggedUserTasks) {
@@ -96,7 +91,7 @@ public class NewUpdateTaskController implements ViewController<NewUpdateTask> {
         return anyError;
     }
 
-    private List<Task> updateTask(String taskTitle, String taskSubtask1, String taskSubtask2, String taskSubtask3, Task taskToUpdate) throws PermissionException {
+    private DeleteTaskResponse updateTask(String taskTitle, String taskSubtask1, String taskSubtask2, String taskSubtask3, Task taskToUpdate) throws PermissionException {
         taskToUpdate.setTitle(taskTitle);
         taskToUpdate.setSubtask1(taskSubtask1);
         taskToUpdate.setSubtask2(taskSubtask2);
