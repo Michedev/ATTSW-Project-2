@@ -127,7 +127,7 @@ public class ModelIT {
         Assert.assertEquals(-1, response.getMissingTaskId());
         Assert.assertArrayEquals(dbUserTasks.toArray(), response.getTasks().toArray());
         Assert.assertTrue(dbUserTasks.stream().anyMatch(t -> t.getTitle().equals(newTitle)));
-        Assert.assertFalse(dbUserTasks.stream().noneMatch(t -> t.getTitle().equals(oldTitle)));
+        Assert.assertTrue(dbUserTasks.stream().noneMatch(t -> t.getTitle().equals(oldTitle)));
     }
 
     @Test
