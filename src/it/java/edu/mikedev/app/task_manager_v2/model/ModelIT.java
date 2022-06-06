@@ -109,7 +109,6 @@ public class ModelIT {
 
         doLogin(user);
 
-        List<Task> userTasksPreadd = dbUtils.getUserTasks(user.getId());
 
 
         Task toUpdate = user.getTasks().get(0);
@@ -127,6 +126,8 @@ public class ModelIT {
         List<Task> dbUserTasks = dbUtils.getUserTasks(user.getId());
         Assert.assertEquals(-1, response.getMissingTaskId());
         Assert.assertArrayEquals(dbUserTasks.toArray(), response.getTasks().toArray());
+        Assert.assertTrue(dbUserTasks.stream().anyMatch(t -> t.getTitle().equals(newTitle)));
+        Assert.assertFalse(dbUserTasks.stream().noneMatch(t -> t.getTitle().equals(oldTitle)));
     }
 
     @Test
