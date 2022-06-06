@@ -24,13 +24,13 @@ public class Model {
             throw new PermissionException("You cannot login twice");
         }
         User userLogged = transactionManager.doInTransaction(repository -> {
-            User logged = repository.getUserByUsernamePassword(username, password);
-            if(logged == null){
+            User userRepository = repository.getUserByUsernamePassword(username, password);
+            if(userRepository == null){
                 return null;
             }
-            List<Task> userTasks = repository.getUserTasks(logged.getId());
-            logged.setTasks(userTasks);
-            return logged;
+            List<Task> userTasks = repository.getUserTasks(userRepository.getId());
+            userRepository.setTasks(userTasks);
+            return userRepository;
         });
         if(userLogged == null){
             return null;
@@ -127,7 +127,7 @@ public class Model {
            return null;
         });
     }
-    
+
     public void logout() throws IllegalStateException {
         if(this.logged == null){
             throw new IllegalStateException("You cannot logout before login");

@@ -6,7 +6,10 @@ import org.hibernate.SessionFactory;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
 
 public abstract class HibernateDBUtils {
 

@@ -8,9 +8,6 @@ import edu.mikedev.app.task_manager_v2.view.NewUpdateTask;
 import edu.mikedev.app.task_manager_v2.view.TaskDetail;
 import edu.mikedev.app.task_manager_v2.view.UserTasksList;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class TaskDetailController implements ViewController<TaskDetail> {
 
     private final Model model;

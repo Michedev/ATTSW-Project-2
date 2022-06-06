@@ -7,14 +7,10 @@ import edu.mikedev.app.task_manager_v2.utils.HibernateDBUtilsPostgre;
 import org.hibernate.SessionFactory;
 import org.junit.*;
 import org.testcontainers.containers.PostgreSQLContainer;
-import sun.nio.cs.ext.MacTurkish;
 
 import java.sql.SQLException;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class ModelIT {
 

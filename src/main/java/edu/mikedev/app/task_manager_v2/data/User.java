@@ -1,9 +1,7 @@
 package edu.mikedev.app.task_manager_v2.data;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class User {
 	
