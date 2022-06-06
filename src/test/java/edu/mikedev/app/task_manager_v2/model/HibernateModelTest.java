@@ -209,6 +209,8 @@ public class HibernateModelTest {
         toUpdate.setId(1499);
         toUpdate.setTaskOwner(otherUser);
 
+        modelLogin();
+
         PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.updateTaskGetTasks(toUpdate));
         Assert.assertEquals(OTHER_USER_ERROR_MESSAGE, e.getMessage());
     }
