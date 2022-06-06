@@ -30,7 +30,6 @@ public class DBSteps {
 
     @BeforeScenario
     public void initDB(){
-        System.out.println(dbUtils);
         try{
             dbUtils.initAndFillDBTables();
         } catch (SQLException e){
