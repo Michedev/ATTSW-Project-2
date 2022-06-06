@@ -19,9 +19,15 @@ public class HibernateTransactionManager implements TransactionManager {
         Session session = sessionFactory.openSession();
         Transaction t = session.beginTransaction();
         HibernateUserTaskRepository repository = new HibernateUserTaskRepository(session);
-        T output = f.apply(repository);
-        t.commit();
-        session.close();
+        T output = null;
+        try{
+            output = f.apply(repository);
+            t.commit();
+        } catch (Exception e){
+        }
+        finally {
+            session.close();
+        }
         return output;
     }
 }
