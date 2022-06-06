@@ -28,11 +28,11 @@ public class HibernateTransactionManager implements TransactionManager {
             if(t != null){
                 t.rollback();
             }
+            System.err.println("Found exception while executing the transaction with the following error message: \"" + e.getMessage() + "\"");
         }
         finally {
             session.close();
         }
-        System.out.println("Session is open: " + session.isOpen());
         return output;
     }
 }
