@@ -174,19 +174,23 @@ public class HibernateModelTest {
                 userTask,
                 mockedUserTasks.get(1)
         ));
-        List<Task> userTasksAfterDelete = null;
+        when(repository.getTaskById(userTask.getId())).thenReturn(userTask);
+        DeleteTaskResponse response = null;
 
         try {
-            userTasksAfterDelete = model.updateTaskGetTasks(userTask);
+            response = model.updateTaskGetTasks(userTask);
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
+        Assert.assertNotNull(response);
+        List<Task> actualUserTasks = response.getTasks();
 
         verify(repository).update(any(Task.class));
         verify(repository, times(2)).getUserTasks(anyInt());
-        Assert.assertEquals(mockedUserTasks.size(), userTasksAfterDelete.size());
-        Assert.assertTrue(userTasksAfterDelete.stream().anyMatch(t -> t.getTitle().equals(newTitle)));
-        Assert.assertTrue(userTasksAfterDelete.stream().noneMatch(t -> t.getTitle().equals(oldTitle)));
+        Assert.assertEquals(-1, response.getMissingTaskId());
+        Assert.assertEquals(mockedUserTasks.size(), actualUserTasks.size());
+        Assert.assertTrue(actualUserTasks.stream().anyMatch(t -> t.getTitle().equals(newTitle)));
+        Assert.assertTrue(actualUserTasks.stream().noneMatch(t -> t.getTitle().equals(oldTitle)));
     }
 
     @Test
@@ -215,6 +219,30 @@ public class HibernateModelTest {
         Assert.assertEquals(OTHER_USER_ERROR_MESSAGE, e.getMessage());
     }
 
+    @Test
+    public void testUpdateTaskWhenNotExisting(){
+        Task toUpdate = new Task("QQQ", "A", "B", "C");
+        toUpdate.setId(1499);
+        toUpdate.setTaskOwner(mockedUser);
+        when(repository.getTaskById(toUpdate.getId())).thenReturn(null);
+        when(repository.getUserTasks(mockedUser.getId())).thenReturn(Arrays.asList(toUpdate));
+        DeleteTaskResponse response = null;
+
+        modelLogin();
+
+        try {
+            response = model.updateTaskGetTasks(toUpdate);
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
+
+        Assert.assertEquals(toUpdate.getId(), response.getMissingTaskId());
+        Assert.assertArrayEquals(Arrays.asList(toUpdate).toArray(), response.getTasks().toArray());
+        verify(repository, never()).update(any(Task.class));
+        verify(repository).getTaskById(anyInt());
+        verify(repository, times(2)).getUserTasks(anyInt());
+
+    }
 
     @Test
     public void testDeleteTask(){

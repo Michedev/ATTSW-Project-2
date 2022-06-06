@@ -61,7 +61,7 @@ public class Model {
         });
     }
 
-    public List<Task> updateTaskGetTasks(Task userTask) throws PermissionException {
+    public DeleteTaskResponse updateTaskGetTasks(Task userTask) throws PermissionException {
         if(this.logged == null){
             throw new PermissionException(LOGIN_ERROR_MESSAGE);
         }
@@ -69,8 +69,11 @@ public class Model {
             throw new PermissionException(TASK_OWNER_ERROR_MESSAGE);
         }
         return transactionManager.doInTransaction(repository -> {
+            if(repository.getTaskById(userTask.getId()) == null){
+                return new DeleteTaskResponse(repository.getUserTasks(logged.getId()), userTask.getId());
+            }
             repository.update(userTask);
-            return repository.getUserTasks(logged.getId());
+            return new DeleteTaskResponse(repository.getUserTasks(logged.getId()), -1);
         });
     }
 
