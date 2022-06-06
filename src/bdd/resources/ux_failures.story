@@ -29,6 +29,13 @@ And the first task is deleted from the Database
 When the user clicks the Delete button
 Then it should show an error message saying that the task doesn't exists anymore
 
+Scenario: Delete a not existing user
+Given the user tasks page
+When I delete the user from the Database
+And I click the delete user button
+Then login page should show an errthe user should not exists anymoreor message saying that the user doesn't exists
+
+
 Scenario: Update a deleted task
 Given the update page of the first task
 And the first task is deleted from the Database

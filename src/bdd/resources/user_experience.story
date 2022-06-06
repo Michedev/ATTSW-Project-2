@@ -28,6 +28,11 @@ Given the update page of the first task
 When I update the title with "Updated title"
 Then the first task has the title "Updated title"
 
+Scenario: Delete an user
+Given the user tasks page
+When I click the delete user button
+Then the user should not exists anymore
+
 
 Scenario: Long user interaction
 Given a logged user
