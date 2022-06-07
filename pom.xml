@@ -327,8 +327,9 @@
 						<version>0.8.7</version>
 						<configuration>
 							<excludes>
-								<exclude>**/TaskManagerApp.*</exclude>
 								<exclude>**/data/*</exclude>
+								<exclude>**/PermissionException.*</exclude>
+								<exclude>**/edu/mikedev/app/task_manager_v2/*.class</exclude>
 							</excludes>
 						</configuration>
 						<executions>
@@ -341,7 +342,7 @@
 							</execution>
 							<execution>
 								<id>jacoco-site</id>
-								<phase>test</phase>
+								<phase>verify</phase>
 								<goals>
 									<goal>report</goal>
 								</goals>

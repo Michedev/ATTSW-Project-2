@@ -7,6 +7,7 @@ import com.google.inject.Provides;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 import edu.mikedev.app.task_manager_v2.controller.TaskManagerController;
+import edu.mikedev.app.task_manager_v2.data.DBType;
 import edu.mikedev.app.task_manager_v2.model.HibernateTransactionManager;
 import edu.mikedev.app.task_manager_v2.model.TransactionManager;
 import org.hibernate.SessionFactory;
@@ -15,11 +16,6 @@ import picocli.CommandLine;
 
 import javax.swing.*;
 import java.util.concurrent.Callable;
-
-enum DBType{
-    INMEMORY,
-    POSTGRESSQL,
-}
 
 public class TaskManagerApp implements Callable<Integer>
 {
