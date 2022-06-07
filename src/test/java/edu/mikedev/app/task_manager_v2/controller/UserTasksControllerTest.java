@@ -141,6 +141,15 @@ public class UserTasksControllerTest {
                 String.format("The user with id %d cannot be deleted because doesn't exists", missingId),
                 errorLabel.getText()
         );
+    }
 
+    @Test
+    public void testDeleteUserWhenThrowPermissionException() throws PermissionException {
+        when(model.deleteLoggedUser()).thenThrow(PermissionException.class);
+
+        userTasksController.onClickDeleteUserButton();
+
+        verify(mainController).initApplication();
+        verify(mainController, never()).setViewController(any(LoginController.class));
     }
 }
