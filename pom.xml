@@ -317,5 +317,39 @@
 				</plugins>
 			</build>
 		</profile>
+		<profile>
+			<id>code-coverage</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+						<version>0.8.7</version>
+						<configuration>
+							<excludes>
+								<exclude>**/TaskManagerApp.*</exclude>
+								<exclude>**/data/*</exclude>
+							</excludes>
+						</configuration>
+						<executions>
+							<execution>
+								<id>default-prepare-agent</id>
+								<phase>test-compile</phase>
+								<goals>
+									<goal>prepare-agent</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>jacoco-site</id>
+								<phase>test</phase>
+								<goals>
+									<goal>report</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
 </project>

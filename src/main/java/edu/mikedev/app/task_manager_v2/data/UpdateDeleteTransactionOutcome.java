@@ -2,11 +2,11 @@ package edu.mikedev.app.task_manager_v2.data;
 
 public class UpdateDeleteTransactionOutcome<T> {
     private T data;
-    private int missingTaskId;
+    private int missingId;
 
-    public UpdateDeleteTransactionOutcome(T data, int missingTaskId) {
+    public UpdateDeleteTransactionOutcome(T data, int missingId) {
         this.data = data;
-        this.missingTaskId = missingTaskId;
+        this.missingId = missingId;
     }
 
     public T getData() {
@@ -14,6 +14,6 @@ public class UpdateDeleteTransactionOutcome<T> {
     }
 
     public int getMissingId() {
-        return missingTaskId;
+        return missingId;
     }
 }
