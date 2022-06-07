@@ -109,4 +109,7 @@ public class LoginPage extends JPanel {
 		btnRegister.addActionListener(l);
 	}
 
+	public JLabel getErrorLabel() {
+		return lblLoginError;
+	}
 }

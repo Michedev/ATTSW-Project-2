@@ -45,4 +45,8 @@ public class UserTasksController implements ViewController<UserTasksList>{
         NewUpdateTaskController viewController = new NewUpdateTaskController(model, newUpdateTask, managerController);
         managerController.setViewController(viewController);
     }
+
+    public void onClickDeleteUserButton() {
+
+    }
 }

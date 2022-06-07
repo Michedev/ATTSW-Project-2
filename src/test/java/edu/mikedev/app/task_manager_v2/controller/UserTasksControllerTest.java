@@ -1,8 +1,12 @@
 package edu.mikedev.app.task_manager_v2.controller;
 
 import edu.mikedev.app.task_manager_v2.data.Task;
+import edu.mikedev.app.task_manager_v2.data.UpdateDeleteTransactionOutcome;
+import edu.mikedev.app.task_manager_v2.data.User;
 import edu.mikedev.app.task_manager_v2.model.Model;
+import edu.mikedev.app.task_manager_v2.model.PermissionException;
 import edu.mikedev.app.task_manager_v2.view.UserTasksList;
+import org.codehaus.plexus.util.cli.Arg;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -12,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
@@ -49,7 +54,7 @@ public class UserTasksControllerTest {
         userTasksController.onClickDetailButton(detailTask);
 
         ArgumentCaptor<TaskDetailController> captor = ArgumentCaptor.forClass(TaskDetailController.class);
-        verify(mainController, times(1)).setViewController(captor.capture());
+        verify(mainController).setViewController(captor.capture());
 
         TaskDetailController taskDetailController = captor.getValue();
         Task actualDetailTask = taskDetailController.getView().getTask();
@@ -64,7 +69,7 @@ public class UserTasksControllerTest {
     public void testClickNewTaskButton(){
         userTasksController.onClickNewTaskButton();
 
-        verify(mainController, times(1)).setViewController(any(NewUpdateTaskController.class));
+        verify(mainController).setViewController(any(NewUpdateTaskController.class));
     }
 
     @Test
@@ -95,5 +100,47 @@ public class UserTasksControllerTest {
         Assert.assertEquals(taskList.size(), detailListeners.size());
         verify(userTasksController, times(detailListeners.size())).onClickDetailButton(any(Task.class));
         verify(userTasksController).onClickNewTaskButton();
+        //todo: add check here for delete user
+    }
+
+    @Test
+    public void testDeleteUser() throws PermissionException {
+        when(model.deleteLoggedUser()).thenReturn(new UpdateDeleteTransactionOutcome<>(
+           new User("user", "p", "e"),
+           -1
+        ));
+
+        userTasksController.onClickDeleteUserButton();
+
+        ArgumentCaptor<LoginController> captor = ArgumentCaptor.forClass(LoginController.class);
+
+        verify(mainController).setViewController(captor.capture());
+
+        LoginController controller = captor.getValue();
+        JLabel errorLabel = controller.getView().getErrorLabel();
+
+        Assert.assertFalse(errorLabel.isVisible());
+    }
+
+    @Test
+    public void testDeleteUserWhenNotExisting() throws PermissionException {
+        int missingId = 5;
+        when(model.deleteLoggedUser()).thenReturn(new UpdateDeleteTransactionOutcome<>(null, missingId));
+
+        userTasksController.onClickDeleteUserButton();
+
+        ArgumentCaptor<LoginController> captor = ArgumentCaptor.forClass(LoginController.class);
+
+        verify(mainController).setViewController(captor.capture());
+
+        LoginController controller = captor.getValue();
+        JLabel errorLabel = controller.getView().getErrorLabel();
+
+        Assert.assertTrue(errorLabel.isVisible());
+        Assert.assertEquals(
+                String.format("The user with id %d cannot be deleted because doesn't exists", missingId),
+                errorLabel.getText()
+        );
+
     }
 }
