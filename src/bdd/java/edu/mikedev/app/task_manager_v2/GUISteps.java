@@ -14,8 +14,9 @@ import java.util.List;
 public class GUISteps {
 
 
-    private final String username = "username1";
-    private final String password = "password1";
+    private final String loginUsername = "username1";
+    private final String loginPassword = "password1";
+    private final int loginUserId = 1;
     private final InitApp initApp;
     private Task deletedTask;
     private FrameFixture window;
@@ -110,6 +111,11 @@ public class GUISteps {
         window.button("btnUpdate").click();
     }
 
+    @Given("the user tasks page")
+    public void givenTheUserTasksPage(){
+        doLogin();
+    }
+
     @When("I update the title with \"$newTitle\"")
     public void whenIUpdateTheTitle(String newTitle){
         window.textBox("txtTaskTitle").deleteText().enterText(newTitle);
@@ -141,6 +147,11 @@ public class GUISteps {
 
         window.textBox("txtTaskTitle").deleteText().enterText(newTitle);
         window.button("btnMake").click();
+    }
+
+    @When("I click the delete user button")
+    public void whenIClickTheDeleteUserButton(){
+        window.button("btnDeleteUser").click();
     }
 
     @Then("the first task should not exists")
@@ -179,9 +190,18 @@ public class GUISteps {
                 .requireText("The task with id 0 is missing");
     }
 
+    @Then("the login page should show an error message saying that the user doesn't exists")
+    public void thenTheLoginPageShouldShowAnErrorMessage(){
+        window.label(JLabelMatcher.withName("lblLoginError")).requireVisible()
+                .requireText(
+                        String.format("The user with id %d cannot be deleted because doesn't exists", loginUserId)
+                );
+    }
+
+
     private void doLogin() {
-        window.textBox("txtUsername").enterText(username);
-        window.textBox("txtPassword").enterText(password);
+        window.textBox("txtUsername").enterText(loginUsername);
+        window.textBox("txtPassword").enterText(loginPassword);
         window.button("btnLogin").click();
     }
 

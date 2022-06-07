@@ -42,5 +42,6 @@ public class UserTaskListTest extends AssertJSwingJUnitTestCase {
 		window.label(JLabelMatcher.withName("lblError")).requireNotVisible();
 
 		window.button("btnNew").requireText("New");
+		window.button("btnDeleteUser").requireText("Delete");
 	}
 }

@@ -14,6 +14,7 @@ public class UserTasksList extends JPanel {
 	private final transient List<Task> tasks;
 	private final JButton btnNew;
 	private final JLabel lblError;
+	private final JButton btnDeleteUser;
 	private List<JButton> buttons;
 
 	public UserTasksList(List<Task> tasks) {
@@ -65,6 +66,17 @@ public class UserTasksList extends JPanel {
 		gbc_btnNew.gridy = tasks.size()+1;
 		btnNew.setName("btnNew");
 		add(btnNew, gbc_btnNew);
+
+		btnDeleteUser = new JButton("Delete");
+		btnDeleteUser.setBackground(Color.RED);
+		GridBagConstraints gbc_btnDeleteUser = new GridBagConstraints();
+		gbc_btnDeleteUser.gridwidth = 2;
+		gbc_btnDeleteUser.insets = new Insets(0, 0, 0, 5);
+		gbc_btnDeleteUser.gridx = 0;
+		gbc_btnDeleteUser.gridy = tasks.size()+2;
+		btnDeleteUser.setName("btnDeleteUser");
+		add(btnDeleteUser, gbc_btnDeleteUser);
+
 	}
 
 	public List<Task> getTasks() {
@@ -87,5 +99,9 @@ public class UserTasksList extends JPanel {
 
 	public JLabel getLabelError() {
 		return lblError;
+	}
+
+	public void addActionListenerDeleteUserButton(ActionListener actionListener) {
+		btnDeleteUser.addActionListener(actionListener);
 	}
 }

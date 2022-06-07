@@ -1,6 +1,6 @@
 package edu.mikedev.app.task_manager_v2.model;
 
-import edu.mikedev.app.task_manager_v2.data.DeleteTaskResponse;
+import edu.mikedev.app.task_manager_v2.data.UpdateDeleteTransactionOutcome;
 import edu.mikedev.app.task_manager_v2.data.Task;
 import edu.mikedev.app.task_manager_v2.data.User;
 import org.junit.Assert;
@@ -179,7 +179,7 @@ public class ModelTest {
         Task sessionTask = new Task();
         sessionTask = spy(sessionTask);
         when(repository.getTaskById(userTask.getId())).thenReturn(sessionTask);
-        DeleteTaskResponse response = null;
+        UpdateDeleteTransactionOutcome<List<Task>> response = null;
 
         try {
             response = model.updateTaskGetTasks(userTask);
@@ -187,12 +187,12 @@ public class ModelTest {
             Assert.fail(e.getMessage());
         }
         Assert.assertNotNull(response);
-        List<Task> actualUserTasks = response.getTasks();
+        List<Task> actualUserTasks = response.getData();
 
         verify(repository).update(any(Task.class));
 
         verify(repository, times(2)).getUserTasks(anyInt());
-        Assert.assertEquals(-1, response.getMissingTaskId());
+        Assert.assertEquals(-1, response.getMissingId());
         Assert.assertEquals(mockedUserTasks.size(), actualUserTasks.size());
         Assert.assertTrue(actualUserTasks.stream().anyMatch(t -> t.getTitle().equals(newTitle)));
         Assert.assertTrue(actualUserTasks.stream().noneMatch(t -> t.getTitle().equals(oldTitle)));
@@ -236,7 +236,7 @@ public class ModelTest {
         toUpdate.setTaskOwner(mockedUser);
         when(repository.getTaskById(toUpdate.getId())).thenReturn(null);
         when(repository.getUserTasks(mockedUser.getId())).thenReturn(Arrays.asList(toUpdate));
-        DeleteTaskResponse response = null;
+        UpdateDeleteTransactionOutcome<List<Task>> response = null;
 
         modelLogin();
 
@@ -246,8 +246,8 @@ public class ModelTest {
             Assert.fail(e.getMessage());
         }
 
-        Assert.assertEquals(toUpdate.getId(), response.getMissingTaskId());
-        Assert.assertArrayEquals(Arrays.asList(toUpdate).toArray(), response.getTasks().toArray());
+        Assert.assertEquals(toUpdate.getId(), response.getMissingId());
+        Assert.assertArrayEquals(Arrays.asList(toUpdate).toArray(), response.getData().toArray());
         verify(repository, never()).update(any(Task.class));
         verify(repository).getTaskById(anyInt());
         verify(repository, times(2)).getUserTasks(anyInt());
@@ -261,15 +261,15 @@ public class ModelTest {
         Task taskToDelete = mockedUserTasks.get(0);
         when(repository.getUserTasks(mockedUser.getId())).thenReturn(Arrays.asList(mockedUserTasks.get(1)));
         when(repository.getTaskById(taskToDelete.getId())).thenReturn(taskToDelete);
-        DeleteTaskResponse deleteTaskResponse = null;
+        UpdateDeleteTransactionOutcome<List<Task>> updateDeleteTransactionOutcome = null;
         try {
-            deleteTaskResponse = model.deleteTaskGetUserTasks(taskToDelete);
+            updateDeleteTransactionOutcome = model.deleteTaskGetUserTasks(taskToDelete);
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
 
-        Assert.assertEquals(-1, deleteTaskResponse.getMissingTaskId());
-        Assert.assertEquals(mockedUserTasks.size() - 1, deleteTaskResponse.getTasks().size());
+        Assert.assertEquals(-1, updateDeleteTransactionOutcome.getMissingId());
+        Assert.assertEquals(mockedUserTasks.size() - 1, updateDeleteTransactionOutcome.getData().size());
         verify(repository).getTaskById(anyInt());
         verify(repository).delete(any(Task.class));
         verify(repository, times(2)).getUserTasks(anyInt());
@@ -313,15 +313,15 @@ public class ModelTest {
         modelLogin();
         when(repository.getTaskById(anyInt())).thenReturn(null);
 
-        DeleteTaskResponse deleteTaskResponse = null;
+        UpdateDeleteTransactionOutcome<List<Task>> updateDeleteTransactionOutcome = null;
         try {
-            deleteTaskResponse = model.deleteTaskGetUserTasks(task);
+            updateDeleteTransactionOutcome = model.deleteTaskGetUserTasks(task);
         } catch (PermissionException e) {
             Assert.fail(e.getMessage());
         }
 
-        Assert.assertEquals(task.getId(), deleteTaskResponse.getMissingTaskId());
-        Assert.assertArrayEquals(mockedUserTasks.toArray(), deleteTaskResponse.getTasks().toArray());
+        Assert.assertEquals(task.getId(), updateDeleteTransactionOutcome.getMissingId());
+        Assert.assertArrayEquals(mockedUserTasks.toArray(), updateDeleteTransactionOutcome.getData().toArray());
         verify(repository, times(2)).getUserTasks(anyInt());
         verify(repository, never()).delete(nullable(Task.class));
     }
@@ -399,6 +399,45 @@ public class ModelTest {
         Assert.assertEquals("You cannot logout before login", e.getMessage());
     }
 
+    @Test
+    public void testDeleteUserWhenNotLogged(){
+        PermissionException e = Assert.assertThrows(PermissionException.class, () -> model.deleteLoggedUser());
+        Assert.assertEquals(LOGIN_ERROR_MESSAGE, e.getMessage());
+        verify(repository, never()).delete(any(User.class));
+    }
+
+    @Test
+    public void testDeleteLoggedUser(){
+        when(repository.getUserById(mockedUser.getId())).thenReturn(mockedUser);
+
+        modelLogin();
+        UpdateDeleteTransactionOutcome<User> userUpdateDeleteTransactionOutcome = null;
+        try {
+            userUpdateDeleteTransactionOutcome = model.deleteLoggedUser();
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
+        verify(repository).delete(mockedUser);
+        Assert.assertEquals(-1, userUpdateDeleteTransactionOutcome.getMissingId());
+        Assert.assertEquals(mockedUser, userUpdateDeleteTransactionOutcome.getData());
+    }
+
+    @Test
+    public void testDeleteUserWhenNotExistingInDB(){
+        when(repository.getUserById(mockedUser.getId())).thenReturn(null);
+        modelLogin();
+
+        UpdateDeleteTransactionOutcome<User> userUpdateDeleteTransactionOutcome = null;
+        try {
+            userUpdateDeleteTransactionOutcome = model.deleteLoggedUser();
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
+
+        Assert.assertEquals(mockedUser.getId(), userUpdateDeleteTransactionOutcome.getMissingId());
+        Assert.assertNull(userUpdateDeleteTransactionOutcome.getData());
+        verify(repository, never()).delete(any(User.class));
+    }
 
     private Task getOtherUserTask() {
         Task otherUserTask = new Task("BBB", "5", "6", "7");

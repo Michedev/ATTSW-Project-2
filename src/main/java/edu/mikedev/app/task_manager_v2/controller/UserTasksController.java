@@ -1,7 +1,11 @@
 package edu.mikedev.app.task_manager_v2.controller;
 
 import edu.mikedev.app.task_manager_v2.data.Task;
+import edu.mikedev.app.task_manager_v2.data.UpdateDeleteTransactionOutcome;
+import edu.mikedev.app.task_manager_v2.data.User;
 import edu.mikedev.app.task_manager_v2.model.Model;
+import edu.mikedev.app.task_manager_v2.model.PermissionException;
+import edu.mikedev.app.task_manager_v2.view.LoginPage;
 import edu.mikedev.app.task_manager_v2.view.NewUpdateTask;
 import edu.mikedev.app.task_manager_v2.view.TaskDetail;
 import edu.mikedev.app.task_manager_v2.view.UserTasksList;
@@ -27,6 +31,7 @@ public class UserTasksController implements ViewController<UserTasksList>{
             view.addActionListenerTaskDetail(i, (e) -> onClickDetailButton(task));
         }
         view.addActionListenerNewButton((e) -> onClickNewTaskButton());
+        view.addActionListenerDeleteUserButton((e) -> onClickDeleteUserButton());
     }
 
     @Override
@@ -44,5 +49,25 @@ public class UserTasksController implements ViewController<UserTasksList>{
         NewUpdateTask newUpdateTask = new NewUpdateTask();
         NewUpdateTaskController viewController = new NewUpdateTaskController(model, newUpdateTask, managerController);
         managerController.setViewController(viewController);
+    }
+
+    public void onClickDeleteUserButton() {
+        UpdateDeleteTransactionOutcome<User> userUpdateDeleteTransactionOutcome;
+        try {
+            userUpdateDeleteTransactionOutcome = model.deleteLoggedUser();
+        } catch (PermissionException e) {
+            managerController.initApplication();
+            return;
+        }
+
+        LoginPage page = new LoginPage();
+        LoginController loginController = new LoginController(model, page, managerController);
+        managerController.setViewController(loginController);
+        int missingId = userUpdateDeleteTransactionOutcome.getMissingId();
+        if(missingId != -1){
+            page.setErrorLabelText(
+                    String.format("The user with id %d cannot be deleted because doesn't exists", missingId)
+            );
+        }
     }
 }

@@ -1,12 +1,13 @@
 package edu.mikedev.app.task_manager_v2.model;
 
 import edu.mikedev.app.task_manager_v2.controller.TaskManagerController;
-import edu.mikedev.app.task_manager_v2.data.DeleteTaskResponse;
+import edu.mikedev.app.task_manager_v2.data.UpdateDeleteTransactionOutcome;
 import edu.mikedev.app.task_manager_v2.data.Task;
 import edu.mikedev.app.task_manager_v2.data.User;
 import edu.mikedev.app.task_manager_v2.view.*;
 import org.apache.commons.lang3.tuple.Pair;
 import org.assertj.swing.annotation.GUITest;
+import org.assertj.swing.core.matcher.JLabelMatcher;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
 import org.assertj.swing.junit.runner.GUITestRunner;
@@ -164,7 +165,7 @@ public class ControllerIT extends AssertJSwingJUnitTestCase {
         Task task1 = tasks.getLeft();
         String taskNewTitle = "NewTask23";
         Task expected = new Task(taskNewTitle, task1.getSubtask1(), task1.getSubtask2(), task1.getSubtask3());
-        when(mockedModel.updateTaskGetTasks(task1)).thenReturn(new DeleteTaskResponse(
+        when(mockedModel.updateTaskGetTasks(task1)).thenReturn(new UpdateDeleteTransactionOutcome(
                 Arrays.asList(expected, tasks.getRight()), -1
             )
         );
@@ -193,7 +194,7 @@ public class ControllerIT extends AssertJSwingJUnitTestCase {
         Pair<Task, Task> tasks = doLogin();
         List<Task> expected = Arrays.asList(tasks.getLeft());
         when(mockedModel.deleteTaskGetUserTasks(any(Task.class))).thenReturn(
-          new DeleteTaskResponse(
+          new UpdateDeleteTransactionOutcome(
                   expected,
                   -1
           )
@@ -214,6 +215,20 @@ public class ControllerIT extends AssertJSwingJUnitTestCase {
 
         Assert.assertEquals(task2, deletedTask);
         Assert.assertArrayEquals(expected.toArray(), ((UserTasksList) jframe.getContentPane()).getTasks().toArray());
+    }
+
+    @Test
+    @GUITest
+    public void testDeleteUser() throws PermissionException {
+        when(mockedModel.deleteLoggedUser()).thenReturn(new UpdateDeleteTransactionOutcome<>(
+                new User(), -1
+        ));
+
+        doLogin();
+        window.button("btnDeleteUser").click();
+
+        Assert.assertTrue(jframe.getContentPane() instanceof LoginPage);
+        window.label(JLabelMatcher.withName("lblLoginError")).requireNotVisible();
     }
 
     private Pair<Task, Task> doLogin() throws PermissionException {
