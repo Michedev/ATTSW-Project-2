@@ -11,10 +11,6 @@
 
 # Introduction
 
-# How to run
-
-## Requirements
-
 ## How to run
 
 ### Requirements
