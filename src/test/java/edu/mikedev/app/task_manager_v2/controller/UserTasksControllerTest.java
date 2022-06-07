@@ -6,7 +6,6 @@ import edu.mikedev.app.task_manager_v2.data.User;
 import edu.mikedev.app.task_manager_v2.model.Model;
 import edu.mikedev.app.task_manager_v2.model.PermissionException;
 import edu.mikedev.app.task_manager_v2.view.UserTasksList;
-import org.codehaus.plexus.util.cli.Arg;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

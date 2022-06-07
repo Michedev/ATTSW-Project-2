@@ -184,7 +184,7 @@ public class NewUpdateTaskControllerTest {
         toUpdate.setId(100);
         when(view.getTaskToUpdate()).thenReturn(toUpdate);
         when(model.updateTaskGetTasks(toUpdate)).thenReturn(
-                new UpdateDeleteTransactionOutcome(
+                new UpdateDeleteTransactionOutcome<List<Task>>(
                         new ArrayList<>(),
                         -1
                 )
@@ -224,7 +224,7 @@ public class NewUpdateTaskControllerTest {
         toUpdate.setId(100);
         when(view.getTaskToUpdate()).thenReturn(toUpdate);
         when(model.updateTaskGetTasks(toUpdate)).thenReturn(
-                new UpdateDeleteTransactionOutcome(
+                new UpdateDeleteTransactionOutcome<List<Task>>(
                         new ArrayList<>(),
                         toUpdate.getId()
                 )

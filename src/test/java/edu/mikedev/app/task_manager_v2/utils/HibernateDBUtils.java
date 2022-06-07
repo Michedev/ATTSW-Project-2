@@ -5,7 +5,6 @@ import edu.mikedev.app.task_manager_v2.data.User;
 import org.hibernate.SessionFactory;
 
 import java.sql.*;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -141,7 +140,6 @@ public abstract class HibernateDBUtils {
     }
 
     protected void insertTask(Statement statement, Task t){
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         try {
             statement.execute("INSERT INTO Tasks (id, title, subtask1, subtask2, subtask3, ID_USER) " +
                     String.format("VALUES (%d, '%s', '%s', '%s', '%s', '%d'); ", t.getId(), t.getTitle(), t.getSubtask1(), t.getSubtask2(), t.getSubtask3(), t.getTaskOwner().getId()));

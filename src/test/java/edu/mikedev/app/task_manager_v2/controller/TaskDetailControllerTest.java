@@ -124,7 +124,7 @@ public class TaskDetailControllerTest {
         Task task = new Task("vbnm", "5", "6", "7");
         task.setId(1430);
         when(view.getTask()).thenReturn(task);
-        when(model.deleteTaskGetUserTasks(task)).thenReturn(new UpdateDeleteTransactionOutcome(new ArrayList<>(), task.getId()));
+        when(model.deleteTaskGetUserTasks(task)).thenReturn(new UpdateDeleteTransactionOutcome<List<Task>>(new ArrayList<>(), task.getId()));
 
         taskDetailController.onClickDeleteButton();
 
