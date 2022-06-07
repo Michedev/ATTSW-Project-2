@@ -25,9 +25,7 @@ public class HibernateTransactionManager implements TransactionManager {
             output = f.apply(repository);
             t.commit();
         } catch (Exception e){
-            if(t != null){
-                t.rollback();
-            }
+            t.rollback();
             System.err.println("Found exception while executing the transaction with the following error message: \"" + e.getMessage() + "\"");
         }
         finally {
