@@ -7,6 +7,7 @@ import edu.mikedev.app.task_manager_v2.data.User;
 import edu.mikedev.app.task_manager_v2.view.*;
 import org.apache.commons.lang3.tuple.Pair;
 import org.assertj.swing.annotation.GUITest;
+import org.assertj.swing.core.matcher.JLabelMatcher;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
 import org.assertj.swing.junit.runner.GUITestRunner;
@@ -214,6 +215,20 @@ public class ControllerIT extends AssertJSwingJUnitTestCase {
 
         Assert.assertEquals(task2, deletedTask);
         Assert.assertArrayEquals(expected.toArray(), ((UserTasksList) jframe.getContentPane()).getTasks().toArray());
+    }
+
+    @Test
+    @GUITest
+    public void testDeleteUser() throws PermissionException {
+        when(mockedModel.deleteLoggedUser()).thenReturn(new UpdateDeleteTransactionOutcome<>(
+                new User(), -1
+        ));
+
+        doLogin();
+        window.button("btnDeleteUser").click();
+
+        Assert.assertTrue(jframe.getContentPane() instanceof LoginPage);
+        window.label(JLabelMatcher.withName("lblLoginError")).requireNotVisible();
     }
 
     private Pair<Task, Task> doLogin() throws PermissionException {
