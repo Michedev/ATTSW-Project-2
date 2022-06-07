@@ -28,10 +28,10 @@ public class UserTasksController implements ViewController<UserTasksList>{
         List<Task> tasks = view.getTasks();
         for (int i = 0; i < tasks.size(); i++) {
             final Task task = tasks.get(i);
-            view.addActionListenerTaskDetail(i, (e) -> onClickDetailButton(task));
+            view.addActionListenerTaskDetail(i, e -> onClickDetailButton(task));
         }
-        view.addActionListenerNewButton((e) -> onClickNewTaskButton());
-        view.addActionListenerDeleteUserButton((e) -> onClickDeleteUserButton());
+        view.addActionListenerNewButton(e -> onClickNewTaskButton());
+        view.addActionListenerDeleteUserButton(e -> onClickDeleteUserButton());
     }
 
     @Override

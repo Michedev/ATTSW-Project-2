@@ -23,7 +23,7 @@ public class NewUpdateTaskController implements ViewController<NewUpdateTask> {
 
     @Override
     public void addEvents() {
-        view.addActionListenerMakeButton((e) -> onClickMakeButton());
+        view.addActionListenerMakeButton(e -> onClickMakeButton());
     }
 
     @Override
