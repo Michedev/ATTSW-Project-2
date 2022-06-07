@@ -100,4 +100,8 @@ public class UserTasksList extends JPanel {
 	public JLabel getLabelError() {
 		return lblError;
 	}
+
+	public void addActionListenerDeleteUserButton(ActionListener actionListener) {
+		btnDeleteUser.addActionListener(actionListener);
+	}
 }

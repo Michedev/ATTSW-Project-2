@@ -80,27 +80,34 @@ public class UserTasksControllerTest {
         when(view.getTasks()).thenReturn(taskList);
         ArgumentCaptor<ActionListener> captorTasksDetails = ArgumentCaptor.forClass(ActionListener.class);
         ArgumentCaptor<ActionListener> captorNewTask = ArgumentCaptor.forClass(ActionListener.class);
+        ArgumentCaptor<ActionListener> captorDeleteUser = ArgumentCaptor.forClass(ActionListener.class);
 
         userTasksController = spy(userTasksController);
         doNothing().when(userTasksController).onClickNewTaskButton();
         doNothing().when(userTasksController).onClickDetailButton(any());
+        doNothing().when(userTasksController).onClickDeleteUserButton();
 
         userTasksController.addEvents();
 
         verify(view, times(taskList.size())).addActionListenerTaskDetail(anyInt(), captorTasksDetails.capture());
         verify(view).addActionListenerNewButton(captorNewTask.capture());
+        verify(view).addActionListenerDeleteUserButton(captorDeleteUser.capture());
+
         List<ActionListener> detailListeners = captorTasksDetails.getAllValues();
         for (ActionListener l :
                 detailListeners) {
             l.actionPerformed(null);
         }
         ActionListener newBtnListener = captorNewTask.getValue();
+        ActionListener deleteUserBtnListener = captorDeleteUser.getValue();
         newBtnListener.actionPerformed(null);
+        deleteUserBtnListener.actionPerformed(null);
 
         Assert.assertEquals(taskList.size(), detailListeners.size());
         verify(userTasksController, times(detailListeners.size())).onClickDetailButton(any(Task.class));
         verify(userTasksController).onClickNewTaskButton();
-        //todo: add check here for delete user
+        verify(userTasksController).onClickDeleteUserButton();
+
     }
 
     @Test
