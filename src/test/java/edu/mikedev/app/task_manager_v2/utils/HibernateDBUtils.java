@@ -254,12 +254,10 @@ public abstract class HibernateDBUtils {
     }
 
     public void deleteUser(User user) {
-        for(Task t: user.getTasks()){
-            deleteTask(t);
-        }
         try {
             Connection connection = initDBConnection();
             Statement statement = connection.createStatement();
+            statement.execute(String.format("DELETE FROM Tasks where ID_USER = %d", user.getId()));
             statement.execute(String.format("DELETE FROM Users where id = %d", user.getId()));
             connection.close();
         } catch (SQLException e){
