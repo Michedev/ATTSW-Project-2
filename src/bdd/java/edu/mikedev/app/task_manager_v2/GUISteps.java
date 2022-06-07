@@ -220,7 +220,6 @@ public class GUISteps {
         window.label("lblTitleTask1").requireText(expectedTitle);
     }
 
-
     private void doLogin() {
         window.textBox("txtUsername").enterText(loginUsername);
         window.textBox("txtPassword").enterText(loginPassword);
