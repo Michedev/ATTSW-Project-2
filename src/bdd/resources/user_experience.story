@@ -42,3 +42,12 @@ And I update the second task with the new title "Updated title 23"
 Then the first task should not exists
 And it should exists a task with title "Shopping" and subtasks "Bread", "Water", "Potatoes"
 And the second task should have the title "Updated title 23"
+
+Scenario: Create user, create a new task and then update it
+Meta: this scenario is born to re-create a failure encountered during the application usage with docker containers
+Given an unlogged user
+When I register with username "a", password "a" and email "a@a.a"
+And I login with username "a" and password "a"
+And I add a new task with title "Shopping" and subtasks "Bread", "Water", "Potatoes"
+And I update the first task with title "Shopping2"
+Then the first task should have the title "Shopping2"

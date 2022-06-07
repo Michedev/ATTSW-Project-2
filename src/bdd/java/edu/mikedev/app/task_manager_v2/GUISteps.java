@@ -198,6 +198,28 @@ public class GUISteps {
                 );
     }
 
+    @When("I login with username \"$username\" and password \"$password\"")
+    public void whenILogin(String username, String password){
+        window.textBox("txtUsername").enterText(username);
+        window.textBox("txtPassword").enterText(password);
+        window.button("btnLogin").click();
+    }
+
+    @When("I update the first task with title \"$newTitle\"")
+    public void whenIUpdateTheFirstTask(String newTitle){
+        if(jframe.getContentPane() instanceof UserTasksList){
+            window.button("btnDetailTask1").click();
+        }
+        window.button("btnUpdate").click();
+        window.textBox("txtTaskTitle").deleteText().enterText(newTitle);
+        window.button("btnMake").click();
+    }
+
+    @Then("the first task should have the title \"$expectedTitle\"")
+    public void thenTheFirstTaskShouldHaveTheTitle(String expectedTitle){
+        window.label("lblTitleTask1").requireText(expectedTitle);
+    }
+
 
     private void doLogin() {
         window.textBox("txtUsername").enterText(loginUsername);
