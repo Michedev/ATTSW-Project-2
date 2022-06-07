@@ -1,6 +1,6 @@
 package edu.mikedev.app.task_manager_v2.controller;
 
-import edu.mikedev.app.task_manager_v2.data.DeleteTaskResponse;
+import edu.mikedev.app.task_manager_v2.data.UpdateDeleteTransactionOutcome;
 import edu.mikedev.app.task_manager_v2.data.Task;
 import edu.mikedev.app.task_manager_v2.model.Model;
 import edu.mikedev.app.task_manager_v2.model.PermissionException;
@@ -184,7 +184,7 @@ public class NewUpdateTaskControllerTest {
         toUpdate.setId(100);
         when(view.getTaskToUpdate()).thenReturn(toUpdate);
         when(model.updateTaskGetTasks(toUpdate)).thenReturn(
-                new DeleteTaskResponse(
+                new UpdateDeleteTransactionOutcome(
                         new ArrayList<>(),
                         -1
                 )
@@ -224,7 +224,7 @@ public class NewUpdateTaskControllerTest {
         toUpdate.setId(100);
         when(view.getTaskToUpdate()).thenReturn(toUpdate);
         when(model.updateTaskGetTasks(toUpdate)).thenReturn(
-                new DeleteTaskResponse(
+                new UpdateDeleteTransactionOutcome(
                         new ArrayList<>(),
                         toUpdate.getId()
                 )

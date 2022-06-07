@@ -1,6 +1,6 @@
 package edu.mikedev.app.task_manager_v2.model;
 
-import edu.mikedev.app.task_manager_v2.data.DeleteTaskResponse;
+import edu.mikedev.app.task_manager_v2.data.UpdateDeleteTransactionOutcome;
 import edu.mikedev.app.task_manager_v2.data.Task;
 import edu.mikedev.app.task_manager_v2.data.User;
 
@@ -61,7 +61,7 @@ public class Model {
         });
     }
 
-    public DeleteTaskResponse updateTaskGetTasks(Task userTask) throws PermissionException {
+    public UpdateDeleteTransactionOutcome<List<Task>> updateTaskGetTasks(Task userTask) throws PermissionException {
         if(this.logged == null){
             throw new PermissionException(LOGIN_ERROR_MESSAGE);
         }
@@ -71,18 +71,18 @@ public class Model {
         return transactionManager.doInTransaction(repository -> {
             Task sessionTask = repository.getTaskById(userTask.getId());
             if(sessionTask == null){
-                return new DeleteTaskResponse(repository.getUserTasks(logged.getId()), userTask.getId());
+                return new UpdateDeleteTransactionOutcome<>(repository.getUserTasks(logged.getId()), userTask.getId());
             }
             sessionTask.setTitle(userTask.getTitle());
             sessionTask.setSubtask1(userTask.getSubtask1());
             sessionTask.setSubtask2(userTask.getSubtask2());
             sessionTask.setSubtask3(userTask.getSubtask3());
             repository.update(sessionTask);
-            return new DeleteTaskResponse(repository.getUserTasks(logged.getId()), -1);
+            return new UpdateDeleteTransactionOutcome<>(repository.getUserTasks(logged.getId()), -1);
         });
     }
 
-    public DeleteTaskResponse deleteTaskGetUserTasks(Task task) throws PermissionException {
+    public UpdateDeleteTransactionOutcome<List<Task>> deleteTaskGetUserTasks(Task task) throws PermissionException {
         if(this.logged == null){
             throw new PermissionException(LOGIN_ERROR_MESSAGE);
         }
@@ -93,10 +93,10 @@ public class Model {
         return transactionManager.doInTransaction(repository -> {
             Task taskById = repository.getTaskById(task.getId());
             if(Objects.isNull(taskById)){
-                return new DeleteTaskResponse(repository.getUserTasks(logged.getId()), task.getId());
+                return new UpdateDeleteTransactionOutcome<>(repository.getUserTasks(logged.getId()), task.getId());
             }
             repository.delete(taskById);
-            return new DeleteTaskResponse(repository.getUserTasks(logged.getId()), -1);
+            return new UpdateDeleteTransactionOutcome<>(repository.getUserTasks(logged.getId()), -1);
         });
     }
 
@@ -135,4 +135,7 @@ public class Model {
         this.logged = null;
     }
 
+    public UpdateDeleteTransactionOutcome<User> deleteLoggedUser() {
+        return null;
+    }
 }

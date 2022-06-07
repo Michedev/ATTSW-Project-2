@@ -1,6 +1,6 @@
 package edu.mikedev.app.task_manager_v2.controller;
 
-import edu.mikedev.app.task_manager_v2.data.DeleteTaskResponse;
+import edu.mikedev.app.task_manager_v2.data.UpdateDeleteTransactionOutcome;
 import edu.mikedev.app.task_manager_v2.data.Task;
 import edu.mikedev.app.task_manager_v2.model.Model;
 import edu.mikedev.app.task_manager_v2.model.PermissionException;
@@ -48,9 +48,9 @@ public class NewUpdateTaskController implements ViewController<NewUpdateTask> {
             if(taskToUpdate == null){
                 loggedUserTasks = addNewTask(taskTitle, taskSubtask1, taskSubtask2, taskSubtask3);
             } else {
-                DeleteTaskResponse response = updateTask(taskTitle, taskSubtask1, taskSubtask2, taskSubtask3, taskToUpdate);
-                loggedUserTasks = response.getTasks();
-                missingId = response.getMissingTaskId();
+                UpdateDeleteTransactionOutcome<List<Task>> response = updateTask(taskTitle, taskSubtask1, taskSubtask2, taskSubtask3, taskToUpdate);
+                loggedUserTasks = response.getData();
+                missingId = response.getMissingId();
             }
         } catch (PermissionException e){
             managerController.initApplication();
@@ -91,7 +91,7 @@ public class NewUpdateTaskController implements ViewController<NewUpdateTask> {
         return anyError;
     }
 
-    private DeleteTaskResponse updateTask(String taskTitle, String taskSubtask1, String taskSubtask2, String taskSubtask3, Task taskToUpdate) throws PermissionException {
+    private UpdateDeleteTransactionOutcome<List<Task>> updateTask(String taskTitle, String taskSubtask1, String taskSubtask2, String taskSubtask3, Task taskToUpdate) throws PermissionException {
         taskToUpdate.setTitle(taskTitle);
         taskToUpdate.setSubtask1(taskSubtask1);
         taskToUpdate.setSubtask2(taskSubtask2);

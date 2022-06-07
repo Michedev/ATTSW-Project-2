@@ -1,6 +1,6 @@
 package edu.mikedev.app.task_manager_v2.model;
 
-import edu.mikedev.app.task_manager_v2.data.DeleteTaskResponse;
+import edu.mikedev.app.task_manager_v2.data.UpdateDeleteTransactionOutcome;
 import edu.mikedev.app.task_manager_v2.data.Task;
 import edu.mikedev.app.task_manager_v2.data.User;
 import edu.mikedev.app.task_manager_v2.utils.HibernateDBUtilsPostgre;
@@ -78,7 +78,7 @@ public class ModelIT {
         doLogin(user);
 
         Task toRemove = user.getTasks().iterator().next();
-        DeleteTaskResponse response = null;
+        UpdateDeleteTransactionOutcome<List<Task>> response = null;
         try {
             response = model.deleteTaskGetUserTasks(toRemove);
         } catch (PermissionException e) {
@@ -86,9 +86,9 @@ public class ModelIT {
         }
         List<Task> dbUserTasks = dbUtils.getUserTasks(user.getId());
 
-        Assert.assertEquals(-1, response.getMissingTaskId());
+        Assert.assertEquals(-1, response.getMissingId());
         Assert.assertFalse(dbUserTasks.contains(toRemove));
-        Assert.assertArrayEquals(dbUserTasks.toArray(), response.getTasks().toArray());
+        Assert.assertArrayEquals(dbUserTasks.toArray(), response.getData().toArray());
     }
 
     private void doLogin(User user) {
@@ -111,7 +111,7 @@ public class ModelIT {
         String oldTitle = toUpdate.getTitle();
         String newTitle = "NewTitle";
         toUpdate.setTitle(newTitle);
-        DeleteTaskResponse response = null;
+        UpdateDeleteTransactionOutcome<List<Task>> response = null;
         try {
             response = model.updateTaskGetTasks(toUpdate);
         } catch (PermissionException e) {
@@ -120,8 +120,8 @@ public class ModelIT {
 
         Assert.assertNotNull(response);
         List<Task> dbUserTasks = dbUtils.getUserTasks(user.getId());
-        Assert.assertEquals(-1, response.getMissingTaskId());
-        Assert.assertArrayEquals(dbUserTasks.toArray(), response.getTasks().toArray());
+        Assert.assertEquals(-1, response.getMissingId());
+        Assert.assertArrayEquals(dbUserTasks.toArray(), response.getData().toArray());
         Assert.assertTrue(dbUserTasks.stream().anyMatch(t -> t.getTitle().equals(newTitle)));
         Assert.assertTrue(dbUserTasks.stream().noneMatch(t -> t.getTitle().equals(oldTitle)));
     }

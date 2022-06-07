@@ -1,6 +1,6 @@
 package edu.mikedev.app.task_manager_v2.controller;
 
-import edu.mikedev.app.task_manager_v2.data.DeleteTaskResponse;
+import edu.mikedev.app.task_manager_v2.data.UpdateDeleteTransactionOutcome;
 import edu.mikedev.app.task_manager_v2.data.Task;
 import edu.mikedev.app.task_manager_v2.model.Model;
 import edu.mikedev.app.task_manager_v2.model.PermissionException;
@@ -66,7 +66,7 @@ public class TaskDetailControllerTest {
     public void testClickDeleteButton(){
         Task taskToDelete = new Task("vbnm", "5", "6", "7");
         when(view.getTask()).thenReturn(taskToDelete);
-        DeleteTaskResponse tasksAfterDelete = new DeleteTaskResponse(Arrays.asList(
+        UpdateDeleteTransactionOutcome<List<Task>> tasksAfterDelete = new UpdateDeleteTransactionOutcome<>(Arrays.asList(
                 new Task("RR", "W", "Q", "Y"),
                 new Task("QQ", "1", "U", "C"),
                 new Task("DD", "2", "L", "V"),
@@ -93,7 +93,7 @@ public class TaskDetailControllerTest {
         UserTasksController actual = captor.getValue();
         List<Task> userTasksControllers = actual.getView().getTasks();
 
-        Assert.assertArrayEquals(tasksAfterDelete.getTasks().toArray(), userTasksControllers.toArray());
+        Assert.assertArrayEquals(tasksAfterDelete.getData().toArray(), userTasksControllers.toArray());
         Assert.assertFalse(actual.getView().getTasks().contains(taskToDelete));
     }
 
@@ -124,7 +124,7 @@ public class TaskDetailControllerTest {
         Task task = new Task("vbnm", "5", "6", "7");
         task.setId(1430);
         when(view.getTask()).thenReturn(task);
-        when(model.deleteTaskGetUserTasks(task)).thenReturn(new DeleteTaskResponse(new ArrayList<>(), task.getId()));
+        when(model.deleteTaskGetUserTasks(task)).thenReturn(new UpdateDeleteTransactionOutcome(new ArrayList<>(), task.getId()));
 
         taskDetailController.onClickDeleteButton();
 
