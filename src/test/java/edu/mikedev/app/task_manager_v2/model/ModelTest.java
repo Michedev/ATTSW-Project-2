@@ -411,23 +411,32 @@ public class ModelTest {
         when(repository.getUserById(mockedUser.getId())).thenReturn(mockedUser);
 
         modelLogin();
-        UpdateDeleteTransactionOutcome<User> userUpdateDeleteTransactionOutcome = model.deleteLoggedUser();
+        UpdateDeleteTransactionOutcome<User> userUpdateDeleteTransactionOutcome = null;
+        try {
+            userUpdateDeleteTransactionOutcome = model.deleteLoggedUser();
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
         verify(repository).delete(mockedUser);
         Assert.assertEquals(-1, userUpdateDeleteTransactionOutcome.getMissingId());
         Assert.assertEquals(mockedUser, userUpdateDeleteTransactionOutcome.getData());
     }
 
     @Test
-    public void testDeleteUserWhenNotExisting(){
+    public void testDeleteUserWhenNotExistingInDB(){
         when(repository.getUserById(mockedUser.getId())).thenReturn(null);
         modelLogin();
 
-        UpdateDeleteTransactionOutcome<User> userUpdateDeleteTransactionOutcome = model.deleteLoggedUser();
-        
+        UpdateDeleteTransactionOutcome<User> userUpdateDeleteTransactionOutcome = null;
+        try {
+            userUpdateDeleteTransactionOutcome = model.deleteLoggedUser();
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
+
         Assert.assertEquals(mockedUser.getId(), userUpdateDeleteTransactionOutcome.getMissingId());
         Assert.assertNull(userUpdateDeleteTransactionOutcome.getData());
         verify(repository, never()).delete(any(User.class));
-
     }
 
     private Task getOtherUserTask() {

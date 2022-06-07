@@ -135,7 +135,19 @@ public class Model {
         this.logged = null;
     }
 
-    public UpdateDeleteTransactionOutcome<User> deleteLoggedUser() {
-        return null;
+    public UpdateDeleteTransactionOutcome<User> deleteLoggedUser() throws PermissionException {
+        if(this.logged == null){
+            throw new PermissionException(LOGIN_ERROR_MESSAGE);
+        }
+        UpdateDeleteTransactionOutcome<User> outcome = transactionManager.doInTransaction(repository -> {
+            User sessionUser = repository.getUserById(logged.getId());
+            if(sessionUser == null){
+                return new UpdateDeleteTransactionOutcome<>(null, logged.getId());
+            }
+            repository.delete(sessionUser);
+            return new UpdateDeleteTransactionOutcome<>(sessionUser, -1);
+        });
+        logout();
+        return outcome;
     }
 }
