@@ -17,17 +17,14 @@ public class HibernateTransactionManager implements TransactionManager {
 
     public <T> T doInTransaction(Function<UserTaskRepository, T> f) {
         Session session = sessionFactory.openSession();
-        Transaction t = null;
+        Transaction t = session.beginTransaction();
         HibernateUserTaskRepository repository = new HibernateUserTaskRepository(session);
         T output = null;
         try{
-            t = session.beginTransaction();
             output = f.apply(repository);
             t.commit();
         } catch (Exception e){
-            if(t != null){
-                t.rollback();
-            }
+            t.rollback();
             System.err.println("Found exception while executing the transaction with the following error message: \"" + e.getMessage() + "\"");
         }
         finally {
