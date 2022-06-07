@@ -175,6 +175,27 @@ public class ModelIT {
         Assert.assertEquals(LOGIN_ERROR_MESSAGE, e.getMessage());
     }
 
+    @Test
+    public void testDeleteUser(){
+        User user = dbUtils.users.get(0);
+
+        doLogin(user);
+
+        UpdateDeleteTransactionOutcome<User> userUpdateDeleteTransactionOutcome = null;
+        try {
+            userUpdateDeleteTransactionOutcome = model.deleteLoggedUser();
+        } catch (PermissionException e) {
+            Assert.fail(e.getMessage());
+        }
+        Assert.assertNotNull(userUpdateDeleteTransactionOutcome);
+        Assert.assertEquals(user, userUpdateDeleteTransactionOutcome.getData());
+        Assert.assertEquals(-1, userUpdateDeleteTransactionOutcome.getMissingId());
+
+        List<String> dbUsernames = dbUtils.getDBUsernames();
+        Assert.assertEquals(dbUtils.users.size()-1, dbUsernames.size());
+        Assert.assertFalse(dbUsernames.contains(user.getUsername()));
+    }
+
     @After
     public void closeSessionFactory(){
         sessionFactory.close();
