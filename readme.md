@@ -13,8 +13,8 @@
 
 ## Application features
 
-The application is a task manager i.e. an application that  allows the user to keep track of its own tasks. Specifically, the tasks handled by this application consists in a title and three steps to reach its conclusion; for instance title "Shopping" and subtasks {"Bread", "Milk", "Water"}.
-Furthermore, the application tasks are bounded to an user, in fact the application features a registration and login pages. In conclusion, a summary of the application capabilities:
+The application is a task manager which allows the user to keep track of its own tasks. Specifically, the tasks consist in a title and three steps to reach its conclusion; for example a task with title "Shopping" and subtasks {"Bread", "Milk", "Water"}.
+Furthermore, since every task is bounded to an user the application features a registration and login pages for users. In conclusion, a summary of the application capabilities:
 
 - Create new user
 - Login user
@@ -22,8 +22,6 @@ Furthermore, the application tasks are bounded to an user, in fact the applicati
 - Update a task
 - Delete logged user
 - Delete a task
-
-## Techin
 
 ## Application screenshots
 
@@ -33,6 +31,20 @@ Furthermore, the application tasks are bounded to an user, in fact the applicati
 ![Screenshot from 2022-06-08 10-33-52](https://user-images.githubusercontent.com/12683228/172571537-45d0f687-c0a7-4d02-8625-a1377c53d4a6.png)
 ![Screenshot from 2022-06-08 10-33-58](https://user-images.githubusercontent.com/12683228/172571538-db2523bb-7afb-47d4-90d5-c0978af2e6e7.png)
 ![Screenshot from 2022-06-08 10-34-23](https://user-images.githubusercontent.com/12683228/172571543-393630c5-c693-426e-bfb0-1d6ebed05850.png)
+
+## Technical features
+
+The application is implemented in _Java 8_, using _maven_ as build automation tool to build and test the codebase.
+To handle the data inside the application we use _Hibernate_ as ORM (Object-Relational Mapping) along with a Database, which can be of two types:
+- Database _In-Memory_, made with _hsqldb_ and used mainly for application testing
+- Real Database with _PostgresSQL_
+
+
+To start the application we use two dependencies:
+- _picocli_ to handle command line arguments
+- _guice_ to instantiate the objects with the Dependency Injection design pattern
+
+
 
 ## How to run
 
