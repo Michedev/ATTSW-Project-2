@@ -13,8 +13,8 @@
 
 ## Application features
 
-The application is a task manager which allows the user to keep track of its own tasks. Specifically, the tasks handled by this application consists in a title and three steps to reach its conclusion; for instance title "Shopping" and subtasks {"Bread", "Milk", "Water"}.
-Furthermore, the application tasks are bounded to an user, in fact the application features a registration and login pages. In conclusion, a summary of the application capabilities:
+The application is a task manager which allows the user to keep track of its own tasks. Specifically, the tasks consist in a title and three steps to reach its conclusion; for example a task with title "Shopping" and subtasks {"Bread", "Milk", "Water"}.
+Furthermore, since every task is bounded to an user the application features a registration and login pages for users. In conclusion, a summary of the application capabilities:
 
 - Create new user
 - Login user
@@ -23,7 +23,18 @@ Furthermore, the application tasks are bounded to an user, in fact the applicati
 - Delete logged user
 - Delete a task
 
-## Techin
+## Techincal features
+
+The application is implemented in _Java 8_, using _maven_ as build automation tool to build and test the codebase.
+To handle the data inside the application we use _Hibernate_ as ORM (Object-Relational Mapping) along with a Database, which can be of two types:
+- Database _In-Memory_, made with _hsqldb_ and used mainly for application testing
+- Real Database with _PostgresSQL_
+
+
+To start the application we use two dependencies:
+- _picocli_ to handle command line arguments
+- _guice_ to instantiate the objects with the Dependency Injection design pattern
+
 
 ## Application screenshots
 
