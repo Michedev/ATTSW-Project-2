@@ -13,7 +13,7 @@
 
 ## Application features
 
-The application is a task manager i.e. an application that  allows the user to keep track of its own tasks. Specifically, the tasks handled by this application consists in a title and three steps to reach its conclusion; for instance title "Shopping" and subtasks {"Bread", "Milk", "Water"}.
+The application is a task manager which allows the user to keep track of its own tasks. Specifically, the tasks handled by this application consists in a title and three steps to reach its conclusion; for instance title "Shopping" and subtasks {"Bread", "Milk", "Water"}.
 Furthermore, the application tasks are bounded to an user, in fact the application features a registration and login pages. In conclusion, a summary of the application capabilities:
 
 - Create new user
