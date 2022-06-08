@@ -21,9 +21,7 @@
             <column name="subtask3" not-null="true"/>
         </property>
 
-
         <many-to-one name="taskOwner" class="User"
                      column="ID_USER" not-null="true"/>
-
     </class>
 </hibernate-mapping>
