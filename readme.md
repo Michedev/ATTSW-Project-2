@@ -37,7 +37,7 @@ Furthermore, since every task is bounded to an user the application features a r
 The application is implemented in _Java 8_, using _maven_ as build automation tool to build and test the codebase.
 To handle the data inside the application we use _Hibernate_ as ORM (Object-Relational Mapping) along with a Database, which can be of two types:
 - Database _In-Memory_, made with _hsqldb_ and used mainly for application testing
-- Real Database with _PostgresSQL_
+- Real Database with _POSTGRESQL_
 
 
 To start the application we use two dependencies:
@@ -80,7 +80,7 @@ mvn package [-DskipTests]
 2) Run the jar with the following command
 
 ```bash
-java -jar target/task-manager-v2-0.0.1-SNAPSHOT-jar-with-dependencies.jar --dbtype=POSTGRESSQL --address=ADDRESS --port=PORT
+java -jar target/task-manager-v2-0.0.1-SNAPSHOT-jar-with-dependencies.jar --dbtype=POSTGRESQL --address=ADDRESS --port=PORT
 ```
 
 ### Run in two separate Docker containers

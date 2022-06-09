@@ -19,7 +19,7 @@ import java.util.concurrent.Callable;
 
 public class TaskManagerApp implements Callable<Integer>
 {
-    @CommandLine.Option(names = "--dbtype", defaultValue = "POSTGRESSQL", type = DBType.class)
+    @CommandLine.Option(names = "--dbtype", defaultValue = "POSTGRESQL", type = DBType.class)
     private DBType dbType;
 
     @CommandLine.Option(names = "--address", defaultValue = "localhost")
@@ -56,7 +56,7 @@ public class TaskManagerApp implements Callable<Integer>
                                                          @Named("DBName") String dbName){
                 Configuration cfg = new Configuration();
                 cfg = cfg.configure(configFileName);
-                if(dbType.equals(DBType.POSTGRESSQL)){
+                if(dbType.equals(DBType.POSTGRESQL)){
                     cfg = cfg.setProperty("hibernate.connection.url", String.format("jdbc:postgresql://%s:%d/%s", address, port, dbName));
                 }
                 return cfg.buildSessionFactory();
