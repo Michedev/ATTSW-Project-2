@@ -434,6 +434,10 @@ public class ModelTest {
             Assert.fail(e.getMessage());
         }
 
+        PermissionException e = Assert.assertThrows(PermissionException.class,
+                () -> model.addUserTaskGetTasks(new Task()));
+        Assert.assertEquals(LOGIN_ERROR_MESSAGE, e.getMessage());
+
         Assert.assertEquals(mockedUser.getId(), userUpdateDeleteTransactionOutcome.getMissingId());
         Assert.assertNull(userUpdateDeleteTransactionOutcome.getData());
         verify(repository, never()).delete(any(User.class));
