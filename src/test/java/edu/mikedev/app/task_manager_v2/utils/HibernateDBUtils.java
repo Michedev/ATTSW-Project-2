@@ -148,29 +148,6 @@ public abstract class HibernateDBUtils {
         }
     }
 
-    public void insert(Task t){
-        try {
-            Connection connection = initDBConnection();
-            Statement statement = connection.createStatement();
-            insertTask(statement, t);
-            connection.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-
-    public void insert(User u){
-        try {
-            Connection connection = initDBConnection();
-            Statement statement = connection.createStatement();
-            insertUser(statement, u);
-            connection.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 
     public Task getTaskFromQuery(ResultSet resultSet) throws SQLException {
         Task task = new Task(resultSet.getString("title"), resultSet.getString("subtask1"),
