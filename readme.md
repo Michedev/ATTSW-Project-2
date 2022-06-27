@@ -1,6 +1,5 @@
 # Task-Manager-v2
-![Build](https://img.shields.io/github/workflow/status/Michedev/ATTSW-Project-2/Maven%20test%20and%20package)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Michedev_ATTSW-Project-2&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Michedev_ATTSW-Project-2)
+[![Build](https://github.com/Michedev/ATTSW-Project-2/actions/workflows/maven-unit-test-with-gui.yml/badge.svg)](https://github.com/Michedev/ATTSW-Project-2/actions/workflows/maven-unit-test-with-gui.yml) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Michedev_ATTSW-Project-2&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Michedev_ATTSW-Project-2)
 
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Michedev_ATTSW-Project-2&metric=coverage)](https://sonarcloud.io/summary/new_code?id=Michedev_ATTSW-Project-2)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=Michedev_ATTSW-Project-2&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=Michedev_ATTSW-Project-2)
